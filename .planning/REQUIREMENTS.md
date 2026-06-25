@@ -9,33 +9,33 @@
 
 ### Infrastructure (INFRA)
 
-- [ ] **INFRA-01**: App lives in the menubar via MenuBarExtra and opens a compact popover launcher (~480×600)
+- [x] **INFRA-01**: App lives in the menubar via MenuBarExtra and opens a compact popover launcher (~480×600)
 - [ ] **INFRA-02**: User can detach a tool into a resizable workspace window (min 800×600); tool remembers its last mode
-- [ ] **INFRA-03**: A `ToolDefinition`/`ToolRegistry` abstraction enumerates all tools uniformly (id, name, category, keywords, SF Symbol, detection predicate, view factory) — single source for launcher, search, detection, and services routing
-- [ ] **INFRA-04**: User can open/focus the app from any app via a global hotkey (`⌘⇧Space`, configurable) with no Accessibility permission prompt
-- [ ] **INFRA-05**: On focus, app auto-detects clipboard content and shows a non-destructive suggestion banner ("Detected: JWT — Open JWT Decoder?") that the user can accept or dismiss
-- [ ] **INFRA-06**: Clipboard detection runs the ordered predicate chain (JSON → JWT → Base64 → URL-encoded → URL → 10-digit timestamp → hex color → UUID → regex) and fires within 100ms of focus
-- [ ] **INFRA-07**: App persists the last 100 transformations (tool, input, output, timestamp) in a local SQLite store across restarts
+- [x] **INFRA-03**: A `ToolDefinition`/`ToolRegistry` abstraction enumerates all tools uniformly (id, name, category, keywords, SF Symbol, detection predicate, view factory) — single source for launcher, search, detection, and services routing
+- [x] **INFRA-04**: User can open/focus the app from any app via a global hotkey (`⌘⇧Space`, configurable) with no Accessibility permission prompt
+- [x] **INFRA-05**: On focus, app auto-detects clipboard content and shows a non-destructive suggestion banner ("Detected: JWT — Open JWT Decoder?") that the user can accept or dismiss
+- [x] **INFRA-06**: Clipboard detection runs the ordered predicate chain (JSON → JWT → Base64 → URL-encoded → URL → 10-digit timestamp → hex color → UUID → regex) and fires within 100ms of focus
+- [x] **INFRA-07**: App persists the last 100 transformations (tool, input, output, timestamp) in a local SQLite store across restarts
 - [ ] **INFRA-08**: History is searchable, re-openable (click restores input/output into the tool), and items can be pinned, deleted, or cleared
-- [ ] **INFRA-09**: History never persists user secrets (JWT HMAC verification keys, HMAC hash keys are excluded from the store by schema design)
+- [x] **INFRA-09**: History never persists user secrets (JWT HMAC verification keys, HMAC hash keys are excluded from the store by schema design)
 - [ ] **INFRA-10**: Global fuzzy search spans tool names, descriptions, and history, and is keyboard-navigable (↑↓, Enter)
 - [ ] **INFRA-11**: User can pin up to 6 tools to the popover quick-access bar (drag-to-reorder); ships with sensible defaults
 - [ ] **INFRA-12**: Preferences window (`⌘,`) covers General, Appearance, History, and per-tool defaults
 - [ ] **INFRA-13**: Preferences settings work: launch at login (SMAppService), show-in-Dock toggle, default open mode, clipboard auto-detect on/off, theme, code font, font size, history limits
-- [ ] **INFRA-14**: App fully supports Light/Dark mode and system accent color with no visual artifacts
+- [x] **INFRA-14**: App fully supports Light/Dark mode and system accent color with no visual artifacts
 - [ ] **INFRA-15**: All interactive elements have VoiceOver labels and support Dynamic Type scaling
 - [ ] **INFRA-16**: Documented global keyboard shortcuts work (open, prefs, close, next/prev tool, focus search, copy output, paste-and-detect, clear input, toggle history, new window)
-- [ ] **INFRA-17**: No tool crashes on malformed, oversized, or invalid-UTF-8 input; all inputs are validated gracefully
-- [ ] **INFRA-18**: App meets performance targets — cold start < 500ms, hotkey-to-popover < 200ms, < 100MB RAM under normal use
+- [x] **INFRA-17**: No tool crashes on malformed, oversized, or invalid-UTF-8 input; all inputs are validated gracefully
+- [x] **INFRA-18**: App meets performance targets — cold start < 500ms, hotkey-to-popover < 200ms, < 100MB RAM under normal use
 
 ### Core Tools — JSON (JSON)
 
-- [ ] **JSON-01**: User can pretty-print JSON with configurable indent (2, 4, or tab)
-- [ ] **JSON-02**: User can minify JSON to compact form
-- [ ] **JSON-03**: Editor shows real-time validation with inline error location (line + column)
-- [ ] **JSON-04**: User can sort keys alphabetically (toggle)
-- [ ] **JSON-05**: Editor provides JSON syntax highlighting
-- [ ] **JSON-06**: User can copy formatted output in one click
+- [x] **JSON-01**: User can pretty-print JSON with configurable indent (2, 4, or tab)
+- [x] **JSON-02**: User can minify JSON to compact form
+- [x] **JSON-03**: Editor shows real-time validation with inline error location (line + column)
+- [x] **JSON-04**: User can sort keys alphabetically (toggle)
+- [x] **JSON-05**: Editor provides JSON syntax highlighting
+- [x] **JSON-06**: User can copy formatted output in one click
 
 ### Core Tools — Base64 (B64)
 
@@ -163,30 +163,30 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Pending |
-| INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
-| INFRA-05 | Phase 1 | Pending |
-| INFRA-06 | Phase 1 | Pending |
-| INFRA-07 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Complete |
+| INFRA-04 | Phase 1 | Complete |
+| INFRA-05 | Phase 1 | Complete |
+| INFRA-06 | Phase 1 | Complete |
+| INFRA-07 | Phase 1 | Complete |
 | INFRA-08 | Phase 1 | Pending |
-| INFRA-09 | Phase 1 | Pending |
+| INFRA-09 | Phase 1 | Complete |
 | INFRA-10 | Phase 1 | Pending |
 | INFRA-11 | Phase 1 | Pending |
 | INFRA-12 | Phase 1 | Pending |
 | INFRA-13 | Phase 1 | Pending |
-| INFRA-14 | Phase 1 | Pending |
+| INFRA-14 | Phase 1 | Complete |
 | INFRA-15 | Phase 1 | Pending |
 | INFRA-16 | Phase 1 | Pending |
-| INFRA-17 | Phase 1 | Pending |
-| INFRA-18 | Phase 1 | Pending |
-| JSON-01 | Phase 1 | Pending |
-| JSON-02 | Phase 1 | Pending |
-| JSON-03 | Phase 1 | Pending |
-| JSON-04 | Phase 1 | Pending |
-| JSON-05 | Phase 1 | Pending |
-| JSON-06 | Phase 1 | Pending |
+| INFRA-17 | Phase 1 | Complete |
+| INFRA-18 | Phase 1 | Complete |
+| JSON-01 | Phase 1 | Complete |
+| JSON-02 | Phase 1 | Complete |
+| JSON-03 | Phase 1 | Complete |
+| JSON-04 | Phase 1 | Complete |
+| JSON-05 | Phase 1 | Complete |
+| JSON-06 | Phase 1 | Complete |
 | B64-01 | Phase 1 | Pending |
 | B64-02 | Phase 1 | Pending |
 | B64-03 | Phase 1 | Pending |

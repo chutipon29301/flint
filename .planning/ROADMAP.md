@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. App cold-starts in under 500ms, stays under 100MB RAM under normal use, and all interactive elements have VoiceOver labels and support Light/Dark mode without visual artifacts
 **Plans**: 7 plans (3 waves)
 Plans:
-- [ ] 01-01-PLAN.md — Walking Skeleton: frozen infra (registry/history/clipboard/hotkey/popover) + JSON Formatter integration test
+- [x] 01-01-PLAN.md — Walking Skeleton: frozen infra (registry/history/clipboard/hotkey/popover) + JSON Formatter integration test
 - [ ] 01-02-PLAN.md — Base64 + URL tools (encoding category)
 - [ ] 01-03-PLAN.md — JWT Decoder (base64url, expiry, HMAC verify, secret-exclusion)
 - [ ] 01-04-PLAN.md — Timestamp Converter + Hash Generator (chunked file hash, HMAC key-exclusion)
@@ -74,6 +74,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure + Core Tools | 0/7 | Planned | - |
+| 1. Infrastructure + Core Tools | 1/7 | In Progress|  |
 | 2. Extended Tools | 0/TBD | Not started | - |
 | 3. Polish & Distribution | 0/TBD | Not started | - |

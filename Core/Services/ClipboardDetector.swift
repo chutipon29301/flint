@@ -29,8 +29,16 @@ final class ClipboardDetector {
     private weak var registry: ToolRegistry?
     private var observerToken: NSObjectProtocol?
 
-    /// Call once at app startup (from LatheApp or onAppear) to start listening.
+    /// Call to start listening for pasteboard changes.
+    /// Safe to call multiple times — removes any previous observer before registering a new one (CR-02).
     func start(registry: ToolRegistry) {
+        // CR-02: remove existing observer before re-registering to prevent multiplied handlers.
+        // MenuBarPopoverView.onAppear calls start() on every popover appearance; without this
+        // guard, N appearances → N active observers → N redundant handler invocations per change.
+        if let token = observerToken {
+            NotificationCenter.default.removeObserver(token)
+            observerToken = nil
+        }
         self.registry = registry
         // NSPasteboardDidChangeNotification: private-but-stable, 0% idle CPU (Pitfall #7)
         // Capture self as MainActor-isolated object; dispatch to main queue in closure.

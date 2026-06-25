@@ -1,0 +1,785 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		001100000000001 /* LatheApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000001 /* LatheApp.swift */; };
+		001100000000002 /* WindowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000002 /* WindowCoordinator.swift */; };
+		001100000000003 /* ToolCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000003 /* ToolCategory.swift */; };
+		001100000000004 /* ToolDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000004 /* ToolDefinition.swift */; };
+		001100000000005 /* DetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000005 /* DetectionResult.swift */; };
+		001100000000006 /* HistoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000006 /* HistoryEntry.swift */; };
+		001100000000007 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000007 /* HistoryStore.swift */; };
+		001100000000008 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000008 /* PreferencesStore.swift */; };
+		001100000000009 /* ToolRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000009 /* ToolRegistry.swift */; };
+		00110000000000A /* ClipboardDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000000A /* ClipboardDetector.swift */; };
+		00110000000000B /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000000B /* HotkeyManager.swift */; };
+		00110000000000C /* View+CopyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000000C /* View+CopyButton.swift */; };
+		00110000000000D /* MenuBarPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000000D /* MenuBarPopoverView.swift */; };
+		00110000000000E /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000000E /* MainWindowView.swift */; };
+		00110000000000F /* CopyButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000000F /* CopyButtonView.swift */; };
+		001100000000010 /* DetectionBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000010 /* DetectionBannerView.swift */; };
+		001100000000011 /* InlineErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000011 /* InlineErrorView.swift */; };
+		001100000000012 /* SyntaxEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000012 /* SyntaxEditorView.swift */; };
+		001100000000013 /* CodeDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000013 /* CodeDisplayView.swift */; };
+		001100000000014 /* JSONTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000014 /* JSONTransformer.swift */; };
+		001100000000015 /* JSONFormatterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000015 /* JSONFormatterViewModel.swift */; };
+		001100000000016 /* JSONFormatterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000016 /* JSONFormatterView.swift */; };
+		001100000000017 /* JSONFormatterDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000017 /* JSONFormatterDefinition.swift */; };
+		001100000000018 /* Base64Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000018 /* Base64Definition.swift */; };
+		001100000000019 /* URLEncoderDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000019 /* URLEncoderDefinition.swift */; };
+		00110000000001A /* JWTDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000001A /* JWTDefinition.swift */; };
+		00110000000001B /* TimestampDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000001B /* TimestampDefinition.swift */; };
+		00110000000001C /* HashDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000001C /* HashDefinition.swift */; };
+		00110000000001D /* UUIDDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000001D /* UUIDDefinition.swift */; };
+		001100000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 001200000000020 /* Assets.xcassets */; };
+		001100000000030 /* JSONTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000030 /* JSONTransformerTests.swift */; };
+		001100000000040 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001200000000040 /* libz.tbd */; };
+		001100000000050 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000001 /* GRDB */; };
+		001100000000051 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000002 /* KeyboardShortcuts */; };
+		001100000000052 /* MenuBarExtraAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000003 /* MenuBarExtraAccess */; };
+		001100000000053 /* HighlightSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000004 /* HighlightSwift */; };
+		001100000000060 /* GRDB in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = 001300000000011 /* GRDB */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		001200000000001 /* LatheApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatheApp.swift; sourceTree = "<group>"; };
+		001200000000002 /* WindowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCoordinator.swift; sourceTree = "<group>"; };
+		001200000000003 /* ToolCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCategory.swift; sourceTree = "<group>"; };
+		001200000000004 /* ToolDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolDefinition.swift; sourceTree = "<group>"; };
+		001200000000005 /* DetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionResult.swift; sourceTree = "<group>"; };
+		001200000000006 /* HistoryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryEntry.swift; sourceTree = "<group>"; };
+		001200000000007 /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
+		001200000000008 /* PreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStore.swift; sourceTree = "<group>"; };
+		001200000000009 /* ToolRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolRegistry.swift; sourceTree = "<group>"; };
+		00120000000000A /* ClipboardDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardDetector.swift; sourceTree = "<group>"; };
+		00120000000000B /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		00120000000000C /* View+CopyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+CopyButton.swift"; sourceTree = "<group>"; };
+		00120000000000D /* MenuBarPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarPopoverView.swift; sourceTree = "<group>"; };
+		00120000000000E /* MainWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowView.swift; sourceTree = "<group>"; };
+		00120000000000F /* CopyButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyButtonView.swift; sourceTree = "<group>"; };
+		001200000000010 /* DetectionBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionBannerView.swift; sourceTree = "<group>"; };
+		001200000000011 /* InlineErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineErrorView.swift; sourceTree = "<group>"; };
+		001200000000012 /* SyntaxEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxEditorView.swift; sourceTree = "<group>"; };
+		001200000000013 /* CodeDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeDisplayView.swift; sourceTree = "<group>"; };
+		001200000000014 /* JSONTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTransformer.swift; sourceTree = "<group>"; };
+		001200000000015 /* JSONFormatterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFormatterViewModel.swift; sourceTree = "<group>"; };
+		001200000000016 /* JSONFormatterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFormatterView.swift; sourceTree = "<group>"; };
+		001200000000017 /* JSONFormatterDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFormatterDefinition.swift; sourceTree = "<group>"; };
+		001200000000018 /* Base64Definition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64Definition.swift; sourceTree = "<group>"; };
+		001200000000019 /* URLEncoderDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLEncoderDefinition.swift; sourceTree = "<group>"; };
+		00120000000001A /* JWTDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDefinition.swift; sourceTree = "<group>"; };
+		00120000000001B /* TimestampDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampDefinition.swift; sourceTree = "<group>"; };
+		00120000000001C /* HashDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashDefinition.swift; sourceTree = "<group>"; };
+		00120000000001D /* UUIDDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUIDDefinition.swift; sourceTree = "<group>"; };
+		001200000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		001200000000021 /* Lathe-debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Lathe-debug.entitlements"; sourceTree = "<group>"; };
+		001200000000022 /* Lathe-release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Lathe-release.entitlements"; sourceTree = "<group>"; };
+		001200000000030 /* JSONTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTransformerTests.swift; sourceTree = "<group>"; };
+		001200000000040 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		001200000000090 /* Lathe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lathe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		001200000000091 /* LatheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LatheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		001400000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				001100000000040 /* libz.tbd in Frameworks */,
+				001100000000050 /* GRDB in Frameworks */,
+				001100000000051 /* KeyboardShortcuts in Frameworks */,
+				001100000000052 /* MenuBarExtraAccess in Frameworks */,
+				001100000000053 /* HighlightSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		001400000000002 /* Frameworks (Tests) */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				001100000000060 /* GRDB in Frameworks (Tests) */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		001500000000000 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000090 /* Lathe.app */,
+				001200000000091 /* LatheTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		001500000000001 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000040 /* libz.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		001500000000002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000001 /* LatheApp.swift */,
+				001200000000002 /* WindowCoordinator.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		001500000000003 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				001500000000004 /* Models */,
+				001500000000005 /* Services */,
+				001500000000006 /* Extensions */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		001500000000004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000003 /* ToolCategory.swift */,
+				001200000000004 /* ToolDefinition.swift */,
+				001200000000005 /* DetectionResult.swift */,
+				001200000000006 /* HistoryEntry.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		001500000000005 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000007 /* HistoryStore.swift */,
+				001200000000008 /* PreferencesStore.swift */,
+				001200000000009 /* ToolRegistry.swift */,
+				00120000000000A /* ClipboardDetector.swift */,
+				00120000000000B /* HotkeyManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		001500000000006 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				00120000000000C /* View+CopyButton.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		001500000000007 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				001500000000008 /* JSONFormatter */,
+				001500000000009 /* Base64 */,
+				00150000000000A /* URLEncoder */,
+				00150000000000B /* JWT */,
+				00150000000000C /* Timestamp */,
+				00150000000000D /* Hash */,
+				00150000000000E /* UUID */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		001500000000008 /* JSONFormatter */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000014 /* JSONTransformer.swift */,
+				001200000000015 /* JSONFormatterViewModel.swift */,
+				001200000000016 /* JSONFormatterView.swift */,
+				001200000000017 /* JSONFormatterDefinition.swift */,
+			);
+			path = JSONFormatter;
+			sourceTree = "<group>";
+		};
+		001500000000009 /* Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000018 /* Base64Definition.swift */,
+			);
+			path = Base64;
+			sourceTree = "<group>";
+		};
+		00150000000000A /* URLEncoder */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000019 /* URLEncoderDefinition.swift */,
+			);
+			path = URLEncoder;
+			sourceTree = "<group>";
+		};
+		00150000000000B /* JWT */ = {
+			isa = PBXGroup;
+			children = (
+				00120000000001A /* JWTDefinition.swift */,
+			);
+			path = JWT;
+			sourceTree = "<group>";
+		};
+		00150000000000C /* Timestamp */ = {
+			isa = PBXGroup;
+			children = (
+				00120000000001B /* TimestampDefinition.swift */,
+			);
+			path = Timestamp;
+			sourceTree = "<group>";
+		};
+		00150000000000D /* Hash */ = {
+			isa = PBXGroup;
+			children = (
+				00120000000001C /* HashDefinition.swift */,
+			);
+			path = Hash;
+			sourceTree = "<group>";
+		};
+		00150000000000E /* UUID */ = {
+			isa = PBXGroup;
+			children = (
+				00120000000001D /* UUIDDefinition.swift */,
+			);
+			path = UUID;
+			sourceTree = "<group>";
+		};
+		00150000000000F /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				00120000000000D /* MenuBarPopoverView.swift */,
+				00120000000000E /* MainWindowView.swift */,
+				001500000000010 /* Components */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		001500000000010 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				00120000000000F /* CopyButtonView.swift */,
+				001200000000010 /* DetectionBannerView.swift */,
+				001200000000011 /* InlineErrorView.swift */,
+				001200000000012 /* SyntaxEditorView.swift */,
+				001200000000013 /* CodeDisplayView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		001500000000011 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000020 /* Assets.xcassets */,
+				001200000000021 /* Lathe-debug.entitlements */,
+				001200000000022 /* Lathe-release.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		001500000000012 /* LatheTests */ = {
+			isa = PBXGroup;
+			children = (
+				001200000000030 /* JSONTransformerTests.swift */,
+			);
+			path = LatheTests;
+			sourceTree = "<group>";
+		};
+		001500000000099 = {
+			isa = PBXGroup;
+			children = (
+				001500000000002 /* App */,
+				001500000000003 /* Core */,
+				001500000000007 /* Tools */,
+				00150000000000F /* UI */,
+				001500000000011 /* Resources */,
+				001500000000012 /* LatheTests */,
+				001500000000001 /* Frameworks */,
+				001500000000000 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		001600000000001 /* Lathe */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 001700000000001 /* Build configuration list for PBXNativeTarget "Lathe" */;
+			buildPhases = (
+				001400000000001 /* Frameworks */,
+				001800000000001 /* Sources */,
+				001800000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Lathe;
+			packageProductDependencies = (
+				001300000000001 /* GRDB */,
+				001300000000002 /* KeyboardShortcuts */,
+				001300000000003 /* MenuBarExtraAccess */,
+				001300000000004 /* HighlightSwift */,
+			);
+			productName = Lathe;
+			productReference = 001200000000090 /* Lathe.app */;
+			productType = "com.apple.product-type.application";
+		};
+		001600000000002 /* LatheTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 001700000000002 /* Build configuration list for PBXNativeTarget "LatheTests" */;
+			buildPhases = (
+				001400000000002 /* Frameworks (Tests) */,
+				001800000000002 /* Sources (Tests) */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				001900000000001 /* PBXTargetDependency */,
+			);
+			name = LatheTests;
+			packageProductDependencies = (
+				001300000000011 /* GRDB */,
+			);
+			productName = LatheTests;
+			productReference = 001200000000091 /* LatheTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		001A00000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					001600000000001 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					001600000000002 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 001600000000001;
+					};
+				};
+			};
+			buildConfigurationList = 001700000000000 /* Build configuration list for PBXProject "Lathe" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 001500000000099;
+			packageReferences = (
+				001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				001B00000000002 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+				001B00000000003 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
+				001B00000000004 /* XCRemoteSwiftPackageReference "HighlightSwift" */,
+			);
+			productRefGroup = 001500000000000 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				001600000000001 /* Lathe */,
+				001600000000002 /* LatheTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		001800000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				001100000000020 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		001800000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				001100000000001 /* LatheApp.swift in Sources */,
+				001100000000002 /* WindowCoordinator.swift in Sources */,
+				001100000000003 /* ToolCategory.swift in Sources */,
+				001100000000004 /* ToolDefinition.swift in Sources */,
+				001100000000005 /* DetectionResult.swift in Sources */,
+				001100000000006 /* HistoryEntry.swift in Sources */,
+				001100000000007 /* HistoryStore.swift in Sources */,
+				001100000000008 /* PreferencesStore.swift in Sources */,
+				001100000000009 /* ToolRegistry.swift in Sources */,
+				00110000000000A /* ClipboardDetector.swift in Sources */,
+				00110000000000B /* HotkeyManager.swift in Sources */,
+				00110000000000C /* View+CopyButton.swift in Sources */,
+				00110000000000D /* MenuBarPopoverView.swift in Sources */,
+				00110000000000E /* MainWindowView.swift in Sources */,
+				00110000000000F /* CopyButtonView.swift in Sources */,
+				001100000000010 /* DetectionBannerView.swift in Sources */,
+				001100000000011 /* InlineErrorView.swift in Sources */,
+				001100000000012 /* SyntaxEditorView.swift in Sources */,
+				001100000000013 /* CodeDisplayView.swift in Sources */,
+				001100000000014 /* JSONTransformer.swift in Sources */,
+				001100000000015 /* JSONFormatterViewModel.swift in Sources */,
+				001100000000016 /* JSONFormatterView.swift in Sources */,
+				001100000000017 /* JSONFormatterDefinition.swift in Sources */,
+				001100000000018 /* Base64Definition.swift in Sources */,
+				001100000000019 /* URLEncoderDefinition.swift in Sources */,
+				00110000000001A /* JWTDefinition.swift in Sources */,
+				00110000000001B /* TimestampDefinition.swift in Sources */,
+				00110000000001C /* HashDefinition.swift in Sources */,
+				00110000000001D /* UUIDDefinition.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		001800000000002 /* Sources (Tests) */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				001100000000030 /* JSONTransformerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		001900000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 001600000000001 /* Lathe */;
+			targetProxy = 001900000000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		001900000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 001A00000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 001600000000001;
+			remoteInfo = Lathe;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin XCBuildConfiguration section */
+		001700000000010 /* Debug (Project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		001700000000011 /* Release (Project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		001700000000020 /* Debug (Lathe) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/Lathe-debug.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Lathe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSBackgroundOnly = 0;
+				INFOPLIST_KEY_LSUIElement = 1;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lathe.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+			};
+			name = Debug;
+		};
+		001700000000021 /* Release (Lathe) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/Lathe-release.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Lathe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSBackgroundOnly = 0;
+				INFOPLIST_KEY_LSUIElement = 1;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lathe.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+			};
+			name = Release;
+		};
+		001700000000030 /* Debug (LatheTests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lathe.app.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lathe.app/Contents/MacOS/Lathe";
+			};
+			name = Debug;
+		};
+		001700000000031 /* Release (LatheTests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lathe.app.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lathe.app/Contents/MacOS/Lathe";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		001700000000000 /* Build configuration list for PBXProject "Lathe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				001700000000010 /* Debug */,
+				001700000000011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		001700000000001 /* Build configuration list for PBXNativeTarget "Lathe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				001700000000020 /* Debug */,
+				001700000000021 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		001700000000002 /* Build configuration list for PBXNativeTarget "LatheTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				001700000000030 /* Debug */,
+				001700000000031 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = "7.11.1";
+			};
+		};
+		001B00000000002 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = exactVersion;
+				version = "3.0.1";
+			};
+		};
+		001B00000000003 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/orchetect/MenuBarExtraAccess";
+			requirement = {
+				kind = exactVersion;
+				version = "1.3.0";
+			};
+		};
+		001B00000000004 /* XCRemoteSwiftPackageReference "HighlightSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/appstefan/HighlightSwift";
+			requirement = {
+				kind = exactVersion;
+				version = "1.1.0";
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		001300000000001 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		001300000000002 /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 001B00000000002 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
+		001300000000003 /* MenuBarExtraAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 001B00000000003 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */;
+			productName = MenuBarExtraAccess;
+		};
+		001300000000004 /* HighlightSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 001B00000000004 /* XCRemoteSwiftPackageReference "HighlightSwift" */;
+			productName = HighlightSwift;
+		};
+		001300000000011 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+	};
+	rootObject = 001A00000000001 /* Project object */;
+}

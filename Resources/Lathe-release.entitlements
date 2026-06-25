@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- SECURITY (T-01-EP): get-task-allow is ABSENT from release. -->
+    <!-- Hardened Runtime is enabled via Build Settings → Enable Hardened Runtime = YES. -->
+    <!-- This file must NEVER contain com.apple.security.get-task-allow. -->
+</dict>
+</plist>

@@ -52,6 +52,12 @@
 		001100000000052 /* MenuBarExtraAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000003 /* MenuBarExtraAccess */; };
 		001100000000053 /* HighlightSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000004 /* HighlightSwift */; };
 		001100000000060 /* GRDB in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = 001300000000011 /* GRDB */; };
+		001100000000061 /* Data+Base64URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000041 /* Data+Base64URL.swift */; };
+		001100000000062 /* JWTTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000042 /* JWTTransformer.swift */; };
+		001100000000063 /* JWTViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000043 /* JWTViewModel.swift */; };
+		001100000000064 /* JWTView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000044 /* JWTView.swift */; };
+		001100000000065 /* WarningBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000045 /* WarningBannerView.swift */; };
+		001100000000066 /* JWTTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000046 /* JWTTransformerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,6 +103,12 @@
 		001200000000037 /* URLViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLViewModel.swift; sourceTree = "<group>"; };
 		001200000000038 /* URLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLView.swift; sourceTree = "<group>"; };
 		001200000000040 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		001200000000041 /* Data+Base64URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Base64URL.swift"; sourceTree = "<group>"; };
+		001200000000042 /* JWTTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTTransformer.swift; sourceTree = "<group>"; };
+		001200000000043 /* JWTViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTViewModel.swift; sourceTree = "<group>"; };
+		001200000000044 /* JWTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTView.swift; sourceTree = "<group>"; };
+		001200000000045 /* WarningBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningBannerView.swift; sourceTree = "<group>"; };
+		001200000000046 /* JWTTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTTransformerTests.swift; sourceTree = "<group>"; };
 		001200000000090 /* Lathe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lathe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		001200000000091 /* LatheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LatheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -188,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				00120000000000C /* View+CopyButton.swift */,
+				001200000000041 /* Data+Base64URL.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -242,6 +255,9 @@
 		00150000000000B /* JWT */ = {
 			isa = PBXGroup;
 			children = (
+				001200000000042 /* JWTTransformer.swift */,
+				001200000000043 /* JWTViewModel.swift */,
+				001200000000044 /* JWTView.swift */,
 				00120000000001A /* JWTDefinition.swift */,
 			);
 			path = JWT;
@@ -289,6 +305,7 @@
 				001200000000011 /* InlineErrorView.swift */,
 				001200000000012 /* SyntaxEditorView.swift */,
 				001200000000013 /* CodeDisplayView.swift */,
+				001200000000045 /* WarningBannerView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -309,6 +326,7 @@
 				001200000000030 /* JSONTransformerTests.swift */,
 				001200000000031 /* Base64TransformerTests.swift */,
 				001200000000032 /* URLTransformerTests.swift */,
+				001200000000046 /* JWTTransformerTests.swift */,
 			);
 			path = LatheTests;
 			sourceTree = "<group>";
@@ -465,6 +483,11 @@
 				001100000000038 /* URLView.swift in Sources */,
 				001100000000019 /* URLEncoderDefinition.swift in Sources */,
 				00110000000001A /* JWTDefinition.swift in Sources */,
+				001100000000061 /* Data+Base64URL.swift in Sources */,
+				001100000000062 /* JWTTransformer.swift in Sources */,
+				001100000000063 /* JWTViewModel.swift in Sources */,
+				001100000000064 /* JWTView.swift in Sources */,
+				001100000000065 /* WarningBannerView.swift in Sources */,
 				00110000000001B /* TimestampDefinition.swift in Sources */,
 				00110000000001C /* HashDefinition.swift in Sources */,
 				00110000000001D /* UUIDDefinition.swift in Sources */,
@@ -478,6 +501,7 @@
 				001100000000030 /* JSONTransformerTests.swift in Sources */,
 				001100000000031 /* Base64TransformerTests.swift in Sources */,
 				001100000000032 /* URLTransformerTests.swift in Sources */,
+				001100000000066 /* JWTTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

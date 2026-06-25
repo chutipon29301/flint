@@ -39,6 +39,13 @@ struct PreferencesView: View {
         .environment(historyStore)  // CR-01: propagate to HistoryPreferencesTab
         .frame(minWidth: 460, minHeight: 340)
         .navigationTitle("Preferences")
+        .onDisappear {
+            // WR-02: restore .accessory activation policy when Preferences closes.
+            // WindowCoordinator.openPreferences() increments windowCount; without this hook,
+            // closing Preferences without ever opening the workspace window leaves windowCount
+            // at 1 and the app permanently visible in the Dock.
+            WindowCoordinator.shared.windowWillClose()
+        }
     }
 }
 

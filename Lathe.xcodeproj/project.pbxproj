@@ -68,6 +68,11 @@
 		001100000000084 /* HashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000084 /* HashView.swift */; };
 		001100000000085 /* ProgressHashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000085 /* ProgressHashView.swift */; };
 		001100000000086 /* HashTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000086 /* HashTransformerTests.swift */; };
+		00110000000009A /* UUIDTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000009A /* UUIDTransformer.swift */; };
+		00110000000009B /* UUIDViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000009B /* UUIDViewModel.swift */; };
+		00110000000009C /* UUIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000009C /* UUIDView.swift */; };
+		00110000000009D /* UUIDTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000009D /* UUIDTransformerTests.swift */; };
+		00110000000009E /* UUIDv7 in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000005 /* UUIDv7 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -129,6 +134,10 @@
 		001200000000084 /* HashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashView.swift; sourceTree = "<group>"; };
 		001200000000085 /* ProgressHashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHashView.swift; sourceTree = "<group>"; };
 		001200000000086 /* HashTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashTransformerTests.swift; sourceTree = "<group>"; };
+		0012000000009A /* UUIDTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUIDTransformer.swift; sourceTree = "<group>"; };
+		0012000000009B /* UUIDViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUIDViewModel.swift; sourceTree = "<group>"; };
+		0012000000009C /* UUIDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUIDView.swift; sourceTree = "<group>"; };
+		0012000000009D /* UUIDTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUIDTransformerTests.swift; sourceTree = "<group>"; };
 		001200000000090 /* Lathe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lathe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		001200000000091 /* LatheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LatheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -143,6 +152,7 @@
 				001100000000051 /* KeyboardShortcuts in Frameworks */,
 				001100000000052 /* MenuBarExtraAccess in Frameworks */,
 				001100000000053 /* HighlightSwift in Frameworks */,
+				00110000000009E /* UUIDv7 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +319,9 @@
 		00150000000000E /* UUID */ = {
 			isa = PBXGroup;
 			children = (
+				0012000000009A /* UUIDTransformer.swift */,
+				0012000000009B /* UUIDViewModel.swift */,
+				0012000000009C /* UUIDView.swift */,
 				00120000000001D /* UUIDDefinition.swift */,
 			);
 			path = UUID;
@@ -357,6 +370,7 @@
 				001200000000046 /* JWTTransformerTests.swift */,
 				001200000000074 /* TimestampTransformerTests.swift */,
 				001200000000086 /* HashTransformerTests.swift */,
+				0012000000009D /* UUIDTransformerTests.swift */,
 			);
 			path = LatheTests;
 			sourceTree = "<group>";
@@ -396,6 +410,7 @@
 				001300000000002 /* KeyboardShortcuts */,
 				001300000000003 /* MenuBarExtraAccess */,
 				001300000000004 /* HighlightSwift */,
+				001300000000005 /* UUIDv7 */,
 			);
 			productName = Lathe;
 			productReference = 001200000000090 /* Lathe.app */;
@@ -454,6 +469,7 @@
 				001B00000000002 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				001B00000000003 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
 				001B00000000004 /* XCRemoteSwiftPackageReference "HighlightSwift" */,
+				001B00000000005 /* XCRemoteSwiftPackageReference "UUIDv7" */,
 			);
 			productRefGroup = 001500000000000 /* Products */;
 			projectDirPath = "";
@@ -528,6 +544,9 @@
 				001100000000084 /* HashView.swift in Sources */,
 				001100000000085 /* ProgressHashView.swift in Sources */,
 				00110000000001C /* HashDefinition.swift in Sources */,
+				00110000000009A /* UUIDTransformer.swift in Sources */,
+				00110000000009B /* UUIDViewModel.swift in Sources */,
+				00110000000009C /* UUIDView.swift in Sources */,
 				00110000000001D /* UUIDDefinition.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -542,6 +561,7 @@
 				001100000000066 /* JWTTransformerTests.swift in Sources */,
 				001100000000074 /* TimestampTransformerTests.swift in Sources */,
 				001100000000086 /* HashTransformerTests.swift in Sources */,
+				00110000000009D /* UUIDTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,6 +866,14 @@
 				version = "1.1.0";
 			};
 		};
+		001B00000000005 /* XCRemoteSwiftPackageReference "UUIDv7" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/leodabus/UUIDv7";
+			requirement = {
+				kind = revision;
+				revision = "186b273ed1374fab5708633344e10b70af115929";
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -873,6 +901,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		001300000000005 /* UUIDv7 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 001B00000000005 /* XCRemoteSwiftPackageReference "UUIDv7" */;
+			productName = UUIDv7;
 		};
 /* End XCSwiftPackageProductDependency section */
 

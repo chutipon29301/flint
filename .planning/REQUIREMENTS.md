@@ -54,12 +54,12 @@
 
 ### Core Tools — JWT (JWT)
 
-- [ ] **JWT-01**: User can decode a JWT into header, payload, and signature, correctly handling base64url (no corruption on `-`/`_`)
-- [ ] **JWT-02**: Header and payload render as pretty-printed JSON
-- [ ] **JWT-03**: Tool shows expiry (`exp`) as a human-readable date plus countdown ("Expires in 2h 14m" / "EXPIRED 3 days ago"), timezone-correct
-- [ ] **JWT-04**: User can verify the signature with a supplied secret (HMAC-SHA256/384/512); the secret is never written to history
-- [ ] **JWT-05**: Claims table separates standard claims (iss/sub/aud/exp/iat/nbf) from custom claims and shows the algorithm
-- [ ] **JWT-06**: Tool shows warning banners for expired token, `alg: none`, and missing standard claims
+- [x] **JWT-01**: User can decode a JWT into header, payload, and signature, correctly handling base64url (no corruption on `-`/`_`)
+- [x] **JWT-02**: Header and payload render as pretty-printed JSON
+- [x] **JWT-03**: Tool shows expiry (`exp`) as a human-readable date plus countdown ("Expires in 2h 14m" / "EXPIRED 3 days ago"), timezone-correct
+- [x] **JWT-04**: User can verify the signature with a supplied secret (HMAC-SHA256/384/512); the secret is never written to history
+- [x] **JWT-05**: Claims table separates standard claims (iss/sub/aud/exp/iat/nbf) from custom claims and shows the algorithm
+- [x] **JWT-06**: Tool shows warning banners for expired token, `alg: none`, and missing standard claims
 
 ### Core Tools — Timestamp (TS)
 
@@ -196,12 +196,12 @@
 | URL-02 | Phase 1 | Complete |
 | URL-03 | Phase 1 | Complete |
 | URL-04 | Phase 1 | Complete |
-| JWT-01 | Phase 1 | Pending |
-| JWT-02 | Phase 1 | Pending |
-| JWT-03 | Phase 1 | Pending |
-| JWT-04 | Phase 1 | Pending |
-| JWT-05 | Phase 1 | Pending |
-| JWT-06 | Phase 1 | Pending |
+| JWT-01 | Phase 1 | Complete |
+| JWT-02 | Phase 1 | Complete |
+| JWT-03 | Phase 1 | Complete |
+| JWT-04 | Phase 1 | Complete |
+| JWT-05 | Phase 1 | Complete |
+| JWT-06 | Phase 1 | Complete |
 | TS-01 | Phase 1 | Pending |
 | TS-02 | Phase 1 | Pending |
 | TS-03 | Phase 1 | Pending |

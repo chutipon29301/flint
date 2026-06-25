@@ -39,18 +39,18 @@
 
 ### Core Tools — Base64 (B64)
 
-- [ ] **B64-01**: User can encode text to Base64 and decode Base64 to text
-- [ ] **B64-02**: User can switch to the URL-safe Base64 variant (`-`/`_`), with padding handled correctly
-- [ ] **B64-03**: Tool auto-detects encode vs decode direction
-- [ ] **B64-04**: User can encode a dropped file to Base64 and decode Base64 to a saved file
-- [ ] **B64-05**: Tool shows decoded byte length and character count
+- [x] **B64-01**: User can encode text to Base64 and decode Base64 to text
+- [x] **B64-02**: User can switch to the URL-safe Base64 variant (`-`/`_`), with padding handled correctly
+- [x] **B64-03**: Tool auto-detects encode vs decode direction
+- [x] **B64-04**: User can encode a dropped file to Base64 and decode Base64 to a saved file
+- [x] **B64-05**: Tool shows decoded byte length and character count
 
 ### Core Tools — URL (URL)
 
-- [ ] **URL-01**: User can percent-encode text for URL query params and decode percent-encoded strings
-- [ ] **URL-02**: User can parse a full URL into scheme, host, path, query params, and fragment
-- [ ] **URL-03**: User can edit query params in an add/delete key-value table and rebuild the URL
-- [ ] **URL-04**: User can copy individual URL components
+- [x] **URL-01**: User can percent-encode text for URL query params and decode percent-encoded strings
+- [x] **URL-02**: User can parse a full URL into scheme, host, path, query params, and fragment
+- [x] **URL-03**: User can edit query params in an add/delete key-value table and rebuild the URL
+- [x] **URL-04**: User can copy individual URL components
 
 ### Core Tools — JWT (JWT)
 
@@ -187,15 +187,15 @@
 | JSON-04 | Phase 1 | Complete |
 | JSON-05 | Phase 1 | Complete |
 | JSON-06 | Phase 1 | Complete |
-| B64-01 | Phase 1 | Pending |
-| B64-02 | Phase 1 | Pending |
-| B64-03 | Phase 1 | Pending |
-| B64-04 | Phase 1 | Pending |
-| B64-05 | Phase 1 | Pending |
-| URL-01 | Phase 1 | Pending |
-| URL-02 | Phase 1 | Pending |
-| URL-03 | Phase 1 | Pending |
-| URL-04 | Phase 1 | Pending |
+| B64-01 | Phase 1 | Complete |
+| B64-02 | Phase 1 | Complete |
+| B64-03 | Phase 1 | Complete |
+| B64-04 | Phase 1 | Complete |
+| B64-05 | Phase 1 | Complete |
+| URL-01 | Phase 1 | Complete |
+| URL-02 | Phase 1 | Complete |
+| URL-03 | Phase 1 | Complete |
+| URL-04 | Phase 1 | Complete |
 | JWT-01 | Phase 1 | Pending |
 | JWT-02 | Phase 1 | Pending |
 | JWT-03 | Phase 1 | Pending |

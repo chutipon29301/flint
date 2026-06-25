@@ -1,6 +1,10 @@
 // Tools/URLEncoder/URLEncoderDefinition.swift
-// STUB — Wave-2 plan 01-03 overwrites this file with the real URL tool.
-// DO NOT add implementation here. This stub allows ToolRegistry to compile.
+// Real ToolDefinition for URL Encoder/Decoder — overwrites the Wave-1 stub.
+// Registers BOTH detection predicates from the chain:
+//   priority 4: percent-encoded pattern (%XX)
+//   priority 5: URL scheme (http/https/ftp/etc.)
+// Same make() signature as the stub — ToolRegistry already references it, no registry edit needed.
+// Covers: URL-01..04, D-12
 
 import SwiftUI
 
@@ -10,28 +14,42 @@ enum URLEncoderDefinition {
             id: "url-encoder",
             name: "URL Encoder/Decoder",
             category: .encoding,
-            keywords: ["url", "percent", "encode", "decode", "query", "uri"],
+            keywords: ["url", "percent", "encode", "decode", "query", "uri", "parse", "component", "scheme"],
             sfSymbol: "link",
-            detectionPredicate: { input in
+            detectionPredicate: { @Sendable input in
                 let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
-                // URL-encoded: contains %XX pattern
+                guard !trimmed.isEmpty else { return nil }
+
+                // Priority 4: percent-encoded content — contains %XX pattern
                 let hasPercentEncoding = trimmed.range(
                     of: #"%[0-9A-Fa-f]{2}"#,
                     options: .regularExpression
                 ) != nil
-                // URL parser: valid http/https URL
-                let isURL = URL(string: trimmed)?.scheme.map { ["http", "https"].contains($0) } ?? false
-                guard hasPercentEncoding || isURL else { return nil }
-                return DetectionResult(
-                    toolId: "url-encoder",
-                    toolName: "URL Encoder/Decoder",
-                    sample: String(trimmed.prefix(40))
-                )
+
+                if hasPercentEncoding {
+                    return DetectionResult(
+                        toolId: "url-encoder",
+                        toolName: "URL Encoder/Decoder",
+                        sample: String(trimmed.prefix(40))
+                    )
+                }
+
+                // Priority 5: full URL with recognized scheme
+                if let components = URLComponents(string: trimmed),
+                   let scheme = components.scheme,
+                   !scheme.isEmpty {
+                    // Accept any schemed URL: http, https, ftp, mailto, custom, etc.
+                    return DetectionResult(
+                        toolId: "url-encoder",
+                        toolName: "URL Encoder/Decoder",
+                        sample: String(trimmed.prefix(40))
+                    )
+                }
+
+                return nil
             },
-            makeView: {
-                AnyView(Text("URL Encoder/Decoder — Coming Soon")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity))
+            makeView: { @MainActor in
+                AnyView(URLView())
             }
         )
     }

@@ -38,6 +38,14 @@
 		00110000000001D /* UUIDDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000001D /* UUIDDefinition.swift */; };
 		001100000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 001200000000020 /* Assets.xcassets */; };
 		001100000000030 /* JSONTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000030 /* JSONTransformerTests.swift */; };
+		001100000000031 /* Base64TransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000031 /* Base64TransformerTests.swift */; };
+		001100000000032 /* URLTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000032 /* URLTransformerTests.swift */; };
+		001100000000033 /* Base64Transformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000033 /* Base64Transformer.swift */; };
+		001100000000034 /* Base64ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000034 /* Base64ViewModel.swift */; };
+		001100000000035 /* Base64View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000035 /* Base64View.swift */; };
+		001100000000036 /* URLTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000036 /* URLTransformer.swift */; };
+		001100000000037 /* URLViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000037 /* URLViewModel.swift */; };
+		001100000000038 /* URLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000038 /* URLView.swift */; };
 		001100000000040 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001200000000040 /* libz.tbd */; };
 		001100000000050 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000001 /* GRDB */; };
 		001100000000051 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000002 /* KeyboardShortcuts */; };
@@ -80,6 +88,14 @@
 		001200000000021 /* Lathe-debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Lathe-debug.entitlements"; sourceTree = "<group>"; };
 		001200000000022 /* Lathe-release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Lathe-release.entitlements"; sourceTree = "<group>"; };
 		001200000000030 /* JSONTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTransformerTests.swift; sourceTree = "<group>"; };
+		001200000000031 /* Base64TransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64TransformerTests.swift; sourceTree = "<group>"; };
+		001200000000032 /* URLTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTransformerTests.swift; sourceTree = "<group>"; };
+		001200000000033 /* Base64Transformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64Transformer.swift; sourceTree = "<group>"; };
+		001200000000034 /* Base64ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64ViewModel.swift; sourceTree = "<group>"; };
+		001200000000035 /* Base64View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64View.swift; sourceTree = "<group>"; };
+		001200000000036 /* URLTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTransformer.swift; sourceTree = "<group>"; };
+		001200000000037 /* URLViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLViewModel.swift; sourceTree = "<group>"; };
+		001200000000038 /* URLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLView.swift; sourceTree = "<group>"; };
 		001200000000040 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		001200000000090 /* Lathe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lathe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		001200000000091 /* LatheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LatheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -204,6 +220,9 @@
 		001500000000009 /* Base64 */ = {
 			isa = PBXGroup;
 			children = (
+				001200000000033 /* Base64Transformer.swift */,
+				001200000000034 /* Base64ViewModel.swift */,
+				001200000000035 /* Base64View.swift */,
 				001200000000018 /* Base64Definition.swift */,
 			);
 			path = Base64;
@@ -212,6 +231,9 @@
 		00150000000000A /* URLEncoder */ = {
 			isa = PBXGroup;
 			children = (
+				001200000000036 /* URLTransformer.swift */,
+				001200000000037 /* URLViewModel.swift */,
+				001200000000038 /* URLView.swift */,
 				001200000000019 /* URLEncoderDefinition.swift */,
 			);
 			path = URLEncoder;
@@ -285,6 +307,8 @@
 			isa = PBXGroup;
 			children = (
 				001200000000030 /* JSONTransformerTests.swift */,
+				001200000000031 /* Base64TransformerTests.swift */,
+				001200000000032 /* URLTransformerTests.swift */,
 			);
 			path = LatheTests;
 			sourceTree = "<group>";
@@ -432,7 +456,13 @@
 				001100000000015 /* JSONFormatterViewModel.swift in Sources */,
 				001100000000016 /* JSONFormatterView.swift in Sources */,
 				001100000000017 /* JSONFormatterDefinition.swift in Sources */,
+				001100000000033 /* Base64Transformer.swift in Sources */,
+				001100000000034 /* Base64ViewModel.swift in Sources */,
+				001100000000035 /* Base64View.swift in Sources */,
 				001100000000018 /* Base64Definition.swift in Sources */,
+				001100000000036 /* URLTransformer.swift in Sources */,
+				001100000000037 /* URLViewModel.swift in Sources */,
+				001100000000038 /* URLView.swift in Sources */,
 				001100000000019 /* URLEncoderDefinition.swift in Sources */,
 				00110000000001A /* JWTDefinition.swift in Sources */,
 				00110000000001B /* TimestampDefinition.swift in Sources */,
@@ -446,6 +476,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				001100000000030 /* JSONTransformerTests.swift in Sources */,
+				001100000000031 /* Base64TransformerTests.swift in Sources */,
+				001100000000032 /* URLTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

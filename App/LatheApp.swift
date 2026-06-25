@@ -57,6 +57,7 @@ struct LatheApp: App {
             PreferencesView()
                 .environment(prefs)
                 .environment(hotkeyManager)
+                .environment(historyStore)  // CR-01: needed by HistoryPreferencesTab.clearUnpinned()
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14
         }
     }

@@ -10,6 +10,7 @@ import KeyboardShortcuts
 struct PreferencesView: View {
     @Environment(PreferencesStore.self) private var prefs
     @Environment(HotkeyManager.self) private var hotkeyManager
+    @Environment(HistoryStore.self) private var historyStore
 
     var body: some View {
         TabView {
@@ -35,6 +36,7 @@ struct PreferencesView: View {
         }
         .environment(prefs)
         .environment(hotkeyManager)
+        .environment(historyStore)  // CR-01: propagate to HistoryPreferencesTab
         .frame(minWidth: 460, minHeight: 340)
         .navigationTitle("Preferences")
     }
@@ -168,6 +170,7 @@ private struct AppearancePreferencesTab: View {
 
 private struct HistoryPreferencesTab: View {
     @Environment(PreferencesStore.self) private var prefs
+    @Environment(HistoryStore.self) private var historyStore
     @State private var showClearConfirmation = false
 
     var body: some View {
@@ -225,10 +228,8 @@ private struct HistoryPreferencesTab: View {
                     titleVisibility: .visible
                 ) {
                     Button("Clear History", role: .destructive) {
-                        NotificationCenter.default.post(
-                            name: Notification.Name("lathe.clearAllHistory"),
-                            object: nil
-                        )
+                        // CR-01: call directly — no notification needed; avoids dangling observer risk
+                        historyStore.clearUnpinned()
                     }
                     Button("Cancel", role: .cancel) {}
                 } message: {

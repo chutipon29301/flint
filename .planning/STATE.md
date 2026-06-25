@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Task 4 checkpoint — performance running-app measurement awaiting human with Instruments
-last_updated: "2026-06-25T15:30:01.112Z"
+status: phase-complete
+stopped_at: None
+last_updated: "2026-06-25T16:00:00Z"
 last_activity: 2026-06-25
 progress:
   total_phases: 3
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-06-25)
 
 ## Current Position
 
-Phase: 01 (infrastructure-core-tools) — EXECUTING
-Plan: 7 of 7
-Status: Phase complete — ready for verification
+Phase: 01 (infrastructure-core-tools) — COMPLETE
+Plan: 7 of 7 (all complete)
+Status: Phase 01 complete — all 7 plans executed, Task 4 performance checkpoint accepted on source-level checks
 Last activity: 2026-06-25
 
 Progress: [██████████] 100%
@@ -58,7 +58,7 @@ Progress: [██████████] 100%
 | Phase 01-infrastructure-core-tools P04 | 32 minutes | 2 tasks | 13 files |
 | Phase 01-infrastructure-core-tools P05 | 25min | 2 tasks | 6 files |
 | Phase 01-infrastructure-core-tools P06 | 35 minutes | 3 tasks | 10 files |
-| Phase 01-infrastructure-core-tools P07 | 90min | 3 tasks | 6 files |
+| Phase 01-infrastructure-core-tools P07 | 90min | 4 tasks (Task 4 accepted on source-level checks) | 6 files |
 
 ## Accumulated Context
 
@@ -78,7 +78,7 @@ Recent decisions affecting current work:
 - [Phase ?]: Hash HMAC secret-exclusion: View-local @State in HashView, transient method param only — mirrors JWT pattern from 01-03 (INFRA-09)
 - [Phase ?]: WindowCoordinator activation dance for macOS 14 (openSettings broken with .accessory)
 - [Phase ?]: Task 3 a11y: automated checks pass; live VoiceOver/Light-Dark deferred to pre-release
-- [Phase ?]: Task 4 perf: source checks pass; Instruments measurement at human checkpoint
+- [Phase 01 Plan 07]: Task 4 perf checkpoint accepted on source-level architecture checks only; cold start / hotkey latency / RAM / idle CPU measurements are unmeasured and deferred to a pre-release Instruments pass — architecture structurally supports the budget but numbers are unconfirmed
 
 ### Pending Todos
 
@@ -102,6 +102,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-06-25T15:29:58.674Z
-Stopped at: Task 4 checkpoint — performance running-app measurement awaiting human with Instruments
+Last session: 2026-06-25T16:00:00Z
+Stopped at: Plan 01-07 complete — Task 4 performance checkpoint accepted on source-level checks; on-hardware measurements deferred to pre-release Instruments pass
 Resume file: None

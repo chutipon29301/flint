@@ -17,7 +17,7 @@ provides:
   - WindowCoordinator activation dance for both Preferences and Workspace windows
   - Full accessibility audit (automated source checks) — labels on all interactive elements + NSTextView wrappers
   - Release build verified — no get-task-allow in entitlements, off-main GRDB open, notification-driven clipboard
-  - Performance source audit complete; running-app measurements pending (Task 4 checkpoint)
+  - Performance checkpoint accepted on source-level architecture checks; on-hardware measurements deferred (see Task 4 notes)
 
 affects: [phase-02, distribution, phase-03-polish]
 
@@ -44,7 +44,7 @@ key-decisions:
   - "WindowCoordinator activation dance (not openSettings()) for macOS 14 .accessory compatibility (pitfall #2)"
   - "SMAppService.mainApp register/unregister on launchAtLogin setter — Apple-sanctioned, no prompt"
   - "Task 3 checkpoint accepted on automated source checks; live VoiceOver/Light-Dark pass deferred to pre-release"
-  - "Task 4 (performance audit) stopped at checkpoint — source-level checks pass, running-app measurement requires human with Instruments"
+  - "Task 4 (performance audit) checkpoint accepted on source-level architecture checks only; on-hardware measurements (cold start <500ms, hotkey-to-popover <200ms, peak RAM <100MB, idle CPU <0.5%) were NOT taken and are deferred — recommend an Instruments pass before release. The architecture structurally supports the budget but the numbers are unmeasured."
 
 patterns-established:
   - "WindowCoordinator: all window-open paths go through it to ensure correct activation policy dance"
@@ -53,7 +53,7 @@ patterns-established:
 
 requirements-completed: [INFRA-02, INFRA-12, INFRA-13, INFRA-14, INFRA-15, INFRA-18]
 
-duration: ~90min (Tasks 1-3 + source perf audit; Task 4 at checkpoint)
+duration: ~90min (all 4 tasks; Task 4 accepted on source-level architecture checks)
 completed: 2026-06-25
 ---
 
@@ -65,8 +65,8 @@ completed: 2026-06-25
 
 - **Duration:** ~90 min
 - **Started:** 2026-06-25T15:30:00Z
-- **Completed:** 2026-06-25 (Tasks 1-3 + source perf audit; Task 4 at checkpoint)
-- **Tasks completed:** 3 of 4 (Task 4 at human-verify checkpoint)
+- **Completed:** 2026-06-25 (all 4 tasks complete; Task 4 accepted on source-level checks)
+- **Tasks completed:** 4 of 4 (Task 4 checkpoint accepted on source-level checks; on-hardware measurements deferred)
 - **Files modified:** 6 source files + 1 planning/audit file
 
 ## Accomplishments
@@ -85,7 +85,7 @@ Each task was committed atomically:
 1. **Task 1: Preferences window (4 tabs) + all settings wired** - `ec35fc9` (feat)
 2. **Task 2: Detachable resizable workspace window** - `2bbe4ca` (feat)
 3. **Task 3: Light/Dark + VoiceOver + Dynamic Type audit** - `1f5e2ff` (docs/audit)
-4. **Task 4: Performance audit** - PENDING — at checkpoint (running-app Instruments measurement required)
+4. **Task 4: Performance audit** - ACCEPTED on source-level architecture checks; on-hardware Instruments measurements NOT taken and deferred to pre-release
 
 ## Files Created/Modified
 
@@ -121,7 +121,9 @@ None - plan executed exactly as specified. Task 3 checkpoint was resolved as per
 
 **IMPORTANT:** Live VoiceOver walkthrough, Light/Dark toggle, accent color change, and Dynamic Type max were NOT run. Manual confirmation recommended before public v1.0 release.
 
-## Performance Source Audit Results (Task 4 — automated checks)
+## Performance Audit Results (Task 4 — checkpoint accepted)
+
+**IMPORTANT:** Performance checkpoint was accepted on source-level architecture checks only. On-hardware measurements (cold start <500ms, hotkey-to-popover <200ms, peak RAM <100MB, idle CPU <0.5%) were NOT taken and are deferred. The architecture structurally supports the budget but the numbers are unmeasured. An Instruments pass is recommended before public v1.0 release.
 
 **What was verified automatically:**
 
@@ -137,14 +139,16 @@ None - plan executed exactly as specified. Task 3 checkpoint was resolved as per
 | Entitlements security gate | No `get-task-allow` key in `Lathe-release.entitlements` (only in XML comments) | VERIFIED |
 | No-crash on malformed input | All tools have INFRA-17 tests — 1MB garbage JSON, non-existent file hash, garbage URL, empty inputs — all pass | VERIFIED (TEST SUCCEEDED) |
 
-**What requires human measurement (Instruments):**
+**What requires human measurement (Instruments) — DEFERRED to pre-release:**
 
-| Target | Method Required | Budget |
-|--------|----------------|--------|
-| Cold start < 500ms | Instruments "App Launch" template on Release build | < 500ms |
-| Hotkey-to-popover < 200ms | Stopwatch or Instruments, press ⌘⇧Space on Release build | < 200ms |
-| Steady-state RAM < 100MB | Activity Monitor / Instruments Allocations, open several tools + history | < 100MB |
-| Idle CPU < 0.5% | Activity Monitor, popover closed, 60-second observation | < 0.5% |
+These measurements were NOT taken. The checkpoint was accepted on source-level architecture checks. Actual numbers are unknown.
+
+| Target | Method Required | Budget | Status |
+|--------|----------------|--------|--------|
+| Cold start < 500ms | Instruments "App Launch" template on Release build | < 500ms | UNMEASURED — deferred |
+| Hotkey-to-popover < 200ms | Stopwatch or Instruments, press ⌘⇧Space on Release build | < 200ms | UNMEASURED — deferred |
+| Steady-state RAM < 100MB | Activity Monitor / Instruments Allocations, open several tools + history | < 100MB | UNMEASURED — deferred |
+| Idle CPU < 0.5% | Activity Monitor, popover closed, 60-second observation | < 0.5% | UNMEASURED — deferred |
 
 ## Issues Encountered
 
@@ -156,9 +160,9 @@ None - no external service configuration required beyond standard macOS develope
 
 ## Next Phase Readiness
 
-- All Phase 1 infrastructure requirements INFRA-02, INFRA-12, INFRA-13, INFRA-14 (partial pending live pass), INFRA-15 (partial pending live pass), INFRA-18 (source-verified; measurement deferred) are structurally complete
+- All Phase 1 infrastructure requirements INFRA-02, INFRA-12, INFRA-13, INFRA-14 (partial — source-verified; live VoiceOver/Light-Dark pass deferred), INFRA-15 (partial — source-verified; live pass deferred), INFRA-18 (source-verified; on-hardware measurement deferred) are structurally complete
 - Phase 2 extended tools (Regex, Color, Markdown, Number Base, Text Diff) can begin — ToolRegistry + ToolDefinition contract frozen since 01-01
-- Before public v1.0 release: run manual VoiceOver/Light-Dark pass (Task 3) and Instruments performance measurement (Task 4)
+- Before public v1.0 release: (1) run manual VoiceOver/Light-Dark/Dynamic-Type pass (Task 3 deferred items), (2) run Instruments performance measurement pass (Task 4 — cold start, hotkey latency, RAM, idle CPU are all unmeasured)
 
 ## Known Stubs
 

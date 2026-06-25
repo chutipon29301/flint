@@ -144,7 +144,7 @@ final class HashViewModel {
     // MARK: - Copy all hashes
 
     func allHashesText(from result: HashTransformer.HashResult) -> String {
-        let prefix = uppercase ? "" : ""
+        // WR-06: removed dead `prefix` variable (both ternary branches were identical empty strings)
         let lines = [
             "MD5:    \(uppercase ? result.md5.uppercased() : result.md5)",
             "SHA-1:  \(uppercase ? result.sha1.uppercased() : result.sha1)",
@@ -153,7 +153,6 @@ final class HashViewModel {
             "SHA-512:\(uppercase ? result.sha512.uppercased() : result.sha512)",
             "CRC32:  \(uppercase ? result.crc32.uppercased() : result.crc32)",
         ]
-        _ = prefix
         return lines.joined(separator: "\n")
     }
 

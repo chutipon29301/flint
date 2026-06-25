@@ -78,10 +78,10 @@
 
 ### Core Tools — UUID (UUID)
 
-- [ ] **UUID-01**: User can generate single or bulk UUIDs (up to 1000) in v1, v4, and v5
-- [ ] **UUID-02**: User can generate v7 (time-ordered) UUIDs (gated on package vetting; falls back to v1/v4/v5 if no sound implementation is found)
-- [ ] **UUID-03**: User can parse/inspect a UUID — version, variant, embedded timestamp (v1/v7), component breakdown
-- [ ] **UUID-04**: User can export bulk UUIDs to clipboard (newline) or as CSV/JSON array, with uppercase/lowercase toggle and nil-UUID display
+- [x] **UUID-01**: User can generate single or bulk UUIDs (up to 1000) in v1, v4, and v5
+- [x] **UUID-02**: User can generate v7 (time-ordered) UUIDs (gated on package vetting; falls back to v1/v4/v5 if no sound implementation is found)
+- [x] **UUID-03**: User can parse/inspect a UUID — version, variant, embedded timestamp (v1/v7), component breakdown
+- [x] **UUID-04**: User can export bulk UUIDs to clipboard (newline) or as CSV/JSON array, with uppercase/lowercase toggle and nil-UUID display
 
 ### Extended Tools — Regex (RGX)
 
@@ -211,10 +211,10 @@
 | HASH-02 | Phase 1 | Complete |
 | HASH-03 | Phase 1 | Complete |
 | HASH-04 | Phase 1 | Complete |
-| UUID-01 | Phase 1 | Pending |
-| UUID-02 | Phase 1 | Pending |
-| UUID-03 | Phase 1 | Pending |
-| UUID-04 | Phase 1 | Pending |
+| UUID-01 | Phase 1 | Complete |
+| UUID-02 | Phase 1 | Complete |
+| UUID-03 | Phase 1 | Complete |
+| UUID-04 | Phase 1 | Complete |
 | RGX-01 | Phase 2 | Pending |
 | RGX-02 | Phase 2 | Pending |
 | RGX-03 | Phase 2 | Pending |

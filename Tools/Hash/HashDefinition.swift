@@ -1,6 +1,7 @@
 // Tools/Hash/HashDefinition.swift
-// STUB — Wave-2 plan 01-04 overwrites this file with the real Hash tool.
-// DO NOT add implementation here. This stub allows ToolRegistry to compile.
+// Real Hash Generator definition — overwrites stub from 01-01.
+// Hash has NO detection predicate — search-only tool, unpinned by default (D-13).
+// ToolRegistry.swift is FROZEN — not edited here.
 
 import SwiftUI
 
@@ -10,14 +11,24 @@ enum HashDefinition {
             id: "hash-generator",
             name: "Hash Generator",
             category: .analysis,
-            keywords: ["hash", "md5", "sha", "sha256", "sha512", "crc32", "hmac", "checksum"],
+            keywords: ["hash", "md5", "sha", "sha1", "sha256", "sha512", "crc32", "hmac", "checksum", "digest"],
             sfSymbol: "number.square",
-            detectionPredicate: nil,  // Hash has no clipboard detection predicate
-            makeView: {
-                AnyView(Text("Hash Generator — Coming Soon")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity))
+            detectionPredicate: nil,  // Hash is search-only per D-13 — no clipboard detection
+            makeView: { @MainActor in
+                AnyView(HashViewWrapper())
             }
         )
+    }
+}
+
+// MARK: - Wrapper for environment-injected history store
+
+private struct HashViewWrapper: View {
+    @Environment(HistoryStore.self) private var historyStore
+
+    var body: some View {
+        HashView { entry in
+            historyStore.save(entry)
+        }
     }
 }

@@ -62,6 +62,12 @@
 		001100000000072 /* TimestampViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000072 /* TimestampViewModel.swift */; };
 		001100000000073 /* TimestampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000073 /* TimestampView.swift */; };
 		001100000000074 /* TimestampTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000074 /* TimestampTransformerTests.swift */; };
+		001100000000081 /* Array+HexString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000081 /* Array+HexString.swift */; };
+		001100000000082 /* HashTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000082 /* HashTransformer.swift */; };
+		001100000000083 /* HashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000083 /* HashViewModel.swift */; };
+		001100000000084 /* HashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000084 /* HashView.swift */; };
+		001100000000085 /* ProgressHashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000085 /* ProgressHashView.swift */; };
+		001100000000086 /* HashTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000086 /* HashTransformerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -117,6 +123,12 @@
 		001200000000072 /* TimestampViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampViewModel.swift; sourceTree = "<group>"; };
 		001200000000073 /* TimestampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampView.swift; sourceTree = "<group>"; };
 		001200000000074 /* TimestampTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampTransformerTests.swift; sourceTree = "<group>"; };
+		001200000000081 /* Array+HexString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+HexString.swift"; sourceTree = "<group>"; };
+		001200000000082 /* HashTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashTransformer.swift; sourceTree = "<group>"; };
+		001200000000083 /* HashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashViewModel.swift; sourceTree = "<group>"; };
+		001200000000084 /* HashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashView.swift; sourceTree = "<group>"; };
+		001200000000085 /* ProgressHashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHashView.swift; sourceTree = "<group>"; };
+		001200000000086 /* HashTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashTransformerTests.swift; sourceTree = "<group>"; };
 		001200000000090 /* Lathe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lathe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		001200000000091 /* LatheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LatheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -209,6 +221,7 @@
 			children = (
 				00120000000000C /* View+CopyButton.swift */,
 				001200000000041 /* Data+Base64URL.swift */,
+				001200000000081 /* Array+HexString.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -285,6 +298,9 @@
 		00150000000000D /* Hash */ = {
 			isa = PBXGroup;
 			children = (
+				001200000000082 /* HashTransformer.swift */,
+				001200000000083 /* HashViewModel.swift */,
+				001200000000084 /* HashView.swift */,
 				00120000000001C /* HashDefinition.swift */,
 			);
 			path = Hash;
@@ -317,6 +333,7 @@
 				001200000000012 /* SyntaxEditorView.swift */,
 				001200000000013 /* CodeDisplayView.swift */,
 				001200000000045 /* WarningBannerView.swift */,
+				001200000000085 /* ProgressHashView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -339,6 +356,7 @@
 				001200000000032 /* URLTransformerTests.swift */,
 				001200000000046 /* JWTTransformerTests.swift */,
 				001200000000074 /* TimestampTransformerTests.swift */,
+				001200000000086 /* HashTransformerTests.swift */,
 			);
 			path = LatheTests;
 			sourceTree = "<group>";
@@ -504,6 +522,11 @@
 				001100000000071 /* TimestampTransformer.swift in Sources */,
 				001100000000072 /* TimestampViewModel.swift in Sources */,
 				001100000000073 /* TimestampView.swift in Sources */,
+				001100000000081 /* Array+HexString.swift in Sources */,
+				001100000000082 /* HashTransformer.swift in Sources */,
+				001100000000083 /* HashViewModel.swift in Sources */,
+				001100000000084 /* HashView.swift in Sources */,
+				001100000000085 /* ProgressHashView.swift in Sources */,
 				00110000000001C /* HashDefinition.swift in Sources */,
 				00110000000001D /* UUIDDefinition.swift in Sources */,
 			);
@@ -518,6 +541,7 @@
 				001100000000032 /* URLTransformerTests.swift in Sources */,
 				001100000000066 /* JWTTransformerTests.swift in Sources */,
 				001100000000074 /* TimestampTransformerTests.swift in Sources */,
+				001100000000086 /* HashTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

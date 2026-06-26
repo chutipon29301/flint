@@ -112,10 +112,10 @@
 
 ### Extended Tools — Text Diff (DIFF)
 
-- [ ] **DIFF-01**: User can compare two text blocks in side-by-side or unified view (toggle)
+- [x] **DIFF-01**: User can compare two text blocks in side-by-side or unified view (toggle)
 - [x] **DIFF-02**: Diff shows line-level changes with word-level highlighting, added/removed/unchanged color coding, and line numbers
-- [ ] **DIFF-03**: User can jump to next/previous difference and copy the diff as a unified patch
-- [ ] **DIFF-04**: User can toggle ignore-whitespace and ignore-case
+- [x] **DIFF-03**: User can jump to next/previous difference and copy the diff as a unified patch
+- [x] **DIFF-04**: User can toggle ignore-whitespace and ignore-case
 
 ### Polish & Distribution (DIST)
 
@@ -230,10 +230,10 @@
 | NUM-01 | Phase 2 | Complete |
 | NUM-02 | Phase 2 | Complete |
 | NUM-03 | Phase 2 | Complete |
-| DIFF-01 | Phase 2 | Pending |
+| DIFF-01 | Phase 2 | Complete |
 | DIFF-02 | Phase 2 | Complete |
-| DIFF-03 | Phase 2 | Pending |
-| DIFF-04 | Phase 2 | Pending |
+| DIFF-03 | Phase 2 | Complete |
+| DIFF-04 | Phase 2 | Complete |
 | DIST-01 | Phase 3 | Pending |
 | DIST-02 | Phase 3 | Pending |
 | DIST-03 | Phase 3 | Pending |

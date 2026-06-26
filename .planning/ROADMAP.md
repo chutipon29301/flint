@@ -87,7 +87,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 02-06-PLAN.md — Text Diff (CollectionDifference line + vendored SwiftDiff word, unified/side-by-side, patch export)
+- [x] 02-06-PLAN.md — Text Diff (CollectionDifference line + vendored SwiftDiff word, unified/side-by-side, patch export)
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
@@ -119,5 +119,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
-| 2. Extended Tools | 5/7 | In Progress|  |
+| 2. Extended Tools | 6/7 | In Progress|  |
 | 3. Polish & Distribution | 0/TBD | Not started | - |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Plan 01-08 complete — Tasks 1+2 committed (73ffee9, 4ed40d5); Task 3 checkpoint:human-verify requires manual UAT Test 15 drag gesture verification"
-last_updated: "2026-06-26T03:17:40.876Z"
+stopped_at: "Plan 01-10 complete — Tasks 1+2 committed (e289813, 8cb8a60); Task 3 checkpoint:human-verify requires manual UAT Test 16 Esc with NSTextView focused"
+last_updated: "2026-06-26T03:22:04.872Z"
 last_activity: 2026-06-26
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 10
-  completed_plans: 9
-  percent: 0
+  completed_plans: 10
+  percent: 33
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-06-25)
 ## Current Position
 
 Phase: 01 (infrastructure-core-tools) — EXECUTING
-Plan: 3 of 10
+Plan: 4 of 10
 Status: Ready to execute
 Last activity: 2026-06-26
 
-Progress: [█████████░] 90%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [█████████░] 90%
 | Phase 01-infrastructure-core-tools P06 | 35 minutes | 3 tasks | 10 files |
 | Phase 01-infrastructure-core-tools P07 | 90min | 4 tasks (Task 4 accepted on source-level checks) | 6 files |
 | Phase 01-infrastructure-core-tools P08 | 16 minutes | 2 tasks auto + 1 checkpoint:human-verify | 3 files |
+| Phase 01-infrastructure-core-tools P10 | 12 minutes | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,7 @@ Recent decisions affecting current work:
 - [Phase 01 Plan 07]: Task 4 perf checkpoint accepted on source-level architecture checks only; cold start / hotkey latency / RAM / idle CPU measurements are unmeasured and deferred to a pre-release Instruments pass — architecture structurally supports the budget but numbers are unconfirmed
 - [Phase 01 Plan 08]: Use plain VStack + .onTapGesture instead of Button so .onDrag can claim the press gesture (macOS Button pre-empts drag); add .accessibilityAddTraits(.isButton) to preserve role
 - [Phase 01 Plan 08]: Remove destIndex+1 in PinnedToolDropDelegate.performDrop — Array.move toOffset is already insert-before-index convention; the +1 double-compensated and placed forward drags one slot past the drop target
+- [Phase ?]: Use NSTextViewDelegate doCommandBy in SyntaxEditorView.Coordinator for Esc intercept, posts .escapePressed notification; no debounce needed because editor-focused and unfocused paths are mutually exclusive
 
 ### Pending Todos
 
@@ -105,6 +107,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-06-26T03:17:40.868Z
-Stopped at: Plan 01-08 complete — Tasks 1+2 committed (73ffee9, 4ed40d5); Task 3 checkpoint:human-verify requires manual UAT Test 15 drag gesture verification
+Last session: 2026-06-26T03:22:04.864Z
+Stopped at: Plan 01-10 complete — Tasks 1+2 committed (e289813, 8cb8a60); Task 3 checkpoint:human-verify requires manual UAT Test 16 Esc with NSTextView focused
 Resume file: None

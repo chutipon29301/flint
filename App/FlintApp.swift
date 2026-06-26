@@ -23,6 +23,7 @@ struct FlintApp: App {
     @State private var clipboard = ClipboardDetector()
     @State private var hotkeyManager = HotkeyManager()
     @State private var toolRegistry = ToolRegistry()
+    @State private var toolSeed = ToolSeed()
 
     var body: some Scene {
         // MARK: - MenuBar Popover
@@ -33,6 +34,7 @@ struct FlintApp: App {
                 .environment(prefs)
                 .environment(clipboard)
                 .environment(toolRegistry)
+                .environment(toolSeed)
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14 live theme
                 // WR-04: sync historyLimit from PreferencesStore into HistoryStore whenever it changes
                 .onChange(of: prefs.historyLimit, initial: true) { _, newLimit in
@@ -49,6 +51,7 @@ struct FlintApp: App {
                 .environment(prefs)
                 .environment(clipboard)
                 .environment(toolRegistry)
+                .environment(toolSeed)
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14
         }
         .defaultSize(width: 900, height: 650)

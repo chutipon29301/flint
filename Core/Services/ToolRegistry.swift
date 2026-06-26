@@ -55,3 +55,30 @@ final class ToolRegistry {
         return nil
     }
 }
+
+// MARK: - ToolSeed
+// One-shot seed handed to a tool opened from clipboard detection. ToolDefinition.makeView()
+// is frozen and takes no argument, so a detected clipboard value can't pass through the
+// factory; the popover stages (toolId, value) here on accept and the tool's View reads it
+// once via consume(for:) on .onAppear. Lives in this file (not a new one) to avoid touching
+// project.pbxproj; it is a standalone service, not a change to the frozen ToolRegistry.
+@Observable
+@MainActor
+final class ToolSeed {
+    private var toolId: String?
+    private var value: String?
+
+    /// Stage a seed for the next time `toolId` opens.
+    func set(toolId: String, value: String) {
+        self.toolId = toolId
+        self.value = value
+    }
+
+    /// Return and clear the staged seed if it targets `toolId`; otherwise nil.
+    func consume(for toolId: String) -> String? {
+        guard self.toolId == toolId, let v = value else { return nil }
+        self.toolId = nil
+        self.value = nil
+        return v
+    }
+}

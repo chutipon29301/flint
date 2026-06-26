@@ -201,15 +201,29 @@ private struct MarkdownContentView: View {
 
     // MARK: - Export actions
 
+    /// Exports default to the Downloads folder, not the app's last/Documents dir.
+    private var defaultExportDirectory: URL? {
+        FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+    }
+
+    /// Light-forced HTML for export — shared docs/PDF should be light regardless of system theme.
+    private var exportHTML: String {
+        if case .success(let html) = MarkdownTransformer.fullStyledHTML(viewModel.source, forceLight: true) {
+            return html
+        }
+        return viewModel.html  // fall back to the adaptive preview HTML
+    }
+
     private func saveAsHTML() {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.html]
         panel.nameFieldStringValue = "preview.html"
         panel.message = "Save Markdown HTML"
         panel.prompt = "Save"
+        panel.directoryURL = defaultExportDirectory
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
-            try viewModel.html.write(to: url, atomically: true, encoding: .utf8)
+            try exportHTML.write(to: url, atomically: true, encoding: .utf8)
         } catch {
             // WR-03: surface write failures instead of swallowing them.
             MarkdownExportError.present("Could not save HTML", error)
@@ -222,11 +236,12 @@ private struct MarkdownContentView: View {
         panel.nameFieldStringValue = "preview.pdf"
         panel.message = "Save Markdown PDF"
         panel.prompt = "Save"
+        panel.directoryURL = defaultExportDirectory
         guard panel.runModal() == .OK, let url = panel.url else { return }
         // CR-02: the WKWebView's navigationDelegate is weak, so the exporter must own a
         // strong reference to itself until createPDF's completion fires — otherwise the
         // delegate is deallocated when this method returns and didFinish never calls back.
-        MarkdownPDFExporter.export(html: viewModel.html, to: url)
+        MarkdownPDFExporter.export(html: exportHTML, to: url)
     }
 }
 

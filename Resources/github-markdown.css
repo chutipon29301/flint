@@ -27,8 +27,10 @@
 
 /* ── Dark mode ───────────────────────────────────────────────────────── */
 
+/* Dark vars apply on dark systems UNLESS the document pins the light theme on the
+   root element (used by HTML/PDF export so shared docs stay light). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --color-canvas-default: #0d1117;
     --color-canvas-subtle: #161b22;
     --color-border-default: #30363d;

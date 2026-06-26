@@ -47,6 +47,7 @@ struct MenuBarPopoverView: View {
     @Environment(ToolRegistry.self) private var toolRegistry
     @Environment(ClipboardDetector.self) private var clipboard
     @Environment(PreferencesStore.self) private var prefs
+    @Environment(ToolSeed.self) private var toolSeed
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
 
@@ -73,6 +74,12 @@ struct MenuBarPopoverView: View {
                     result: result,
                     onAccept: {
                         dismissedDetection = true
+                        // Seed the tool with the detected clipboard value so accepting the
+                        // banner pre-fills it (e.g. #3366FF lands in Color Converter).
+                        // makeView() is frozen and takes no arg, so we hand off via ToolSeed.
+                        if let clip = NSPasteboard.general.string(forType: .string) {
+                            toolSeed.set(toolId: result.toolId, value: clip)
+                        }
                         navigationState = .tool(toolId: result.toolId)
                     },
                     onDismiss: {

@@ -260,6 +260,28 @@ final class MarkdownTransformerTests: XCTestCase {
                       "fullStyledHTML should inline github-markdown.css content, got prefix: \(html.prefix(500))")
     }
 
+    // MARK: - MD-03: export forces light theme (shared/printed docs must be light)
+
+    func testFullStyledHTML_default_isAdaptive() throws {
+        let result = MarkdownTransformer.fullStyledHTML("# Test")
+        guard case .success(let html) = result else { XCTFail("Expected success"); return }
+        XCTAssertTrue(html.contains("content=\"light dark\""),
+                      "Default (preview) HTML should declare adaptive color-scheme, got: \(html.prefix(400))")
+        // Assert on the <html> open tag specifically — the CSS selector :root:not([data-theme="light"])
+        // legitimately contains the substring, so check the tag, not the whole document.
+        XCTAssertTrue(html.contains("<html>"),
+                      "Default HTML root tag must be unadorned <html> (no data-theme), got: \(html.prefix(120))")
+    }
+
+    func testFullStyledHTML_forceLight_pinsLightTheme() throws {
+        let result = MarkdownTransformer.fullStyledHTML("# Test", forceLight: true)
+        guard case .success(let html) = result else { XCTFail("Expected success"); return }
+        XCTAssertTrue(html.contains("<html data-theme=\"light\">"),
+                      "Export HTML should pin <html data-theme=\"light\">, got: \(html.prefix(120))")
+        XCTAssertTrue(html.contains("content=\"light\""),
+                      "Export HTML should declare light-only color-scheme")
+    }
+
     // MARK: - Paragraph
 
     func testParagraph_basicText() throws {

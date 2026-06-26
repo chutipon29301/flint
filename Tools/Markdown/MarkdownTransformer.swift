@@ -36,20 +36,35 @@ enum MarkdownTransformer {
 
     /// MD-03: Full self-contained HTML with inlined github-markdown.css.
     /// CSS is inlined from bundle (no external resource loads — fully offline).
-    static func fullStyledHTML(_ source: String) -> Result<String, TransformError> {
+    /// Build the full self-contained HTML document.
+    /// - Parameter forceLight: when true, the document is pinned to light theme
+    ///   (used for HTML/PDF export so shared/printed docs are always light, regardless
+    ///   of the Mac's system appearance). The in-app preview leaves this false so it
+    ///   keeps adapting to Light/Dark.
+    static func fullStyledHTML(_ source: String, forceLight: Bool = false) -> Result<String, TransformError> {
         switch renderHTML(source) {
         case .failure(let err):
             return .failure(err)
         case .success(let body):
             let css = loadBundledCSS()
+            let colorSchemeMeta = forceLight ? "light" : "light dark"
+            // Force light by pinning color-scheme AND neutralizing the CSS's
+            // prefers-color-scheme:dark block via a forced light-media context is not
+            // possible in pure CSS; instead pin the :root vars to their light values.
+            let lightOverride = forceLight ? """
+            /* Export forced to light theme (overrides the dark @media block). */
+            :root { color-scheme: light; }
+            html { color-scheme: light; }
+            """ : ""
             let html = """
             <!DOCTYPE html>
-            <html>
+            <html\(forceLight ? " data-theme=\"light\"" : "")>
             <head>
             <meta charset="utf-8">
-            <meta name="color-scheme" content="light dark">
+            <meta name="color-scheme" content="\(colorSchemeMeta)">
             <style>
             \(css)
+            \(lightOverride)
             body { box-sizing: border-box; max-width: 860px; margin: 0 auto; padding: 16px 24px; }
             </style>
             </head>

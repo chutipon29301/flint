@@ -12,6 +12,7 @@ import AppKit
 
 struct ColorView: View {
     @Environment(HistoryStore.self) private var historyStore
+    @Environment(ToolSeed.self) private var toolSeed
     @State private var viewModel: ColorViewModel?
 
     var body: some View {
@@ -28,6 +29,11 @@ struct ColorView: View {
                 viewModel = ColorViewModel(
                     onSaveHistory: { [historyStore] entry in historyStore.save(entry) }
                 )
+            }
+            // If opened from clipboard detection, pre-fill from the detected value (CLR-02).
+            // consume() returns the seed once and clears it, so a later manual open is clean.
+            if let seed = toolSeed.consume(for: "color") {
+                viewModel?.updateFromHex(seed)
             }
         }
     }

@@ -18,6 +18,10 @@ struct FlintApp: App {
     // All shared services live here — the only lifecycle-stable ownership point.
     // Tool ViewModels are created on-demand per navigation destination.
 
+    // DIST-01: AppDelegate registers the Services provider + refreshes the Services cache.
+    // Declared before the @State block (NSApplicationDelegateAdaptor placement convention).
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     @State private var historyStore = HistoryStore()
     @State private var prefs = PreferencesStore()
     @State private var clipboard = ClipboardDetector()
@@ -39,6 +43,30 @@ struct FlintApp: App {
                 // WR-04: sync historyLimit from PreferencesStore into HistoryStore whenever it changes
                 .onChange(of: prefs.historyLimit, initial: true) { _, newLimit in
                     historyStore.historyLimit = newLimit
+                }
+                // DIST-01: receive Services text on @MainActor, route via FROZEN detect() + ToolSeed.
+                // The MenuBarExtra content is created at launch, so this subscription is in place
+                // before any user-triggered service invocation can arrive.
+                .onReceive(NotificationCenter.default.publisher(for: .serviceDidReceiveText)) { notification in
+                    guard let text = notification.userInfo?["text"] as? String else { return }
+                    if let result = toolRegistry.detect(from: text) {
+                        // D-02: auto-open the matched tool pre-filled, skipping the detection banner.
+                        toolSeed.set(toolId: result.toolId, value: text)
+                        WindowCoordinator.shared.openToolViaService(toolId: result.toolId)
+                        NotificationCenter.default.post(
+                            name: .routeServiceMatch,
+                            object: nil,
+                            userInfo: ["toolId": result.toolId]
+                        )
+                    } else {
+                        // D-03: no match → open launcher with text staged in the search field.
+                        WindowCoordinator.shared.openLauncherWithStagedText(text)
+                        NotificationCenter.default.post(
+                            name: .routeServiceNoMatch,
+                            object: nil,
+                            userInfo: ["text": text]
+                        )
+                    }
                 }
         }
         .menuBarExtraAccess(isPresented: $clipboard.isPopoverPresented)

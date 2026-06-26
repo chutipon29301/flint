@@ -38,6 +38,32 @@ final class WindowCoordinator {
         }
     }
 
+    /// Open the menubar popover positioned on the matched tool after a Services invocation (DIST-01).
+    /// Copies openWorkspace()'s activation-policy dance so the popover appears above the source app
+    /// (Pitfall #3). Navigation to `toolId` is performed by the FlintApp .onReceive handler, which
+    /// sets the seed and posts .routeServiceMatch; the popover is presented via the existing
+    /// MenuBarExtraAccess isPopoverPresented binding driven by .showPopover.
+    func openToolViaService(toolId: String) {
+        windowCount += 1
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate(ignoringOtherApps: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            NotificationCenter.default.post(name: .showPopover, object: nil)
+        }
+    }
+
+    /// Open the search-first launcher with the Services text staged in the search field (DIST-01, D-03).
+    /// Same activation-policy dance as openToolViaService; FlintApp's .onReceive stages the text via
+    /// .routeServiceNoMatch so the no-match case is never a dead end.
+    func openLauncherWithStagedText(_ text: String) {
+        windowCount += 1
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate(ignoringOtherApps: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            NotificationCenter.default.post(name: .showPopover, object: nil)
+        }
+    }
+
     /// Called when any workspace/preferences window closes.
     func windowWillClose() {
         windowCount = max(0, windowCount - 1)

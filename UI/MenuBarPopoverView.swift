@@ -136,6 +136,21 @@ struct MenuBarPopoverView: View {
         .onReceive(NotificationCenter.default.publisher(for: .showPopover)) { _ in
             clipboard.isPopoverPresented = true
         }
+        // DIST-01 (D-02): Services match → navigate to the matched tool. The tool view consumes
+        // the staged ToolSeed on its .onAppear, exactly like the clipboard-accept path above.
+        .onReceive(NotificationCenter.default.publisher(for: .routeServiceMatch)) { notification in
+            guard let toolId = notification.userInfo?["toolId"] as? String else { return }
+            dismissedDetection = true
+            searchText = ""
+            navigationState = .tool(toolId: toolId)
+        }
+        // DIST-01 (D-03): Services no-match → stage the text in the search field so the user
+        // picks a tool manually. Never a dead end.
+        .onReceive(NotificationCenter.default.publisher(for: .routeServiceNoMatch)) { notification in
+            guard let text = notification.userInfo?["text"] as? String else { return }
+            searchText = text
+            navigationState = .searchResults(query: text)
+        }
         // INFRA-16: Global keyboard shortcuts — wired via hidden overlay buttons in .background()
         // ⌘H — toggle history panel (D-07)
         .background(

@@ -39,7 +39,7 @@ Plans:
 - [x] 01-06-PLAN.md — First-class History view + global fuzzy search + pin/reorder + keyboard shortcuts
 - [x] 01-07-PLAN.md — Preferences + launch-at-login + workspace window + Light/Dark/VoiceOver/perf audit
 - [x] 01-08-PLAN.md — GAP: pinned-tool drag-to-reorder (decouple onDrag from Button + fix destination off-by-one)
-- [ ] 01-09-PLAN.md — GAP: ⌘⇧C copy-output + ⌘Delete clear-input observers across all 7 tools (shared ToolShortcutActions)
+- [x] 01-09-PLAN.md — GAP: ⌘⇧C copy-output + ⌘Delete clear-input observers across all 7 tools (shared ToolShortcutActions)
 - [ ] 01-10-PLAN.md — GAP: reliable first-Esc-to-launcher (AppKit Esc interception in SyntaxEditorView)
 **UI hint**: yes
 
@@ -77,6 +77,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure + Core Tools | 8/10 | In Progress|  |
+| 1. Infrastructure + Core Tools | 9/10 | In Progress|  |
 | 2. Extended Tools | 0/TBD | Not started | - |
 | 3. Polish & Distribution | 0/TBD | Not started | - |

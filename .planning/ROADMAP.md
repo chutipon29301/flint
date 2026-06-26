@@ -14,7 +14,7 @@ Flint ships in three coarse phases that mirror the PRD's validated delivery plan
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infrastructure + Core Tools** - Full infra skeleton (ToolRegistry, HistoryStore, ClipboardDetector, HotkeyManager) plus JSON, Base64, URL, JWT, Timestamp, Hash, and UUID tools (completed 2026-06-25)
-- [ ] **Phase 2: Extended Tools** - Regex, Color, Markdown, Number Base, and Text Diff tools with ChromaKit, HighlightSwift, and SwiftDiff added
+- [x] **Phase 2: Extended Tools** - Regex, Color, Markdown, Number Base, and Text Diff tools with ChromaKit, HighlightSwift, and SwiftDiff added (completed 2026-06-26)
 - [ ] **Phase 3: Polish & Distribution** - Services menu, drag-and-drop, signed/notarized DMG, Sparkle auto-update, and VoiceOver audit
 
 ## Phase Details
@@ -91,7 +91,7 @@ Plans:
 
 **Wave 7** *(blocked on Wave 6 completion)*
 
-- [ ] 02-07-PLAN.md — Integration: register all five in ToolRegistry, wire detection predicates, end-to-end verification
+- [x] 02-07-PLAN.md — Integration: register all five in ToolRegistry, wire detection predicates, end-to-end verification
 
 **UI hint**: yes
 
@@ -119,5 +119,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
-| 2. Extended Tools | 6/7 | In Progress|  |
+| 2. Extended Tools | 7/7 | Complete   | 2026-06-26 |
 | 3. Polish & Distribution | 0/TBD | Not started | - |

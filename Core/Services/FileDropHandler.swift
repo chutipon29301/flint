@@ -27,8 +27,8 @@ extension View {
     ///   - onError: called on @MainActor with a user-facing rejection message.
     func fileDrop(
         isTargeted: Binding<Bool>,
-        onText: @escaping (String) -> Void,
-        onError: @escaping (String) -> Void
+        onText: @escaping @MainActor @Sendable (String) -> Void,
+        onError: @escaping @MainActor @Sendable (String) -> Void
     ) -> some View {
         self.onDrop(of: [.fileURL], isTargeted: isTargeted) { providers in
             guard let provider = providers.first else { return false }

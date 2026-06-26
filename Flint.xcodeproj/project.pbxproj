@@ -42,8 +42,8 @@
 		001100000005006 /* BitFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000005006 /* BitFieldView.swift */; };
 		001100000000001 /* FlintApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000001 /* FlintApp.swift */; };
 		001100000000002 /* WindowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000002 /* WindowCoordinator.swift */; };
-		0011000000000B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B1 /* AppDelegate.swift */; };
-		0011000000000B2 /* FlintServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B2 /* FlintServiceProvider.swift */; };
+		00110000000B1A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000B1A /* AppDelegate.swift */; };
+		00110000000B2A /* FlintServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000B2A /* FlintServiceProvider.swift */; };
 		0011000000000B3 /* SparkleUpdaterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B3 /* SparkleUpdaterService.swift */; };
 		00110000000DD01 /* DropOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD01 /* DropOverlayView.swift */; };
 		00110000000DD03 /* OnboardingWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD03 /* OnboardingWindowView.swift */; };
@@ -132,8 +132,8 @@
 /* Begin PBXFileReference section */
 		001200000000001 /* FlintApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintApp.swift; sourceTree = "<group>"; };
 		001200000000002 /* WindowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCoordinator.swift; sourceTree = "<group>"; };
-		0012000000000B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0012000000000B2 /* FlintServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintServiceProvider.swift; sourceTree = "<group>"; };
+		00120000000B1A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		00120000000B2A /* FlintServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintServiceProvider.swift; sourceTree = "<group>"; };
 		0012000000000B3 /* SparkleUpdaterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterService.swift; sourceTree = "<group>"; };
 		00120000000DD01 /* DropOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropOverlayView.swift; sourceTree = "<group>"; };
 		00120000000DD03 /* OnboardingWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowView.swift; sourceTree = "<group>"; };
@@ -298,7 +298,7 @@
 			children = (
 				001200000000001 /* FlintApp.swift */,
 				001200000000002 /* WindowCoordinator.swift */,
-				0012000000000B1 /* AppDelegate.swift */,
+				00120000000B1A /* AppDelegate.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -333,7 +333,7 @@
 				00120000000000A /* ClipboardDetector.swift */,
 				00120000000000B /* HotkeyManager.swift */,
 				0012000000000A6 /* SearchResultsMerger.swift */,
-				0012000000000B2 /* FlintServiceProvider.swift */,
+				00120000000B2A /* FlintServiceProvider.swift */,
 				0012000000000B3 /* SparkleUpdaterService.swift */,
 				00120000000DD02 /* FileDropHandler.swift */,
 			);
@@ -715,8 +715,8 @@
 			files = (
 				001100000000001 /* FlintApp.swift in Sources */,
 				001100000000002 /* WindowCoordinator.swift in Sources */,
-				0011000000000B1 /* AppDelegate.swift in Sources */,
-				0011000000000B2 /* FlintServiceProvider.swift in Sources */,
+				00110000000B1A /* AppDelegate.swift in Sources */,
+				00110000000B2A /* FlintServiceProvider.swift in Sources */,
 				0011000000000B3 /* SparkleUpdaterService.swift in Sources */,
 				00110000000DD01 /* DropOverlayView.swift in Sources */,
 				00110000000DD03 /* OnboardingWindowView.swift in Sources */,

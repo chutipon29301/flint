@@ -38,12 +38,12 @@ key-files:
     - Tools/URLEncoder/URLTransformer.swift
     - Tools/URLEncoder/URLViewModel.swift
     - Tools/URLEncoder/URLView.swift
-    - LatheTests/Base64TransformerTests.swift
-    - LatheTests/URLTransformerTests.swift
+    - FlintTests/Base64TransformerTests.swift
+    - FlintTests/URLTransformerTests.swift
   modified:
     - Tools/Base64/Base64Definition.swift (stub → real definition)
     - Tools/URLEncoder/URLEncoderDefinition.swift (stub → real definition)
-    - Lathe.xcodeproj/project.pbxproj (added file refs for both tool slices)
+    - Flint.xcodeproj/project.pbxproj (added file refs for both tool slices)
 
 key-decisions:
   - "URLTransformer.percentEncode uses urlQueryAllowed minus '&=+?#' to produce RFC 3986-safe query-value encoding (not .urlHostAllowed which is too restrictive)"
@@ -94,9 +94,9 @@ Each task was committed atomically:
 - `Tools/URLEncoder/URLViewModel.swift` — @Observable 3-mode ViewModel with query param table state
 - `Tools/URLEncoder/URLView.swift` — Encode/decode split + parse mode with component rows + query table
 - `Tools/URLEncoder/URLEncoderDefinition.swift` — Overwrites stub: two detection predicates + URLView factory
-- `LatheTests/Base64TransformerTests.swift` — 18 tests: B64-01..05, INFRA-17, T-02-SP
-- `LatheTests/URLTransformerTests.swift` — 22 tests: URL-01..03, INFRA-17 no-crash
-- `Lathe.xcodeproj/project.pbxproj` — Added PBXFileReference + PBXBuildFile entries for all new files
+- `FlintTests/Base64TransformerTests.swift` — 18 tests: B64-01..05, INFRA-17, T-02-SP
+- `FlintTests/URLTransformerTests.swift` — 22 tests: URL-01..03, INFRA-17 no-crash
+- `Flint.xcodeproj/project.pbxproj` — Added PBXFileReference + PBXBuildFile entries for all new files
 
 ## Decisions Made
 
@@ -141,8 +141,8 @@ Files verified to exist:
 - /Users/chutipon/Documents/project/flint/Tools/URLEncoder/URLTransformer.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Tools/URLEncoder/URLViewModel.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Tools/URLEncoder/URLView.swift — FOUND
-- /Users/chutipon/Documents/project/flint/LatheTests/Base64TransformerTests.swift — FOUND
-- /Users/chutipon/Documents/project/flint/LatheTests/URLTransformerTests.swift — FOUND
+- /Users/chutipon/Documents/project/flint/FlintTests/Base64TransformerTests.swift — FOUND
+- /Users/chutipon/Documents/project/flint/FlintTests/URLTransformerTests.swift — FOUND
 
 Commits verified:
 - 5b44062: feat(01-02): implement Base64 tool slice

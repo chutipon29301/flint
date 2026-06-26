@@ -40,12 +40,12 @@ key_files:
     - Tools/Hash/HashViewModel.swift
     - Tools/Hash/HashView.swift
     - UI/Components/ProgressHashView.swift
-    - LatheTests/TimestampTransformerTests.swift
-    - LatheTests/HashTransformerTests.swift
+    - FlintTests/TimestampTransformerTests.swift
+    - FlintTests/HashTransformerTests.swift
   modified:
     - Tools/Timestamp/TimestampDefinition.swift (stub → real definition with TimestampViewWrapper)
     - Tools/Hash/HashDefinition.swift (stub → real definition with HashViewWrapper)
-    - Lathe.xcodeproj/project.pbxproj (all new files added to Sources build phases and groups)
+    - Flint.xcodeproj/project.pbxproj (all new files added to Sources build phases and groups)
 
 key-decisions:
   - "SHA-256 test vector corrected during execution: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad (verified via shell sha256sum — prior wrong vector from memory)"
@@ -122,21 +122,21 @@ No key argument. No key ViewModel property. Schema has no secret column (enforce
 | `Tools/Hash/HashView.swift` | Created | 6 hash rows + CopyButtonView, uppercase toggle, Copy All, HMAC SecureField, file picker |
 | `Tools/Hash/HashDefinition.swift` | Modified (stub → real) | No detection predicate (search-only) + HashViewWrapper |
 | `UI/Components/ProgressHashView.swift` | Created | ProgressView + 6 per-hash copy rows with uppercase support |
-| `LatheTests/TimestampTransformerTests.swift` | Created | 19 tests — all pass (unit detection, toDate, timezones, ISO8601, relativeTime, pitfall #8) |
-| `LatheTests/HashTransformerTests.swift` | Created | 17 tests — all pass (reference vectors all 6 algos, chunked=memory, HMAC, no-crash) |
-| `Lathe.xcodeproj/project.pbxproj` | Modified | All 10 new files added to Sources + LatheTests build phases and groups |
+| `FlintTests/TimestampTransformerTests.swift` | Created | 19 tests — all pass (unit detection, toDate, timezones, ISO8601, relativeTime, pitfall #8) |
+| `FlintTests/HashTransformerTests.swift` | Created | 17 tests — all pass (reference vectors all 6 algos, chunked=memory, HMAC, no-crash) |
+| `Flint.xcodeproj/project.pbxproj` | Modified | All 10 new files added to Sources + FlintTests build phases and groups |
 
 ## Verification Results
 
 | Check | Result |
 |-------|--------|
-| `xcodebuild test -only-testing:LatheTests/TimestampTransformerTests` | TEST SUCCEEDED (19 tests) |
+| `xcodebuild test -only-testing:FlintTests/TimestampTransformerTests` | TEST SUCCEEDED (19 tests) |
 | pitfall #8 regression (11-digit → .ambiguous) | PASS — testDetectUnit_11digits_isAmbiguous |
-| `xcodebuild test -only-testing:LatheTests/HashTransformerTests` | TEST SUCCEEDED (17 tests) |
+| `xcodebuild test -only-testing:FlintTests/HashTransformerTests` | TEST SUCCEEDED (17 tests) |
 | Reference vectors (MD5/SHA-1/SHA-256/SHA-384/SHA-512/CRC32 of "abc") | PASS — all correct |
 | Chunked vs in-memory equality (512KB test file) | PASS — testHashFile_chunkedEqualsMemory |
 | HMAC-SHA256 reference vector | PASS — testHmacText_sha256_referenceVector |
-| `xcodebuild -scheme Lathe build` | BUILD SUCCEEDED |
+| `xcodebuild -scheme Flint build` | BUILD SUCCEEDED |
 | `grep -c "import SwiftUI\|import AppKit" TimestampTransformer.swift` | 0 (pure, no UI imports) |
 | `grep -c "import SwiftUI\|import AppKit" HashTransformer.swift` | 0 (pure, no UI imports) |
 | HMAC key exclusion source assertion | PASS — onSaveHistory receives text + hashes only |
@@ -158,7 +158,7 @@ No key argument. No key ViewModel property. Schema has no secret column (enforce
 - **Found during:** Task 2 test run
 - **Issue:** Test expected `ba7816bf8f01cfea414140de5dae2ec73b0036188f6e8f408ad7d25e6fffdb48` but the correct SHA-256("abc") is `ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad` (verified via `echo -n "abc" | sha256sum`).
 - **Fix:** Updated test vector to the correct value.
-- **Files modified:** `LatheTests/HashTransformerTests.swift`
+- **Files modified:** `FlintTests/HashTransformerTests.swift`
 - **Committed in:** `899f5ee` (Task 2 commit)
 
 **3. [Rule 1 - Bug] zlib types require `import zlib` not `Foundation.crc32`**
@@ -172,7 +172,7 @@ No key argument. No key ViewModel property. Schema has no secret column (enforce
 - **Found during:** Task 2 test build
 - **Issue:** `var progressCalled = false` captured in `@Sendable` progressHandler closure — Swift 6 strict concurrency forbids mutation of captured vars.
 - **Fix:** Introduced `ProgressCounter` helper class using `NSLock` for thread-safe counting.
-- **Files modified:** `LatheTests/HashTransformerTests.swift`
+- **Files modified:** `FlintTests/HashTransformerTests.swift`
 - **Committed in:** `899f5ee` (Task 2 commit)
 
 ---
@@ -206,8 +206,8 @@ Files verified to exist:
 - /Users/chutipon/Documents/project/flint/Tools/Hash/HashDefinition.swift — FOUND
 - /Users/chutipon/Documents/project/flint/UI/Components/ProgressHashView.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Core/Extensions/Array+HexString.swift — FOUND
-- /Users/chutipon/Documents/project/flint/LatheTests/TimestampTransformerTests.swift — FOUND
-- /Users/chutipon/Documents/project/flint/LatheTests/HashTransformerTests.swift — FOUND
+- /Users/chutipon/Documents/project/flint/FlintTests/TimestampTransformerTests.swift — FOUND
+- /Users/chutipon/Documents/project/flint/FlintTests/HashTransformerTests.swift — FOUND
 
 Commits verified:
 - 40c0f49: feat(01-04): Timestamp Converter — transformer, ViewModel, View, and real Definition

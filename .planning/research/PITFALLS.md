@@ -1,6 +1,6 @@
 # Pitfalls Research
 
-**Domain:** Native macOS SwiftUI menubar developer-utility app (Lathe)
+**Domain:** Native macOS SwiftUI menubar developer-utility app (Flint)
 **Researched:** 2026-06-25
 **Confidence:** HIGH (all critical claims verified against official Apple docs, community post-mortems, or official package repos)
 
@@ -62,7 +62,7 @@ Do NOT hardcode whether to show the Dock icon permanently — toggle it only for
 ### Pitfall 3: Global Hotkey via CGEventTap Triggers Accessibility Permission Dialog
 
 **What goes wrong:**
-Using `CGEventTap` for the global hotkey shows a system dialog: "Lathe would like to control your computer using Accessibility features." For a tool with zero legitimate reason to request Accessibility access, this kills the zero-friction promise immediately on first launch.
+Using `CGEventTap` for the global hotkey shows a system dialog: "Flint would like to control your computer using Accessibility features." For a tool with zero legitimate reason to request Accessibility access, this kills the zero-friction promise immediately on first launch.
 
 **Why it happens:**
 `CGEventTap` is a system-wide input monitoring mechanism used by screen readers, automation tools, and remote-control software. macOS correctly classifies it as a high-privilege operation requiring user consent under TCC (Transparency Consent and Control).
@@ -237,7 +237,7 @@ NSRegularExpression uses an NFA (nondeterministic finite automaton) engine. Patt
 
 **Warning signs:**
 - Typing a pattern with `+` or `*` inside a group causes the UI to freeze
-- Activity Monitor shows Lathe pegged at 100% CPU during pattern entry
+- Activity Monitor shows Flint pegged at 100% CPU during pattern entry
 - No result appears for a valid pattern on a known string that should not match
 
 **Phase to address:** Phase 2 (Regex Tester tool).
@@ -247,7 +247,7 @@ NSRegularExpression uses an NFA (nondeterministic finite automaton) engine. Patt
 ### Pitfall 11: HMAC / JWT Secret Keys Must Not Be Written to SQLite History
 
 **What goes wrong:**
-The history store saves `input` and `output` for every transformation. For the JWT tool, the user supplies an HMAC secret to verify the signature. If the history record's `input` field contains the raw JWT and the secret key, that secret is now persisted in a plaintext SQLite database at `~/Library/Application Support/Lathe/history.db` — readable by any process with user-level access.
+The history store saves `input` and `output` for every transformation. For the JWT tool, the user supplies an HMAC secret to verify the signature. If the history record's `input` field contains the raw JWT and the secret key, that secret is now persisted in a plaintext SQLite database at `~/Library/Application Support/Flint/history.db` — readable by any process with user-level access.
 
 **Why it happens:**
 Generic "save everything" history schema treats all tool inputs identically. A secret key is structurally identical to a string input from the ViewModel's perspective.
@@ -260,7 +260,7 @@ Define per-tool history serialization. For the JWT tool and Hash tool (HMAC mode
 - If a "remember secret" feature is ever added, use the Keychain via `SecItemAdd`/`SecItemCopyMatching` — never SQLite or UserDefaults.
 
 **Warning signs:**
-- `sqlite3 ~/Library/Application\ Support/Lathe/history.db "SELECT input FROM history WHERE tool='jwt' LIMIT 1"` returns a row containing a secret key
+- `sqlite3 ~/Library/Application\ Support/Flint/history.db "SELECT input FROM history WHERE tool='jwt' LIMIT 1"` returns a row containing a secret key
 - History panel shows a "Verified with key: mysecret" label that includes the raw key
 
 **Phase to address:** Phase 1 (History store schema design) — the exclusion must be designed into the schema before any tool writes history.
@@ -276,18 +276,18 @@ Define per-tool history serialization. For the JWT tool and Hash tool (HMAC mode
 Xcode's debug configuration injects `com.apple.security.get-task-allow = true` into the entitlements for debugger attachment. This entitlement is incompatible with notarization. It is present in the default `Debug.xcconfig` and developers forget to strip it from the `Release` configuration.
 
 **How to avoid:**
-- Maintain two separate entitlements files: `Lathe-debug.entitlements` (with `get-task-allow`) and `Lathe-release.entitlements` (without it).
+- Maintain two separate entitlements files: `Flint-debug.entitlements` (with `get-task-allow`) and `Flint-release.entitlements` (without it).
 - In Xcode Build Settings, set `CODE_SIGN_ENTITLEMENTS` per configuration:
-  - Debug → `Lathe-debug.entitlements`
-  - Release → `Lathe-release.entitlements`
+  - Debug → `Flint-debug.entitlements`
+  - Release → `Flint-release.entitlements`
 - Enable Hardened Runtime in the Release configuration: `ENABLE_HARDENED_RUNTIME = YES`.
 - Add `--timestamp` to codesign options in Release: `OTHER_CODE_SIGN_FLAGS = --timestamp`.
 - Test notarization on the first Release build of Phase 3, not as an afterthought.
 
 **Warning signs:**
-- `codesign -dvvv Lathe.app` shows `get-task-allow=1` in the Release build
+- `codesign -dvvv Flint.app` shows `get-task-allow=1` in the Release build
 - `xcrun notarytool submit` returns error code `4000074`
-- `spctl -a -v Lathe.app` returns "rejected" after stapling
+- `spctl -a -v Flint.app` returns "rejected" after stapling
 
 **Phase to address:** Phase 3 (Distribution) — set up the dual entitlements files and CI notarization pipeline.
 
@@ -422,20 +422,20 @@ let date = Date(timeIntervalSince1970: Double(ms) / 1000.0)
 ### Pitfall 18: Clipboard Auto-Detection NSPasteboard Polling Drains Battery
 
 **What goes wrong:**
-The clipboard auto-detect feature polls `NSPasteboard.general.changeCount` every 200–500ms. On battery, this produces 3–7% sustained CPU load, prevents the CPU from entering low-power C-states, and drains the battery noticeably. Users running macOS Activity Monitor will see Lathe listed as a top CPU consumer even when idle.
+The clipboard auto-detect feature polls `NSPasteboard.general.changeCount` every 200–500ms. On battery, this produces 3–7% sustained CPU load, prevents the CPU from entering low-power C-states, and drains the battery noticeably. Users running macOS Activity Monitor will see Flint listed as a top CPU consumer even when idle.
 
 **Why it happens:**
 macOS provides no native push notification for clipboard changes. The industry standard fallback is polling `changeCount`. At 500ms intervals, this adds CPU wakeups and prevents idle states.
 
 **How to avoid:**
 - Use event-driven detection instead of a polling timer: observe `NSNotification.Name("NSPasteboardDidChangeNotification")` — this is a private but stable notification that fires on clipboard change without polling overhead (verified: 0% CPU when idle).
-- Alternatively, limit polling to only when the Lathe popover is visible: start the polling timer in `onAppear` and stop it in `onDisappear`. This reduces the background overhead to zero when the app is not in use.
+- Alternatively, limit polling to only when the Flint popover is visible: start the polling timer in `onAppear` and stop it in `onDisappear`. This reduces the background overhead to zero when the app is not in use.
 - The PRD's 100ms detection target is achievable with a 100ms polling interval only when the window is visible, or immediately via the NSNotification approach.
 
 **Warning signs:**
-- `top -l 1 -stats pid,cpu | grep Lathe` shows > 1% CPU when Lathe popover is closed
-- Battery usage report in System Settings lists Lathe as a significant consumer
-- Instruments "Energy Log" shows high wake activity from Lathe's background timer
+- `top -l 1 -stats pid,cpu | grep Flint` shows > 1% CPU when Flint popover is closed
+- Battery usage report in System Settings lists Flint as a significant consumer
+- Instruments "Energy Log" shows high wake activity from Flint's background timer
 
 **Phase to address:** Phase 1 (ClipboardDetector.swift) — the polling/notification strategy must be decided at implementation time.
 
@@ -556,7 +556,7 @@ macOS provides no native push notification for clipboard changes. The industry s
 | Timestamp seconds/ms ambiguity | Phase 1 (Timestamp Converter) | Test 10-digit, 13-digit, 11-digit boundary inputs |
 | Hash file blocking + OOM | Phase 1 (Hash Generator) | Hash a 200 MB file; UI must remain responsive |
 | History secret key leakage | Phase 1 (HistoryStore schema) | `sqlite3` query after JWT verification session |
-| Clipboard battery drain | Phase 1 (ClipboardDetector) | Instruments Energy log; idle Lathe must show < 1% CPU |
+| Clipboard battery drain | Phase 1 (ClipboardDetector) | Instruments Energy log; idle Flint must show < 1% CPU |
 | NSViewRepresentable VoiceOver gaps | Phase 1 + Phase 2 | Accessibility Inspector AXLabel check on each wrapper |
 | Regex catastrophic backtracking | Phase 2 (Regex Tester) | `(a+)+` against non-matching string must timeout, not hang |
 | OKLCH gamut clipping | Phase 2 (Color Converter) | High-chroma OKLCH input shows gamut warning |
@@ -593,5 +593,5 @@ macOS provides no native push notification for clipboard changes. The industry s
 - Multi.app — Pushing the limits of NSStatusItem (MenuBarExtra sizing): https://multi.app/blog/pushing-the-limits-nsstatusitem
 
 ---
-*Pitfalls research for: Lathe — native macOS SwiftUI menubar developer-utility app*
+*Pitfalls research for: Flint — native macOS SwiftUI menubar developer-utility app*
 *Researched: 2026-06-25*

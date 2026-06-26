@@ -204,7 +204,7 @@ No toast/alert needed. Use `@State var copied: Bool` + `DispatchQueue.main.async
 | Detection banner accept | "Open [Tool Name]" | D-04 |
 | Detection banner dismiss | "Dismiss" | D-04 |
 | Search placeholder | "Search tools or history…" | D-01, INFRA-10 |
-| Empty state — launcher (no history yet) | Heading: "Welcome to Lathe" / Body: "Paste content or press ⌘⇧Space from any app to get started." | INFRA-05 default |
+| Empty state — launcher (no history yet) | Heading: "Welcome to Flint" / Body: "Paste content or press ⌘⇧Space from any app to get started." | INFRA-05 default |
 | Empty state — history panel (no history) | Heading: "No history yet" / Body: "Your transformations will appear here after you use any tool." | INFRA-07, INFRA-08 |
 | Empty state — search (no results) | "No tools or history matching "[query]"" | INFRA-10 |
 | Error — JSON invalid | "Invalid JSON at line [N], column [M]" | JSON-03 |

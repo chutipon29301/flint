@@ -1,8 +1,8 @@
-# Lathe — macOS Developer Toolkit (Menubar)
+# Flint — macOS Developer Toolkit (Menubar)
 
 ## What This Is
 
-Lathe is a native SwiftUI menubar application for macOS that gives developers instant, offline access to common encoding, formatting, and transformation utilities (JSON, Base64, JWT, hashing, UUIDs, regex, color, markdown, diffing, and more). It lives in the menubar, opens in under a second via global hotkey, and works entirely on-device with no network, no account, and no subscription.
+Flint is a native SwiftUI menubar application for macOS that gives developers instant, offline access to common encoding, formatting, and transformation utilities (JSON, Base64, JWT, hashing, UUIDs, regex, color, markdown, diffing, and more). It lives in the menubar, opens in under a second via global hotkey, and works entirely on-device with no network, no account, and no subscription.
 
 ## Core Value
 

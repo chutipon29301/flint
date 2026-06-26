@@ -33,14 +33,14 @@ key_files:
     - UI/SearchView.swift
     - UI/Components/PinnedToolBarView.swift
     - Core/Services/SearchResultsMerger.swift
-    - LatheTests/HistorySearchTests.swift
+    - FlintTests/HistorySearchTests.swift
   modified:
     - Core/Services/HistoryStore.swift
     - Core/Services/PreferencesStore.swift
     - UI/MenuBarPopoverView.swift
-    - Lathe.xcodeproj/project.pbxproj
+    - Flint.xcodeproj/project.pbxproj
 decisions:
-  - "SearchResultsMerger is a pure enum with no SwiftUI import — UI-free and testable from LatheTests"
+  - "SearchResultsMerger is a pure enum with no SwiftUI import — UI-free and testable from FlintTests"
   - "HistoryRowView extracted from MenuBarPopoverView into UI/Components/ for reuse in HistoryPanelView and SearchView"
   - "PinnedToolBarView uses onDrag/onDrop (not List.onMove) since horizontal scroll bars cannot use List-style move"
   - "Keyboard shortcuts wired via hidden overlay Button + .keyboardShortcut() inside .background() — avoids conflicting with first-responder text field"
@@ -97,7 +97,7 @@ Created `UI/SearchView.swift`:
 - "Show full history…" shortcut visible when query prefixes "history" (2+ chars)
 - Empty-state: "No tools or history matching \"\(query)\"" (UI-SPEC copywriting)
 
-Created `LatheTests/HistorySearchTests.swift`:
+Created `FlintTests/HistorySearchTests.swift`:
 - 15 tests: tool match, history match, no-match, ranking, history-query detection, default state, 10-cap
 - Source assertion: `SearchResultsMerger.swift` has 0 `import SwiftUI` statements
 
@@ -202,7 +202,7 @@ Files verified to exist:
 - `/Users/chutipon/Documents/project/flint/UI/SearchView.swift` — FOUND
 - `/Users/chutipon/Documents/project/flint/UI/Components/PinnedToolBarView.swift` — FOUND
 - `/Users/chutipon/Documents/project/flint/Core/Services/SearchResultsMerger.swift` — FOUND
-- `/Users/chutipon/Documents/project/flint/LatheTests/HistorySearchTests.swift` — FOUND
+- `/Users/chutipon/Documents/project/flint/FlintTests/HistorySearchTests.swift` — FOUND
 
 Commits verified:
 - 132301d: feat(01-06): add HistoryStore search, HistoryRowView, HistoryPanelView (Task 1)

@@ -10,7 +10,7 @@
 
 Before categorizing, a snapshot of what direct competitors ship:
 
-| Tool | Count | Notable inclusions | Notable gaps vs Lathe PRD |
+| Tool | Count | Notable inclusions | Notable gaps vs Flint PRD |
 |------|-------|-------------------|--------------------------|
 | **DevToys v2** | 30 built-in | JSON↔YAML, SQL formatter, XML formatter, Lorem Ipsum, Password gen, QR Code, GZip, Color Blindness Simulator, PNG/JPEG compressor | No OKLCH, no UUID v7, no Markdown PDF export, no screen color picker |
 | **DevUtils.app** | 47+ | Cron parser, String case converter, YAML↔JSON, JSON↔CSV, HTML entity encode/decode, ULID, Lorem Ipsum, QR Code, SQL formatter, CSS/JS beautify, PHP serializer, cURL-to-code, X.509 cert decoder | Pays $40–80, no diff word-level highlight |
@@ -48,7 +48,7 @@ Features that every serious developer utility ships. Missing any of these will c
 
 ### Differentiators (Competitive Advantage)
 
-Features where Lathe can meaningfully exceed the competitive baseline or offer something competitors lack.
+Features where Flint can meaningfully exceed the competitive baseline or offer something competitors lack.
 
 | Feature | Value Proposition | Complexity | PRD Status | Notes |
 |---------|-------------------|------------|------------|-------|
@@ -73,12 +73,12 @@ Features that appear on competitor lists and will be requested by users, but sho
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
 | **YAML↔JSON converter** | Ships in DevToys, DevUtils; YAML is common in CI/devops config | Requires a YAML parser (no native Foundation support); Yams package adds ~500KB; first-class YAML handling is a significant scope addition for a tool most non-devops developers won't use daily | Defer to v2; JSON formatter covers 80% of use cases |
-| **SQL formatter** | DevToys and DevUtils both ship SQL formatting | SQL AST parsing is a hard problem requiring a full parser; quality bar is high (keywords, indentation, dialect awareness); no lightweight Swift SQL formatter exists natively | Out of scope; SQLiteParser or similar adds weight; not core to Lathe's identity |
+| **SQL formatter** | DevToys and DevUtils both ship SQL formatting | SQL AST parsing is a hard problem requiring a full parser; quality bar is high (keywords, indentation, dialect awareness); no lightweight Swift SQL formatter exists natively | Out of scope; SQLiteParser or similar adds weight; not core to Flint's identity |
 | **Lorem Ipsum generator** | Ships in DevToys, DevUtils; trivially easy to implement | It's a 10-line text generator; the opportunity cost is zero but it also adds essentially zero value to a developer toolkit focused on encoding/debugging; it's a novelty filler | Omit; users have a dozen browser extensions for this |
 | **QR Code generator/reader** | Ships in DevToys, DevUtils; frequent user request | Requires CoreImage CIFilter (generation) + Vision framework (reading); reading requires camera or image file; adds framework overhead and a new permission surface for a tool most developers use rarely | Omit v1; add as a v2 standalone extension if demanded |
 | **String case converter** (camelCase, snake_case, PascalCase, kebab-case) | Ships in DevUtils and Wring; trivially useful | Adds a tool slot for what is a 30-line tokenizer; tokenizing edge cases (XMLHttpRequest, iOS prefix) are tricky; the tool competes with the text editor's built-in transformations in most IDEs | Defer to v2 as a lightweight addition to a "Text Utilities" catch-all tool |
 | **Cron expression parser** | Ships in DevUtils, Wring, DevToys (via extension); frequently requested | Core cron parsing requires building or importing a cron grammar (no native Foundation support); "next N runs" display requires date arithmetic across DST; moderate scope for a tool used occasionally | Defer to v2; it's a high-signal feature but not MVP-critical |
-| **HTML entity encoder/decoder** | Ships in DevUtils, DevToys; web dev staple | Lathe's current identity is API/backend dev tools; HTML entity encoding is a web/content dev task at a lower frequency; easily done with a browser console | Defer; if the URL tool proves popular, add HTML encode as a sibling |
+| **HTML entity encoder/decoder** | Ships in DevUtils, DevToys; web dev staple | Flint's current identity is API/backend dev tools; HTML entity encoding is a web/content dev task at a lower frequency; easily done with a browser console | Defer; if the URL tool proves popular, add HTML encode as a sibling |
 | **Plugin / extension marketplace** | CyberChef model; Boop is entirely script-based; power users want custom transforms | Platform maintenance burden; security surface; version compatibility; JS sandbox in a native app is complexity overhead; PRD already calls this out of scope | Stay out of scope; Boop exists for the scripting use case |
 | **Collaboration / share transforms** | CyberChef recipe sharing model; users occasionally want to share a chain | Requires network, server, account; violates the core privacy guarantee | Stays out of scope per PRD |
 | **Password generator** | Ships in DevToys; common request | Security-sensitive; entropy display, character set options, clipboard handling of secrets — all create scope; SecRandomCopyBytes makes it easy technically but the UX/trust surface is distinct from encoding tools | Low priority; if added, it's a 1-screen generator after core tools validated |
@@ -305,7 +305,7 @@ Core 7 tools + infrastructure. This is what makes the app useful for the daily A
 
 ## Competitor Feature Analysis
 
-| Feature | DevToys v2 | DevUtils.app | Wring | Lathe PRD |
+| Feature | DevToys v2 | DevUtils.app | Wring | Flint PRD |
 |---------|------------|--------------|-------|-----------|
 | JSON format/validate | YES | YES | YES | YES |
 | JSONPath query | YES (standalone) | NO | NO | Phase 2 tab |
@@ -391,5 +391,5 @@ Items in the PRD that are unusually ambitious relative to the competitive baseli
 - [WKWebView PDF creation on macOS](https://digitalbunker.dev/how-to-create-pdf-from-wkwebview/) — PDF export approach confirmed
 
 ---
-*Feature research for: macOS Developer Utility Menubar App (Lathe)*
+*Feature research for: macOS Developer Utility Menubar App (Flint)*
 *Researched: 2026-06-25*

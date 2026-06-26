@@ -104,7 +104,7 @@ None — the fix is complete and routes to a fully-implemented handler.
 
 The fix depends on first-responder focus state at runtime and cannot be verified by automated tools. Manual UAT steps:
 
-1. Build and run Lathe; open the popover (Cmd+Shift+Space) and open a tool with an editor (e.g. JSON Formatter).
+1. Build and run Flint; open the popover (Cmd+Shift+Space) and open a tool with an editor (e.g. JSON Formatter).
 2. Click INTO the input editor and type/paste so the NSTextView has focus.
 3. Press Esc ONCE — must return to the launcher (previously-failing case).
 4. At the launcher with empty search, press Esc again — popover must close (stage 2).

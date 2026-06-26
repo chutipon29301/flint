@@ -55,8 +55,8 @@ human_verification:
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|---------|
-| 1 | App launches with menubar icon and opens a 480x600 popover with autofocused search (INFRA-01) | VERIFIED | `LatheApp.swift` uses `MenuBarExtra("Lathe", systemImage: "wrench.and.screwdriver")` + `.menuBarExtraStyle(.window)`; `MenuBarPopoverView` has `.frame(width: 480, height: 600)` and `@FocusState private var searchFocused: Bool` with `.focused($searchFocused)` on `.onAppear` |
-| 2 | Global hotkey cmd+shift+Space opens popover without Accessibility permission (INFRA-04) | VERIFIED | `HotkeyManager.swift` uses `KeyboardShortcuts.onKeyDown(for: .openLathe)` with `initial: .init(.space, modifiers: [.command, .shift])` — Carbon RegisterEventHotKey, zero Accessibility entitlement needed |
+| 1 | App launches with menubar icon and opens a 480x600 popover with autofocused search (INFRA-01) | VERIFIED | `FlintApp.swift` uses `MenuBarExtra("Flint", systemImage: "wrench.and.screwdriver")` + `.menuBarExtraStyle(.window)`; `MenuBarPopoverView` has `.frame(width: 480, height: 600)` and `@FocusState private var searchFocused: Bool` with `.focused($searchFocused)` on `.onAppear` |
+| 2 | Global hotkey cmd+shift+Space opens popover without Accessibility permission (INFRA-04) | VERIFIED | `HotkeyManager.swift` uses `KeyboardShortcuts.onKeyDown(for: .openFlint)` with `initial: .init(.space, modifiers: [.command, .shift])` — Carbon RegisterEventHotKey, zero Accessibility entitlement needed |
 | 3 | Clipboard JSON detection shows non-destructive banner within ~100ms of focus (INFRA-05, INFRA-06) | VERIFIED | `ClipboardDetector.isPopoverPresented.didSet` calls `checkPasteboard(force: true)` on every focus; `MenuBarPopoverView` shows `DetectionBannerView` when `clipboard.detectionResult != nil && !dismissedDetection` |
 | 4 | All 7 tools exist as full slices (Transformer + ViewModel + View + Definition) registered in ToolRegistry (INFRA-03) | VERIFIED | `ToolRegistry.swift` registers all 7 via `JSONFormatterDefinition.make()`, `Base64Definition.make()`, `URLEncoderDefinition.make()`, `JWTDefinition.make()`, `TimestampDefinition.make()`, `HashDefinition.make()`, `UUIDDefinition.make()`; all 28 files confirmed present and non-stub |
 | 5 | JSON Formatter: pretty-print (2/4/tab), minify, sort keys, line:column errors, syntax highlight, copy output (JSON-01..06) | VERIFIED | `JSONTransformer.swift`: `prettyPrint(_:indent:)`, `minify(_:)`, `prettyPrintSorted(_:indent:)`, `jsonError(from:in:)` all present; CR-03 fix applied (line-by-line indent); 9 unit tests in `JSONTransformerTests.swift` |
@@ -124,7 +124,7 @@ The prior failure (shortcut set covering ⌘K, ⌘F, ⌘H, ⌘N, ⌘], ⌘[, ⌘
 | `Core/Services/HistoryStore.swift` | GRDB DatabaseQueue off-main, ValueObservation, save/clearUnpinned | VERIFIED | `Task.detached(priority: .utility)` for DB open; WR-03/04 fixes applied (DB eviction + historyLimit wired) |
 | `Core/Models/HistoryEntry.swift` | History row schema with NO secret fields | VERIFIED | Only `id/tool/input/output/timestamp/pinned` columns; no secret/key column |
 | `Tools/JSONFormatter/JSONTransformer.swift` | Pure JSON pretty-print/minify/sort + line:col errors | VERIFIED | No SwiftUI/AppKit imports; CR-03 fix applied (line-by-line indent) |
-| `App/LatheApp.swift` | @main app wiring MenuBarExtra + service injection | VERIFIED | `MenuBarExtra`, `.menuBarExtraAccess`, `.environment()` injection, WR-04 `onChange` wiring |
+| `App/FlintApp.swift` | @main app wiring MenuBarExtra + service injection | VERIFIED | `MenuBarExtra`, `.menuBarExtraAccess`, `.environment()` injection, WR-04 `onChange` wiring |
 | `Core/Services/ClipboardDetector.swift` | NSPasteboardDidChangeNotification + visibility gate + triggerDetect() | VERIFIED | CR-02 fix applied; `isPopoverPresented` gate present; `triggerDetect()` public method added (lines 64-68) |
 | `Core/Extensions/Data+Base64URL.swift` | base64url decoder (JWT -/_ corruption fix) | VERIFIED | `Data.fromBase64URL` with char substitution + re-padding |
 | `Tools/JWT/JWTTransformer.swift` | Pure decode + expiryStatus + verifyHMAC + claims | VERIFIED | All methods present; pitfall #11 timezone fix; WR-01 fix (constant-time HMAC via `isValidAuthenticationCode`) |
@@ -158,7 +158,7 @@ The prior failure (shortcut set covering ⌘K, ⌘F, ⌘H, ⌘N, ⌘], ⌘[, ⌘
 |---------|-------------|--------|---------|
 | JWT HMAC secret excluded from history | INFRA-09, T-03-ID | VERIFIED | `hmacSecret` is `@State private var` in `JWTView.swift`; `JWTViewModel.verifyHMAC(secret:)` is a transient method param only; `onSaveHistory` receives `token` only |
 | Hash HMAC key excluded from history | INFRA-09, T-04-ID | VERIFIED | `hmacKey` is `@State private var` in `HashView.swift`; `HashViewModel.computeHMAC(key:)` is a transient method param only; history write has no key param |
-| Release entitlements have no get-task-allow | T-01-EP | VERIFIED | `Resources/Lathe-release.entitlements` is an empty plist dict; debug file has the key (correct) |
+| Release entitlements have no get-task-allow | T-01-EP | VERIFIED | `Resources/Flint-release.entitlements` is an empty plist dict; debug file has the key (correct) |
 | HistoryEntry schema has no secret column | INFRA-09, T-01-ID | VERIFIED | `HistoryEntry` struct: only `id, tool, input, output, timestamp, pinned` — confirmed |
 
 ### Data-Flow Trace (Level 4)
@@ -182,7 +182,7 @@ All 3 critical issues and 6 warnings from the code review (01-REVIEW.md) have be
 | WR-01: Non-constant-time HMAC | Replaced `Data(mac) == sigData` with `HMAC.isValidAuthenticationCode` | VERIFIED |
 | WR-02: WindowCoordinator policy leak | `PreferencesView.onDisappear` calls `WindowCoordinator.shared.windowWillClose()` | VERIFIED |
 | WR-03: HistoryStore DB grows unbounded | `save()` deletes unpinned rows beyond limit after each insert | VERIFIED |
-| WR-04: historyLimit preference disconnected | `LatheApp.onChange(of: prefs.historyLimit)` syncs to `historyStore.historyLimit` | VERIFIED |
+| WR-04: historyLimit preference disconnected | `FlintApp.onChange(of: prefs.historyLimit)` syncs to `historyStore.historyLimit` | VERIFIED |
 | WR-05: LIKE wildcard unescaped | `searchAsync` escapes `\`, `%`, `_` before LIKE pattern + `escape: "\\"` | VERIFIED |
 | WR-06: Dead `prefix` variable in allHashesText | Dead code removed; direct uppercase ternary inline | VERIFIED |
 
@@ -228,7 +228,7 @@ Expected: No visual artifacts (unreadable text, wrong-mode backgrounds) in any t
 Why human: Automated check confirmed zero hardcoded hex colors but runtime artifacts can only be seen with the live app.
 
 **2. System Accent Color Audit**
-Test: Change system accent color while Lathe is open.
+Test: Change system accent color while Flint is open.
 Expected: Only reserved accent uses (buttons, toggles, focused ring) change; no color bleed from hardcoded values.
 Why human: Requires runtime observation.
 

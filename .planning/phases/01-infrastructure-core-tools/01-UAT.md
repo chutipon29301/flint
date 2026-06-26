@@ -13,12 +13,12 @@ updated: 2026-06-26T00:00:00Z
 ## Tests
 
 ### 1. Cold Start Smoke Test
-expected: Quit Lathe completely, delete history DB if present, launch a fresh build. App boots without errors, menubar icon appears, GRDB DB created/migrated with no hang, and ⌘⇧Space opens the popover.
+expected: Quit Flint completely, delete history DB if present, launch a fresh build. App boots without errors, menubar icon appears, GRDB DB created/migrated with no hang, and ⌘⇧Space opens the popover.
 result: pass
-note: Automated — clean Debug build (BUILD SUCCEEDED), killed running instances, removed history DB, launched fresh .app via `open`. Process booted and stayed alive (pid confirmed). `~/Library/Application Support/Lathe/history.db` created on boot, proving GRDB init ran off-main without hang. Hotkey popover itself recorded under Test 2.
+note: Automated — clean Debug build (BUILD SUCCEEDED), killed running instances, removed history DB, launched fresh .app via `open`. Process booted and stayed alive (pid confirmed). `~/Library/Application Support/Flint/history.db` created on boot, proving GRDB init ran off-main without hang. Hotkey popover itself recorded under Test 2.
 
 ### 2. Global Hotkey Opens Popover
-expected: From any other app, press ⌘⇧Space. The Lathe popover window (480x600) opens and takes focus in under ~200ms, showing the search-first launcher with the pinned-tools bar.
+expected: From any other app, press ⌘⇧Space. The Flint popover window (480x600) opens and takes focus in under ~200ms, showing the search-first launcher with the pinned-tools bar.
 result: pass
 
 ### 3. Clipboard Auto-Detection Banner

@@ -1,13 +1,13 @@
 # Project Research Summary
 
-**Project:** Lathe — macOS Developer Toolkit (Menubar)
+**Project:** Flint — macOS Developer Toolkit (Menubar)
 **Domain:** Native macOS menubar developer-utility app (SwiftUI, MVVM, macOS 14.0+)
 **Researched:** 2026-06-25
 **Confidence:** HIGH
 
 ## Executive Summary
 
-Lathe is a native macOS menubar utility in a well-defined competitive category (DevToys, DevUtils, Wring, Boop). The research confirms that the PRD's three-phase structure is sound, but several package picks in the original PROJECT.md are stale and must be corrected before coding begins: Highlightr is deprecated (replace with HighlightSwift for display, custom NSTextStorage for editable views), Ink lacks full GFM (replace with swift-markdown), SwiftData has critical macOS 14 bugs (replace with GRDB 7), and CGEventTap for global hotkeys triggers an Accessibility permission dialog (replace with KeyboardShortcuts 3.0.1). CRC32 has no CryptoKit support and must be sourced from zlib via CommonCrypto. OKLCH conversion has no Apple-native path and requires ChromaKit 0.1.1 in Phase 2.
+Flint is a native macOS menubar utility in a well-defined competitive category (DevToys, DevUtils, Wring, Boop). The research confirms that the PRD's three-phase structure is sound, but several package picks in the original PROJECT.md are stale and must be corrected before coding begins: Highlightr is deprecated (replace with HighlightSwift for display, custom NSTextStorage for editable views), Ink lacks full GFM (replace with swift-markdown), SwiftData has critical macOS 14 bugs (replace with GRDB 7), and CGEventTap for global hotkeys triggers an Accessibility permission dialog (replace with KeyboardShortcuts 3.0.1). CRC32 has no CryptoKit support and must be sourced from zlib via CommonCrypto. OKLCH conversion has no Apple-native path and requires ChromaKit 0.1.1 in Phase 2.
 
 The architecture centers on a single highest-leverage decision: the `ToolDefinition` / `ToolRegistry` abstraction. Every cross-cutting concern — clipboard auto-detection, history writing, search, keyboard routing — flows through this abstraction. It must be designed and frozen in the first week of Phase 1 before any tool implementation starts. The build order is strictly infrastructure-first: the skeleton (registry, history store, clipboard detector, hotkey manager, popover shell) must be fully wired before the first tool (JSON Formatter) is built. The JSON Formatter then serves as the integration test that proves the entire data-flow pipeline works end-to-end before adding the remaining six tools.
 
@@ -87,7 +87,7 @@ Feature research is based on verified competitor analysis (DevToys v2, DevUtils 
 
 ### Architecture Approach
 
-The architecture is a layered SwiftUI app with four tiers: App (owns and injects all services), Core Services (ToolRegistry, HistoryStore, ClipboardDetector, HotkeyManager, PreferencesStore), Tools (each tool is a `ToolDefinition` + `ToolViewModel` + `ToolView` + pure `Transformer`), and Infrastructure (GRDB, UserDefaults, KeyboardShortcuts, NSPasteboard, CryptoKit/CommonCrypto, AppKit bridges). Services are `@Observable` classes held as `@State` in `LatheApp` and injected via `.environment()` — this is the only lifecycle-safe ownership point. Tools' ViewModels are created lazily per navigation destination and are never shared between the popover and the workspace window.
+The architecture is a layered SwiftUI app with four tiers: App (owns and injects all services), Core Services (ToolRegistry, HistoryStore, ClipboardDetector, HotkeyManager, PreferencesStore), Tools (each tool is a `ToolDefinition` + `ToolViewModel` + `ToolView` + pure `Transformer`), and Infrastructure (GRDB, UserDefaults, KeyboardShortcuts, NSPasteboard, CryptoKit/CommonCrypto, AppKit bridges). Services are `@Observable` classes held as `@State` in `FlintApp` and injected via `.environment()` — this is the only lifecycle-safe ownership point. Tools' ViewModels are created lazily per navigation destination and are never shared between the popover and the workspace window.
 
 **Major components:**
 1. `ToolDefinition` (struct) — immutable metadata per tool: id, name, category, keywords, detection predicate, view factory. The central abstraction; changing its shape later requires touching every `*Definition.swift` file.
@@ -125,7 +125,7 @@ The architecture is a layered SwiftUI app with four tiers: App (owns and injects
 
 10. **Sparkle EdDSA key must be embedded from v1.0; losing the private key locks all users out of auto-update** — Generate the EdDSA keypair once; store private key in CI Keychain; embed `SUPublicEDKey` in `Info.plist` before shipping v1.0; validate the v0.0.1 to v0.0.2 update pipeline locally before the real release.
 
-11. **`get-task-allow` entitlement in Release build fails notarization** — Maintain separate `Lathe-debug.entitlements` and `Lathe-release.entitlements`. Set `CODE_SIGN_ENTITLEMENTS` per Xcode build configuration. Test `notarytool submit` on the first Release archive.
+11. **`get-task-allow` entitlement in Release build fails notarization** — Maintain separate `Flint-debug.entitlements` and `Flint-release.entitlements`. Set `CODE_SIGN_ENTITLEMENTS` per Xcode build configuration. Test `notarytool submit` on the first Release archive.
 
 ## Implications for Roadmap
 
@@ -141,7 +141,7 @@ The architecture is a layered SwiftUI app with four tiers: App (owns and injects
 5. `ClipboardDetector` (NSNotification approach or on-visible polling, not global timer)
 6. `HotkeyManager` using KeyboardShortcuts 3.0.1 (not CGEventTap)
 7. `WindowCoordinator` with activation-policy dance
-8. `LatheApp` + scene wiring + `.environment()` injection for all services
+8. `FlintApp` + scene wiring + `.environment()` injection for all services
 9. `MenuBarPopoverView` empty shell + `MenuBarExtraAccess` wiring
 10. `MainWindowView` empty shell (NavigationSplitView)
 11. `DetectionBannerView`

@@ -14,10 +14,10 @@ tech_stack:
     - "Array.move(fromOffsets:toOffset:) insert-before-index semantics (no +1 for forward moves)"
 key_files:
   created:
-    - LatheTests/PinnedToolReorderTests.swift
+    - FlintTests/PinnedToolReorderTests.swift
   modified:
     - UI/Components/PinnedToolBarView.swift
-    - Lathe.xcodeproj/project.pbxproj
+    - Flint.xcodeproj/project.pbxproj
 decisions:
   - "Use plain VStack + .onTapGesture instead of Button so .onDrag can claim the press gesture (Button pre-empts drag on macOS)"
   - "Remove destIndex+1 in performDrop: Array.move toOffset already uses insert-before-index convention; +1 double-compensated"
@@ -45,7 +45,7 @@ Fixed UAT Test 15 gap: pinned-tool drag-to-reorder was completely dead due to a 
 
 | Task | Name | Commit | Files |
 |------|------|--------|-------|
-| 1 | Index-math regression test (TDD RED+GREEN) | 73ffee9 | LatheTests/PinnedToolReorderTests.swift, project.pbxproj |
+| 1 | Index-math regression test (TDD RED+GREEN) | 73ffee9 | FlintTests/PinnedToolReorderTests.swift, project.pbxproj |
 | 2 | Decouple drag source from Button + fix off-by-one | 4ed40d5 | UI/Components/PinnedToolBarView.swift |
 | 3 | Manual re-UAT of drag gesture | CHECKPOINT — awaiting human | — |
 
@@ -59,7 +59,7 @@ Fixed UAT Test 15 gap: pinned-tool drag-to-reorder was completely dead due to a 
 - `testNoOp_selfDrop_leavesOrderUnchanged` — verifies the self-drop guard prevents mutation
 - `testPersistence_roundTrip_forwardMove` — verifies UserDefaults round-trip survives a new PreferencesStore instance
 
-All 4 tests pass. Project file updated to include the new test in the LatheTests target.
+All 4 tests pass. Project file updated to include the new test in the FlintTests target.
 
 ### Task 2: PinnedToolBarView.swift — Two Fixes
 
@@ -87,7 +87,7 @@ All 4 tests pass. Project file updated to include the new test in the LatheTests
 - **Found during:** Task 1 RED phase (tests ran against unchanged movePinnedTool)
 - **Issue:** The plan's `<behavior>` spec said `movePinnedTool(from: IndexSet(integer: 0), to: 2)` yields `["base64","jwt-decoder","json-formatter",...]` (json AFTER jwt). The actual `Array.move(fromOffsets:IndexSet(0), toOffset:2)` behavior is insert-before original index 2, giving `["base64","json-formatter","jwt-decoder",...]` (json BEFORE jwt). XCTest confirmed the discrepancy. The plan's intent (remove the `+1`) is correct; only the described expected array was wrong.
 - **Fix:** Updated test assertions to reflect actual Swift `Array.move` semantics. The fix intent from Task 2 (passing `to: destIndex` without `+1`) is preserved and correct — the plan correctly identifies the `+1` as the bug.
-- **Files modified:** LatheTests/PinnedToolReorderTests.swift
+- **Files modified:** FlintTests/PinnedToolReorderTests.swift
 - **Note:** The UX effect: dropping on a slot places the dragged item BEFORE the hovered item (natural list-insert semantics). The old `+1` placed it AFTER the hovered item.
 
 ## Verification Results
@@ -105,7 +105,7 @@ All 4 tests pass. Project file updated to include the new test in the LatheTests
 ## Checkpoint: Manual UAT Pending
 
 Task 3 is a `checkpoint:human-verify` — the drag gesture itself cannot be exercised by XCTest. Manual re-UAT of Test 15 is required:
-1. Build and run Lathe; open the launcher (Cmd+Shift+Space)
+1. Build and run Flint; open the launcher (Cmd+Shift+Space)
 2. Click a pinned icon — verify tap-to-select still works
 3. Drag a left-side icon to a right-side position — verify drag starts and icons reorder
 4. Verify forward drag lands at the intended slot (not one slot past)
@@ -117,6 +117,6 @@ None — drag reorder is fully wired end-to-end; no placeholder data paths.
 
 ## Self-Check: PASSED
 
-- LatheTests/PinnedToolReorderTests.swift: exists, 4 tests compiled and passed
+- FlintTests/PinnedToolReorderTests.swift: exists, 4 tests compiled and passed
 - UI/Components/PinnedToolBarView.swift: modified, build succeeded
 - Commits 73ffee9 and 4ed40d5: both present in git log

@@ -25,7 +25,7 @@ tech_stack:
     - MenuBarExtraAccess 1.3.0 (programmatic popover dismiss, isPresented binding)
     - HighlightSwift 1.1.0 (syntax highlighting for read-only output — attributedText API)
   patterns:
-    - Pattern 1: Services as @State in LatheApp, injected via .environment()
+    - Pattern 1: Services as @State in FlintApp, injected via .environment()
     - Pattern 2: Two-stage Esc via MenuBarExtraAccess isPresented
     - Pattern 3: ToolDefinition/ToolRegistry with first-match-wins detect()
     - Pattern 4: GRDB HistoryStore, openDatabase() nonisolated + Task.detached for off-main
@@ -35,9 +35,9 @@ tech_stack:
     - Pattern 8: SyntaxEditorView — guard textView.string != text anti-loop guard
 key_files:
   created:
-    - Lathe.xcodeproj/project.pbxproj
-    - Resources/Lathe-debug.entitlements
-    - Resources/Lathe-release.entitlements
+    - Flint.xcodeproj/project.pbxproj
+    - Resources/Flint-debug.entitlements
+    - Resources/Flint-release.entitlements
     - Core/Models/ToolCategory.swift
     - Core/Models/ToolDefinition.swift
     - Core/Models/DetectionResult.swift
@@ -48,7 +48,7 @@ key_files:
     - Core/Services/ClipboardDetector.swift
     - Core/Services/HotkeyManager.swift
     - Core/Extensions/View+CopyButton.swift
-    - App/LatheApp.swift
+    - App/FlintApp.swift
     - App/WindowCoordinator.swift
     - UI/MenuBarPopoverView.swift
     - UI/MainWindowView.swift
@@ -67,7 +67,7 @@ key_files:
     - Tools/Timestamp/TimestampDefinition.swift
     - Tools/Hash/HashDefinition.swift
     - Tools/UUID/UUIDDefinition.swift
-    - LatheTests/JSONTransformerTests.swift
+    - FlintTests/JSONTransformerTests.swift
   modified: []
 decisions:
   - "JSONSerialization uses 2-space indent (not 4-space); applyIndent converts from 2 to 4/tab"
@@ -95,11 +95,11 @@ metrics:
 
 Created the complete greenfield project:
 
-- **Lathe.xcodeproj** — macOS 14.0 target, Swift 6, bundle ID `com.lathe.app`, 4 SPM packages at exact locked versions
-- **Dual entitlements** — `Lathe-debug.entitlements` (with `get-task-allow`) and `Lathe-release.entitlements` (NO `get-task-allow`, Hardened Runtime)
+- **Flint.xcodeproj** — macOS 14.0 target, Swift 6, bundle ID `com.flint.app`, 4 SPM packages at exact locked versions
+- **Dual entitlements** — `Flint-debug.entitlements` (with `get-task-allow`) and `Flint-release.entitlements` (NO `get-task-allow`, Hardened Runtime)
 - **Core/Models** — `ToolCategory`, `ToolDefinition` (frozen), `DetectionResult`, `HistoryEntry` (6 columns only, no secret field — T-01-ID)
 - **Core/Services** — `HistoryStore` (GRDB off-main), `PreferencesStore`, `ToolRegistry` (frozen), `ClipboardDetector`, `HotkeyManager`
-- **App/** — `LatheApp` (@main with MenuBarExtraAccess), `WindowCoordinator` (@MainActor activation dance)
+- **App/** — `FlintApp` (@main with MenuBarExtraAccess), `WindowCoordinator` (@MainActor activation dance)
 - **6 stub *Definition files** — Base64, URLEncoder, JWT, Timestamp, Hash, UUID (allow ToolRegistry to compile; Wave-2 overwrites each)
 
 ### Task 2: Pure JSONTransformer (TDD)
@@ -236,7 +236,7 @@ The following pipeline is implemented and verified to compile. Manual runtime ve
 - **Found during:** Task 1 build verification
 - **Issue:** `menuBarExtraAccess()` is an extension on `MenuBarExtra`, not `Scene`. Applying it after `.menuBarExtraStyle(.window)` caused "value of type 'some Scene' has no member 'menuBarExtraAccess'" error.
 - **Fix:** Reordered modifiers: `.menuBarExtraAccess()` first, then `.menuBarExtraStyle(.window)`.
-- **Files modified:** `App/LatheApp.swift`
+- **Files modified:** `App/FlintApp.swift`
 - **Commit:** c168e5b
 
 ## Known Stubs
@@ -262,12 +262,12 @@ All stubs have correct id/name/sfSymbol/keywords and render `Text("...Coming Soo
 ## Self-Check: PASSED
 
 Files verified to exist:
-- /Users/chutipon/Documents/project/flint/Lathe.xcodeproj/project.pbxproj — FOUND
+- /Users/chutipon/Documents/project/flint/Flint.xcodeproj/project.pbxproj — FOUND
 - /Users/chutipon/Documents/project/flint/Core/Models/ToolDefinition.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Core/Services/HistoryStore.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Core/Services/ToolRegistry.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Tools/JSONFormatter/JSONTransformer.swift — FOUND
-- /Users/chutipon/Documents/project/flint/LatheTests/JSONTransformerTests.swift — FOUND
+- /Users/chutipon/Documents/project/flint/FlintTests/JSONTransformerTests.swift — FOUND
 
 Commits verified:
 - c168e5b: feat(01-01): scaffold Xcode project, packages, dual entitlements, and frozen infrastructure

@@ -37,7 +37,7 @@ key-files:
   modified:
     - Core/Services/PreferencesStore.swift (launchAtLogin, showInDock, theme, codeFont, fontSize, historyLimit)
     - UI/MainWindowView.swift (NavigationSplitView workspace, min 800x600, last-mode persistence)
-    - App/LatheApp.swift (.preferredColorScheme on all 3 scenes, Settings scene declaration)
+    - App/FlintApp.swift (.preferredColorScheme on all 3 scenes, Settings scene declaration)
     - App/WindowCoordinator.swift (openPreferences + openWorkspace + activation dance)
 
 key-decisions:
@@ -92,7 +92,7 @@ Each task was committed atomically:
 - `Core/Services/PreferencesStore.swift` - Extended: launchAtLogin (SMAppService), showInDock, defaultOpenMode, clipboardAutoDetect, theme, codeFont, codeFontSize, historyLimit, lastWorkspaceToolId
 - `UI/PreferencesView.swift` - New: 4-tab preferences (General/Appearance/History/per-tool)
 - `UI/MainWindowView.swift` - Fleshed out: NavigationSplitView with ToolRegistry sidebar, content area, min 800x600
-- `App/LatheApp.swift` - Updated: .preferredColorScheme on all 3 scenes (INFRA-14)
+- `App/FlintApp.swift` - Updated: .preferredColorScheme on all 3 scenes (INFRA-14)
 - `App/WindowCoordinator.swift` - Updated: openPreferences() + openWorkspace() activation dance
 - `.planning/phases/01-infrastructure-core-tools/01-07-a11y-audit.md` - Task 3 audit record (accepted on automated checks)
 
@@ -135,8 +135,8 @@ None - plan executed exactly as specified. Task 3 checkpoint was resolved as per
 | Clipboard idle CPU (pitfall #7) | `NSPasteboardDidChangeNotification` (not polling timer) + `guard isEnabled, isPopoverPresented else { return }` gate | VERIFIED |
 | PreferencesStore startup cost | Pure UserDefaults computed properties — no I/O at init | VERIFIED |
 | HotkeyManager startup cost | `KeyboardShortcuts.onKeyDown` registration only — no I/O, no permissions dialog | VERIFIED |
-| Release build | `xcodebuild -scheme Lathe -configuration Release build` → `BUILD SUCCEEDED` | VERIFIED |
-| Entitlements security gate | No `get-task-allow` key in `Lathe-release.entitlements` (only in XML comments) | VERIFIED |
+| Release build | `xcodebuild -scheme Flint -configuration Release build` → `BUILD SUCCEEDED` | VERIFIED |
+| Entitlements security gate | No `get-task-allow` key in `Flint-release.entitlements` (only in XML comments) | VERIFIED |
 | No-crash on malformed input | All tools have INFRA-17 tests — 1MB garbage JSON, non-existent file hash, garbage URL, empty inputs — all pass | VERIFIED (TEST SUCCEEDED) |
 
 **What requires human measurement (Instruments) — DEFERRED to pre-release:**

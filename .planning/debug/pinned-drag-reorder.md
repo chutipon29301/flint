@@ -17,7 +17,7 @@ next_action: return diagnosis (find_root_cause_only mode — no fix applied).
 expected: Launcher shows up to 6 pinned tool icons; dragging an icon reorders the bar; new order persists across relaunch.
 actual: "draging does not works" — drag produces no reorder at all.
 errors: None reported.
-reproduction: Open Lathe menubar popover launcher, attempt to drag a pinned tool icon to a new position (UAT Test 15).
+reproduction: Open Flint menubar popover launcher, attempt to drag a pinned tool icon to a new position (UAT Test 15).
 started: Discovered during UAT (INFRA-11 feature as built).
 
 ## Eliminated

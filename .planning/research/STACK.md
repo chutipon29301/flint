@@ -32,7 +32,7 @@
 | **GRDB.swift** (groue/GRDB.swift) | 7.11.1 | SQLite history store (100 items, searchable) | **Use package** | SwiftData on macOS 14 has documented critical bugs (broken inverse-relationship observation, random element reordering, broken `didSave`). Core Data is mature but overpowered for a 100-row store. UserDefaults has no SQL query capability. GRDB gives typed FetchRequest, ValueObservation for reactive updates, and migrations — all with zero runtime surprises. |
 | **HighlightSwift** (appstefan/HighlightSwift) | 1.1.0 | Syntax highlighting for display-only code views (Markdown preview code blocks, JSON read-only output) | **Use package (limited scope)** | Replaces previously-considered Highlightr. Highlightr v2.3.0 was last released June 2020; as of 2026 the maintainer has explicitly deprecated it, recommending HighlightSwift instead. HighlightSwift outputs `AttributedString` suitable for SwiftUI `Text`/`NSAttributedString`. For the full editable NSTextView (JSON editor, Regex test input), use a custom `NSViewRepresentable` wrapping `NSTextView` with `CodeAttributedString` from Highlightr OR write a minimal custom highlighter — see note below. |
 | **SwiftDiff** (turbolent/SwiftDiff) | no semver (Oct 2024 commit) | Word/character-level inline diff within changed lines | **Use package** | `CollectionDifference` handles line-level diff natively. Word-level highlight inside a changed line requires the Google Diff Match and Patch algorithm. SwiftDiff is a Swift port of that library. It is lightly maintained (14 commits) but functionally complete — only the diff algorithm is needed, not match/patch. Acceptable for this scope. |
-| **swift-markdown** (swiftlang/swift-markdown) | 0.8.0 | Markdown parsing + AST for HTML generation | **Use package over Ink** | swift-markdown is the Apple-backed package powered by cmark-gfm: full GFM support (tables, task lists, strikethrough, fenced code blocks). Ink v0.6.0 (Apr 2024) is community-maintained, lacks full GFM, and is designed for static-site HTML generation — not AST manipulation. For Lathe, the parsed AST renders to HTML via a custom visitor; `WKWebView` displays it. |
+| **swift-markdown** (swiftlang/swift-markdown) | 0.8.0 | Markdown parsing + AST for HTML generation | **Use package over Ink** | swift-markdown is the Apple-backed package powered by cmark-gfm: full GFM support (tables, task lists, strikethrough, fenced code blocks). Ink v0.6.0 (Apr 2024) is community-maintained, lacks full GFM, and is designed for static-site HTML generation — not AST manipulation. For Flint, the parsed AST renders to HTML via a custom visitor; `WKWebView` displays it. |
 | **Sparkle** (sparkle-project/Sparkle) | 2.9.3 | Auto-update for .dmg distribution | **Use package** | The only mature, production-tested update framework for non-MAS macOS apps. EdDSA-signed appcast, delta updates, XPC-sandboxed installer. Add in Phase 3 only — no-op until there is a v1.0 to update from. |
 | **ChromaKit** (HarshilShah/ChromaKit) | 0.1.1 | OKLCH ↔ NSColor conversion | **Use package (Phase 2 only)** | macOS has no native OKLCH API. ChromaKit adds `NSColor.oklch(L, C, H)` and conversion back, following CSS Color Level 4 math. Minimal (single file), no transitive deps. Accepted risk on small version number — the math is straightforward to vendor if needed. |
 | **MenuBarExtraAccess** (orchetect/MenuBarExtraAccess) | latest | Programmatic show/hide of MenuBarExtra `.window` style | **Conditional — evaluate first** | SwiftUI's `MenuBarExtra` lacks any API to programmatically dismiss the popover (confirmed open Apple Feedback: FB10185203). MenuBarExtraAccess bridges this via `isPresented` Binding. Evaluate whether `@NSApplicationDelegateAdaptor` + `NSStatusItem` is cleaner for this project's level of control before adding this dep. |
@@ -155,9 +155,9 @@ The Sparkle XPC service runs in a separate sandboxed process — no additional e
 **Decision: create-dmg 8.1.0 + Xcode notarytool.**
 
 1. Archive and export Developer ID-signed `.app` from Xcode
-2. `create-dmg Lathe.app ./dist` — produces a styled DMG with background + alias
-3. `xcrun notarytool submit ./dist/Lathe*.dmg --keychain-profile "AC_PASSWORD" --wait`
-4. `xcrun stapler staple ./dist/Lathe*.dmg`
+2. `create-dmg Flint.app ./dist` — produces a styled DMG with background + alias
+3. `xcrun notarytool submit ./dist/Flint*.dmg --keychain-profile "AC_PASSWORD" --wait`
+4. `xcrun stapler staple ./dist/Flint*.dmg`
 
 `altool` was deprecated and removed in November 2023. `notarytool` is the only current path.
 
@@ -271,5 +271,5 @@ App bundle target is < 20 MB — well within budget even with Sparkle.
 - Sparkle docs (EdDSA signing, appcast): https://sparkle-project.org/documentation/
 
 ---
-*Stack research for: Lathe — native macOS menubar developer-utility app*
+*Stack research for: Flint — native macOS menubar developer-utility app*
 *Researched: 2026-06-25*

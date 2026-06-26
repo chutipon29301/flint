@@ -10,7 +10,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                        LatheApp (@main)                              │
+│                        FlintApp (@main)                              │
 │  ┌──────────────────────────────────────────────────────────────┐    │
 │  │  App-level state (owned here, injected into every scene)     │    │
 │  │  @State historyStore | @State prefs | @State clipboard       │    │
@@ -53,12 +53,12 @@
 
 | Component | Responsibility | Communicates With | Never Touches |
 |-----------|---------------|-------------------|---------------|
-| `LatheApp` | Owns and instantiates all app-level services; injects them into scenes | All scenes via `.environment()` | Individual tool business logic |
+| `FlintApp` | Owns and instantiates all app-level services; injects them into scenes | All scenes via `.environment()` | Individual tool business logic |
 | `ToolRegistry` | Immutable ordered list of `ToolDefinition` values; the single enumeration point for all tools | `MenuBarPopoverView`, `SidebarView`, `ClipboardDetector`, `HistoryStore` | UI rendering, transformation logic |
 | `HistoryStore` | GRDB-backed write/read log of transformations (tool + input + output + timestamp + pinned) | `ToolViewModel` (writes), `HistoryPanelView` (reads), `SearchService` (queries) | Tool logic, UI layout |
 | `PreferencesStore` | `UserDefaults`-backed observable model for all user settings | All views that present configurable behavior | History data, tool execution |
 | `ClipboardDetector` | Polls `NSPasteboard.changeCount` on a background actor; runs predicate chain; publishes `DetectionResult?` | `MenuBarPopoverView` (shows banner), `ToolRegistry` (resolves tool match) | History, preferences persistence |
-| `HotkeyManager` | Registers/re-registers global hotkey via `KeyboardShortcuts`; publishes activation events | `LatheApp` (owns), responds to `PreferencesStore` hotkey changes | Window layout |
+| `HotkeyManager` | Registers/re-registers global hotkey via `KeyboardShortcuts`; publishes activation events | `FlintApp` (owns), responds to `PreferencesStore` hotkey changes | Window layout |
 | `ToolDefinition` | **Value type** (struct). Metadata + detection predicate + view factory closure for one tool | `ToolRegistry` (holds array), `ClipboardDetector` (runs predicates) | Services, database |
 | `ToolViewModel` | Per-tool `@Observable` class. Owns input, output, transformation state; writes to `HistoryStore` via injected closure | Its paired `ToolView`, `HistoryStore` | Other tools, UI framework APIs |
 | `ToolView` | SwiftUI view. Reads from ViewModel only; user actions call ViewModel methods | Its `ToolViewModel` | Core services directly |
@@ -71,9 +71,9 @@
 ## Recommended Project Structure
 
 ```
-Lathe/
+Flint/
 ├── App/
-│   ├── LatheApp.swift              ← @main; owns @State services; .environment() injection
+│   ├── FlintApp.swift              ← @main; owns @State services; .environment() injection
 │   ├── WindowCoordinator.swift     ← NSActivationPolicy switching; bridges AppKit window lifecycle
 │   └── AppDelegate.swift           ← @NSApplicationDelegateAdaptor; macOS Services handler
 │
@@ -128,13 +128,13 @@ Lathe/
 │
 └── Resources/
     ├── Assets.xcassets
-    ├── Lathe.entitlements
+    ├── Flint.entitlements
     └── highlight.js                ← bundled for WKWebView Markdown preview
 ```
 
 ### Structure Rationale
 
-- **Core/Services/ vs Tools/:** Services are long-lived app-level singletons injected from `LatheApp`. Tools are self-contained, stateless at the definition level; their ViewModels are created on demand per navigation.
+- **Core/Services/ vs Tools/:** Services are long-lived app-level singletons injected from `FlintApp`. Tools are self-contained, stateless at the definition level; their ViewModels are created on demand per navigation.
 - **`*Transformer.swift` alongside every ViewModel:** Pure transformation logic in a separate file with no imports of SwiftUI or AppKit. This boundary is the testability guarantee — `JSONTransformerTests.swift` tests the model layer with zero UI setup.
 - **`*Definition.swift` per tool:** Centralizes all metadata (id, name, keywords, detection predicate, view factory) in one place. Adding a new tool means adding one `Definition` file and one line in `ToolRegistry`.
 - **UI/ flat for shared chrome:** `MenuBarPopoverView`, `MainWindowView`, and `HistoryPanelView` are app shell — they don't belong in any one tool's folder.
@@ -153,7 +153,7 @@ Lathe/
 
 ```swift
 @main
-struct LatheApp: App {
+struct FlintApp: App {
     @State private var historyStore = HistoryStore()
     @State private var prefs = PreferencesStore()
     @State private var clipboard = ClipboardDetector()
@@ -161,7 +161,7 @@ struct LatheApp: App {
     @State private var toolRegistry = ToolRegistry()
 
     var body: some Scene {
-        MenuBarExtra("Lathe", systemImage: "wrench.and.screwdriver") {
+        MenuBarExtra("Flint", systemImage: "wrench.and.screwdriver") {
             MenuBarPopoverView()
         }
         .menuBarExtraStyle(.window)
@@ -403,7 +403,7 @@ final class WindowCoordinator: NSObject {
 
 The `MenuBarPopoverView` Detach button calls `WindowCoordinator.shared.openWorkspace()` which posts the notification; `MainWindowView` listens via `onReceive` or the view uses `@Environment(\.openWindow)` directly if the hotkey flow is used instead.
 
-**Shared state:** Both the popover and the workspace window receive identical service instances (same `@State` objects in `LatheApp`). There is one `HistoryStore`, one `ToolRegistry`, one `ClipboardDetector`. Each tool's `ToolViewModel` is created separately per navigation destination — ViewModels are not shared between windows (each window has its own navigation state and tool activation).
+**Shared state:** Both the popover and the workspace window receive identical service instances (same `@State` objects in `FlintApp`). There is one `HistoryStore`, one `ToolRegistry`, one `ClipboardDetector`. Each tool's `ToolViewModel` is created separately per navigation destination — ViewModels are not shared between windows (each window has its own navigation state and tool activation).
 
 ---
 
@@ -527,7 +527,7 @@ Phase 1 — Week 1-2: Pure Infrastructure
   5. ClipboardDetector                                        [deps: ToolRegistry]
   6. HotkeyManager                                           [deps: KeyboardShortcuts]
   7. WindowCoordinator                                        [deps: AppKit]
-  8. LatheApp + scene wiring + .environment() injection      [deps: all above]
+  8. FlintApp + scene wiring + .environment() injection      [deps: all above]
   9. MenuBarPopoverView (empty shell)                        [deps: ToolRegistry]
   10. MainWindowView (empty shell, NavigationSplitView)      [deps: ToolRegistry, HistoryStore]
   11. DetectionBannerView                                    [deps: ClipboardDetector, ToolRegistry]
@@ -573,7 +573,7 @@ Phase 3: Polish
 
 ### Anti-Pattern 2: Tool state shared between popover and workspace window
 
-**What people do:** Create one `@StateObject JSONFormatterViewModel` in `LatheApp` and inject it into both scenes.
+**What people do:** Create one `@StateObject JSONFormatterViewModel` in `FlintApp` and inject it into both scenes.
 
 **Why it's wrong:** The popover is compact; the workspace is full-featured. They may want different tool-level state (different indent sizes, different mode toggles). Sharing state means actions in the popover silently mutate workspace state. It also means the popover can't close without destroying the workspace's active editing session.
 
@@ -627,7 +627,7 @@ Phase 3: Polish
 
 | Boundary | Communication | Notes |
 |----------|---------------|-------|
-| `MenuBarExtra` ↔ `WindowGroup` | Shared `@State` services from `LatheApp`; `NotificationCenter` for open-window trigger | `openWindow` environment action is NOT available inside `MenuBarExtra` views — use notification indirection |
+| `MenuBarExtra` ↔ `WindowGroup` | Shared `@State` services from `FlintApp`; `NotificationCenter` for open-window trigger | `openWindow` environment action is NOT available inside `MenuBarExtra` views — use notification indirection |
 | `ToolViewModel` ↔ `HistoryStore` | Injected closure (`onSaveHistory`) — never a direct reference | Keeps tools decoupled from storage layer |
 | `ClipboardDetector` ↔ `ToolRegistry` | Direct reference (weak, set at `start(registry:)` time) | ToolRegistry is immutable after init; no cycle risk |
 | `WindowCoordinator` ↔ `NSApp` | Direct `NSApp.setActivationPolicy()` calls | Must happen on main thread |
@@ -662,5 +662,5 @@ This is a single-user local app; scaling in the traditional sense is not applica
 - MenuBarExtraAccess (programmatic dismiss workaround, FB10185203): https://github.com/orchetect/MenuBarExtraAccess
 
 ---
-*Architecture research for: Lathe — native macOS menubar developer-utility app*
+*Architecture research for: Flint — native macOS menubar developer-utility app*
 *Researched: 2026-06-25*

@@ -119,7 +119,7 @@ Phase 1 creates a greenfield Xcode project from nothing and delivers the complet
 
 The environment is Xcode 26.5 / Swift 6.3.2 — both exceed GRDB 7's Xcode 16.3+ requirement. All packages have been verified at their locked versions (GRDB 7.11.1, KeyboardShortcuts 3.0.1, HighlightSwift 1.1.0, swift-markdown 0.8.0, MenuBarExtraAccess 1.3.0). Foundation does NOT generate UUID v1, v5, or v7 natively; external packages are required for those versions — UUID v7 is HIGH risk (leading candidate nthState/UUIDV7 has 10 stars and no semver releases) and must be gated.
 
-The walking skeleton is: project scaffold → LatheApp with empty MenuBarExtra → HistoryStore opens (async) → ToolRegistry initialised with one stub → ClipboardDetector wired → HotkeyManager registered → JSONTransformer (pure) → JSONFormatterViewModel (live debounced + last-good-output-dimmed error) → JSONFormatterView → history row appears → search finds it. Everything after that is repetition of the 4-file tool pattern.
+The walking skeleton is: project scaffold → FlintApp with empty MenuBarExtra → HistoryStore opens (async) → ToolRegistry initialised with one stub → ClipboardDetector wired → HotkeyManager registered → JSONTransformer (pure) → JSONFormatterViewModel (live debounced + last-good-output-dimmed error) → JSONFormatterView → history row appears → search finds it. Everything after that is repetition of the 4-file tool pattern.
 
 **Primary recommendation:** Build in strict infra-first order (steps 1–11 from ARCHITECTURE.md). Do not start any tool until the registry, history store, clipboard detector, hotkey manager, and popover shell are wired and the app launches with no crash on blank input. Use JSON Formatter as the integration test. Gate UUID v7 (UUID-02) as a separate one-day spike; if no sound package is found by day 1, defer to Phase 2 with a documented stub.
 
@@ -252,7 +252,7 @@ HotkeyManager ──────────────► MenuBarExtra (.windo
                             └──────────┼───────────────┘
                                        ▼
                                HistoryStore (GRDB)
-                               ~/Library/Application Support/Lathe/history.db
+                               ~/Library/Application Support/Flint/history.db
                                        │
                                ValueObservation ──► HistoryPanelView
 ```
@@ -266,9 +266,9 @@ Data flows:
 ### Recommended Project Structure
 
 ```
-Lathe/
+Flint/
 ├── App/
-│   ├── LatheApp.swift              ← @main; @State services; .environment() injection
+│   ├── FlintApp.swift              ← @main; @State services; .environment() injection
 │   ├── WindowCoordinator.swift     ← NSActivationPolicy switching
 │   └── AppDelegate.swift           ← @NSApplicationDelegateAdaptor (Phase 3: Services)
 │
@@ -317,19 +317,19 @@ Lathe/
 │
 └── Resources/
     ├── Assets.xcassets
-    ├── Lathe-debug.entitlements    ← includes get-task-allow
-    └── Lathe-release.entitlements  ← NO get-task-allow; Hardened Runtime
+    ├── Flint-debug.entitlements    ← includes get-task-allow
+    └── Flint-release.entitlements  ← NO get-task-allow; Hardened Runtime
 ```
 
-### Pattern 1: LatheApp — Service Ownership and Injection
+### Pattern 1: FlintApp — Service Ownership and Injection
 
 **What:** All shared services are `@State` in the `App` struct — the only lifecycle-stable ownership point. Services are injected into all scenes via `.environment()`. Tool ViewModels are NOT held here; they are created on-demand per navigation destination.
 
 ```swift
-// App/LatheApp.swift
+// App/FlintApp.swift
 // Source: ARCHITECTURE.md + Apple Developer Docs — @Observable + .environment() [VERIFIED]
 @main
-struct LatheApp: App {
+struct FlintApp: App {
     @State private var historyStore = HistoryStore()
     @State private var prefs = PreferencesStore()
     @State private var clipboard = ClipboardDetector()
@@ -337,7 +337,7 @@ struct LatheApp: App {
     @State private var toolRegistry = ToolRegistry()
 
     var body: some Scene {
-        MenuBarExtra("Lathe", systemImage: "wrench.and.screwdriver") {
+        MenuBarExtra("Flint", systemImage: "wrench.and.screwdriver") {
             MenuBarPopoverView()
         }
         .menuBarExtraStyle(.window)
@@ -374,7 +374,7 @@ struct LatheApp: App {
 2. If already at launcher: second Esc sets `isPresented = false` → popover closes.
 
 ```swift
-// Wire the scene modifier (in LatheApp.swift)
+// Wire the scene modifier (in FlintApp.swift)
 // Source: MenuBarExtraAccess 1.3.0 README [VERIFIED: github.com/orchetect/MenuBarExtraAccess]
 .menuBarExtraAccess(isPresented: $isPopoverPresented) { statusItem in
     // statusItem: NSStatusItem — use for additional configuration if needed
@@ -481,7 +481,7 @@ final class HistoryStore {
         let url = try FileManager.default
             .url(for: .applicationSupportDirectory, in: .userDomainMask,
                  appropriateFor: nil, create: true)
-            .appendingPathComponent("Lathe/history.db")
+            .appendingPathComponent("Flint/history.db")
         try FileManager.default.createDirectory(
             at: url.deletingLastPathComponent(),
             withIntermediateDirectories: true)
@@ -1177,15 +1177,15 @@ enum UUIDTransformer {
 import KeyboardShortcuts
 
 extension KeyboardShortcuts.Name {
-    static let openLathe = Self("openLathe", default: .init(.space, modifiers: [.command, .shift]))
+    static let openFlint = Self("openFlint", default: .init(.space, modifiers: [.command, .shift]))
 }
 
 @Observable
 final class HotkeyManager {
     init() {
         // Must not be called in init() before app is fully initialized — call from onAppear or App.init body
-        KeyboardShortcuts.onKeyDown(for: .openLathe) {
-            // Post notification; LatheApp receives and shows popover
+        KeyboardShortcuts.onKeyDown(for: .openFlint) {
+            // Post notification; FlintApp receives and shows popover
             NotificationCenter.default.post(name: .showPopover, object: nil)
         }
     }
@@ -1249,8 +1249,8 @@ The minimal vertical end-to-end slice that proves the pipeline before repeating 
 
 **File creation order for the slice:**
 
-1. `Lathe.xcodeproj` — Xcode project, macOS 14.0 deployment target, Swift 6 language mode
-2. `Lathe-debug.entitlements` + `Lathe-release.entitlements` — dual entitlements from day one
+1. `Flint.xcodeproj` — Xcode project, macOS 14.0 deployment target, Swift 6 language mode
+2. `Flint-debug.entitlements` + `Flint-release.entitlements` — dual entitlements from day one
 3. `ToolCategory.swift`, `ToolDefinition.swift`, `DetectionResult.swift`
 4. `HistoryEntry.swift` + GRDB migration
 5. `HistoryStore.swift` (opens off main thread)
@@ -1259,7 +1259,7 @@ The minimal vertical end-to-end slice that proves the pipeline before repeating 
 8. `ClipboardDetector.swift` + `NSPasteboardDidChangeNotification` setup
 9. `HotkeyManager.swift` (KeyboardShortcuts registration)
 10. `WindowCoordinator.swift` (activation-policy dance)
-11. `LatheApp.swift` — wires all the above; `MenuBarExtra` with `MenuBarExtraAccess`; two-stage Esc
+11. `FlintApp.swift` — wires all the above; `MenuBarExtra` with `MenuBarExtraAccess`; two-stage Esc
 12. `MenuBarPopoverView.swift` — search field (autofocused D-01), pinned row stub, empty history body
 13. `DetectionBannerView.swift`
 14. `MainWindowView.swift` — empty `NavigationSplitView` shell
@@ -1292,7 +1292,7 @@ Steps 21–55: repeat steps 15–19 for Base64, URLEncoder, JWT, Timestamp, Hash
 **What goes wrong:** JWT HMAC secret key or Hash HMAC key appears in `sqlite3 history.db`.
 **Root cause:** Generic history save passes all ViewModel state.
 **Fix:** HistoryEntry.input for JWT = token string only. HMAC key is a separate local `@State` in the View that never reaches the ViewModel's history call.
-**Verification:** `sqlite3 ~/Library/Application\ Support/Lathe/history.db "SELECT input FROM historyEntry"` — must not contain any secret key.
+**Verification:** `sqlite3 ~/Library/Application\ Support/Flint/history.db "SELECT input FROM historyEntry"` — must not contain any secret key.
 
 ### Pitfall 4: JWT base64url Decode Fails
 **What goes wrong:** Valid JWT with `-` or `_` returns "Invalid token."
@@ -1313,10 +1313,10 @@ Steps 21–55: repeat steps 15–19 for Base64, URLEncoder, JWT, Timestamp, Hash
 **Verification:** Instruments "App Launch" template; main thread must not block on DB open.
 
 ### Pitfall 7: Clipboard Battery Drain
-**What goes wrong:** Lathe appears in top of Activity Monitor battery consumers even when idle.
+**What goes wrong:** Flint appears in top of Activity Monitor battery consumers even when idle.
 **Root cause:** `DispatchSourceTimer` polling `changeCount` 10x/sec globally.
 **Fix:** Use `NSPasteboardDidChangeNotification` (private but stable, 0% idle CPU) + only run detection when `isPopoverPresented == true`.
-**Verification:** `top -l 1 -stats pid,cpu | grep Lathe` — must show < 0.5% when popover is closed.
+**Verification:** `top -l 1 -stats pid,cpu | grep Flint` — must show < 0.5% when popover is closed.
 
 ### Pitfall 8: Timestamp Ambiguity (11/12-digit inputs)
 **What goes wrong:** 11-digit input silently converts using wrong unit.

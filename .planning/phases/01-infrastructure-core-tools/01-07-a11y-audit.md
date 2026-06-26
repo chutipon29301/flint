@@ -13,7 +13,7 @@ grep -rl "Color(red:|Color(hex:|\.init(red:" UI Tools
 All colors use SwiftUI semantic colors (`Color.primary`, `.secondary`, `.accentColor`,
 `NSColor.textBackgroundColor`, `NSColor.textColor`). Light/Dark adaptation is handled
 by the system automatically. `preferredColorScheme` applied to all three scenes in
-`LatheApp.swift` (MenuBarPopoverView, MainWindowView, Settings/PreferencesView).
+`FlintApp.swift` (MenuBarPopoverView, MainWindowView, Settings/PreferencesView).
 
 ### Accessibility labels — all interactive elements covered
 - **SyntaxEditorView** (NSTextView wrapper): `setAccessibilityLabel()` + `setAccessibilityRole(.textArea)` set in `makeNSView`.

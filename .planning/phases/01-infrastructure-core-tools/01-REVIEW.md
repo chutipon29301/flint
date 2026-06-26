@@ -4,7 +4,7 @@ reviewed: 2026-06-25T00:00:00Z
 depth: standard
 files_reviewed: 63
 files_reviewed_list:
-  - App/LatheApp.swift
+  - App/FlintApp.swift
   - App/WindowCoordinator.swift
   - Core/Extensions/Array+HexString.swift
   - Core/Extensions/Data+Base64URL.swift
@@ -19,13 +19,13 @@ files_reviewed_list:
   - Core/Services/PreferencesStore.swift
   - Core/Services/SearchResultsMerger.swift
   - Core/Services/ToolRegistry.swift
-  - LatheTests/Base64TransformerTests.swift
-  - LatheTests/HashTransformerTests.swift
-  - LatheTests/HistorySearchTests.swift
-  - LatheTests/JSONTransformerTests.swift
-  - LatheTests/TimestampTransformerTests.swift
-  - LatheTests/URLTransformerTests.swift
-  - LatheTests/UUIDTransformerTests.swift
+  - FlintTests/Base64TransformerTests.swift
+  - FlintTests/HashTransformerTests.swift
+  - FlintTests/HistorySearchTests.swift
+  - FlintTests/JSONTransformerTests.swift
+  - FlintTests/TimestampTransformerTests.swift
+  - FlintTests/URLTransformerTests.swift
+  - FlintTests/UUIDTransformerTests.swift
   - Tools/Base64/Base64Definition.swift
   - Tools/Base64/Base64Transformer.swift
   - Tools/Base64/Base64View.swift

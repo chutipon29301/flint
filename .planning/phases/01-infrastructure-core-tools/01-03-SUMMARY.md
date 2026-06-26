@@ -39,7 +39,7 @@ key_files:
     - UI/Components/WarningBannerView.swift
   modified:
     - Tools/JWT/JWTDefinition.swift (stub → real definition with JWTView factory)
-    - Lathe.xcodeproj/project.pbxproj (JWT files added to Sources build phase + LatheTests group)
+    - Flint.xcodeproj/project.pbxproj (JWT files added to Sources build phase + FlintTests group)
 
 decisions:
   - "Secret-exclusion: HMAC secret is View-local @State in JWTView; JWTViewModel.verifyHMAC(secret:) is a transient in-memory call only; onSaveHistory never receives the secret (INFRA-09, pitfall #3)"
@@ -88,7 +88,7 @@ metrics:
   - Inline error with dimmed-output (D-11, INFRA-17)
 - `UI/Components/WarningBannerView.swift` — `BannerSeverity.warning` (yellow, 15% opacity) / `.error` (red, 15% opacity); accessibility label on banner content
 - `Tools/JWT/JWTDefinition.swift` — Overwrites stub: real `JWTView` factory, detection predicate `hasPrefix("ey") + count == 3` (chain priority 2). ToolRegistry untouched.
-- `Lathe.xcodeproj/project.pbxproj` — Added all 5 new files to `PBXSourcesBuildPhase` main target; added JWTTransformerTests to test target Sources + LatheTests group.
+- `Flint.xcodeproj/project.pbxproj` — Added all 5 new files to `PBXSourcesBuildPhase` main target; added JWTTransformerTests to test target Sources + FlintTests group.
 
 ## Security Verification — [BLOCKING] INFRA-09 / T-03-ID / Pitfall #3
 
@@ -133,16 +133,16 @@ No secret argument. No secret ViewModel property. Architecture enforces exclusio
 | `Tools/JWT/JWTView.swift` | Created | Full JWT decoder UI — all JWT-01..06 requirements |
 | `UI/Components/WarningBannerView.swift` | Created | Reusable severity-tinted warning banner |
 | `Tools/JWT/JWTDefinition.swift` | Modified (stub → real) | Real detection predicate + JWTView factory |
-| `Lathe.xcodeproj/project.pbxproj` | Modified | JWT files added to Sources build phases |
+| `Flint.xcodeproj/project.pbxproj` | Modified | JWT files added to Sources build phases |
 
 ## Verification Results
 
 | Check | Result |
 |-------|--------|
-| `xcodebuild test -only-testing:LatheTests/JWTTransformerTests` | TEST SUCCEEDED (22 tests) |
+| `xcodebuild test -only-testing:FlintTests/JWTTransformerTests` | TEST SUCCEEDED (22 tests) |
 | pitfall #4 regression (JWT with `_` in signature) | PASS — `testDecode_realJWTWithUrlSafeChars` |
 | pitfall #11 regression (now+1h ≠ 31 years) | PASS — `testExpiryStatus_futureExp_isNotThirtyOneYears` |
-| `xcodebuild -scheme Lathe build` | BUILD SUCCEEDED |
+| `xcodebuild -scheme Flint build` | BUILD SUCCEEDED |
 | `grep -c "import SwiftUI\|import AppKit" JWTTransformer.swift` | 0 (pure, no UI imports) |
 | Secret exclusion source assertion | PASS — onSaveHistory receives token only |
 | HistoryEntry schema has no secret column | PASS (enforced in plan 01-01) |
@@ -155,8 +155,8 @@ No secret argument. No secret ViewModel property. Architecture enforces exclusio
 **1. [Rule 3 - Blocking] JWT source files not in Xcode build phase**
 - **Found during:** Task 2 build verification
 - **Issue:** The project.pbxproj had PBXFileReference and PBXBuildFile entries pre-registered for JWT files, but they were not listed in the PBXSourcesBuildPhase `files` array. Build failed with "cannot find 'JWTView' in scope."
-- **Fix:** Added `001100000000061..065` (main target) and `001100000000066` (test target) to their respective `PBXSourcesBuildPhase` files arrays. Also added `JWTTransformerTests` to the `LatheTests` group.
-- **Files modified:** `Lathe.xcodeproj/project.pbxproj`
+- **Fix:** Added `001100000000061..065` (main target) and `001100000000066` (test target) to their respective `PBXSourcesBuildPhase` files arrays. Also added `JWTTransformerTests` to the `FlintTests` group.
+- **Files modified:** `Flint.xcodeproj/project.pbxproj`
 - **Commit:** `841000f`
 
 ## Known Stubs

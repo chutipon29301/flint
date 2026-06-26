@@ -1,4 +1,4 @@
-# Requirements: Lathe — macOS Developer Toolkit
+# Requirements: Flint — macOS Developer Toolkit
 
 **Defined:** 2026-06-25
 **Core Value:** A developer can paste content and get the right transformation in under a second — fully offline, from anywhere on the system, never crashing on bad input.

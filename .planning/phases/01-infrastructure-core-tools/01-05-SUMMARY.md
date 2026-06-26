@@ -24,10 +24,10 @@ key_files:
     - Tools/UUID/UUIDTransformer.swift
     - Tools/UUID/UUIDViewModel.swift
     - Tools/UUID/UUIDView.swift
-    - LatheTests/UUIDTransformerTests.swift
+    - FlintTests/UUIDTransformerTests.swift
   modified:
     - Tools/UUID/UUIDDefinition.swift (real implementation replaces stub)
-    - Lathe.xcodeproj/project.pbxproj (4 new source files + leodabus/UUIDv7 SPM dependency)
+    - Flint.xcodeproj/project.pbxproj (4 new source files + leodabus/UUIDv7 SPM dependency)
 decisions:
   - "v1/v5 hand-rolled (not baarde/uuid-kit) per human checkpoint resolution"
   - "v7 hand-rolled (not leodabus/UUIDv7) — package approved but has internal-only API (see deviations)"
@@ -81,7 +81,7 @@ Created `Tools/UUID/UUIDTransformer.swift` (pure, zero SwiftUI/AppKit imports):
   - INFRA-17: malformed input returns `nil`, never crashes
 - **`export(_:format:uppercase:)`** — newline/CSV/JSON array, case toggle, nil UUID display
 
-Created `LatheTests/UUIDTransformerTests.swift` — 28 tests, all passing:
+Created `FlintTests/UUIDTransformerTests.swift` — 28 tests, all passing:
 - v4: single, bulk, max 1000
 - v1: version/variant, timestamp approximately now, bulk
 - v5: determinism, known vector (vs Python `uuid.uuid5`), version/variant, different inputs differ
@@ -113,7 +113,7 @@ Created `LatheTests/UUIDTransformerTests.swift` — 28 tests, all passing:
 
 | Check | Result |
 |-------|--------|
-| `xcodebuild test -only-testing:LatheTests/UUIDTransformerTests` | TEST SUCCEEDED (28/28 passing) |
+| `xcodebuild test -only-testing:FlintTests/UUIDTransformerTests` | TEST SUCCEEDED (28/28 passing) |
 | `xcodebuild build` | BUILD SUCCEEDED |
 | `grep -c "import SwiftUI\|import AppKit" UUIDTransformer.swift` | 0 (no UI imports) |
 | v5 determinism: same namespace+name → same UUID | PASS |
@@ -138,21 +138,21 @@ Created `LatheTests/UUIDTransformerTests.swift` — 28 tests, all passing:
 - **Found during:** Task 2 test execution
 - **Issue:** Test used `886313e1-3b8a-5372-9b90-0c9aee199e5d` as the expected v5 vector for DNS/`www.widgets.com`. This is RFC 4122 Appendix C's v3 (MD5) vector, not v5 (SHA1).
 - **Fix:** Corrected to `21f7f8de-8051-5b89-8680-0195ef798b6a` — verified against Python `uuid.uuid5(uuid.NAMESPACE_DNS, "www.widgets.com")`.
-- **Files modified:** `LatheTests/UUIDTransformerTests.swift`
+- **Files modified:** `FlintTests/UUIDTransformerTests.swift`
 - **Commits:** 2fd3b34
 
 **3. [Rule 1 - Bug] v7 test vector had wrong expected ms value**
 - **Found during:** Task 2 test execution
 - **Issue:** Test expected `1_700_000_000_000` ms for bytes `0x018C3A5C37C0`, but the actual value is `1_701_786_171_328`.
 - **Fix:** Corrected expected value; verified by Swift computation `0x018C3A5C37C0 = 1701786171328`.
-- **Files modified:** `LatheTests/UUIDTransformerTests.swift`
+- **Files modified:** `FlintTests/UUIDTransformerTests.swift`
 - **Commits:** 2fd3b34
 
 **4. [Rule 3 - Blocking] project.pbxproj file reference ID collision**
 - **Found during:** Task 2 build
-- **Issue:** New UUID file IDs (091-094) collided with existing LatheTests.xctest (ID 091).
+- **Issue:** New UUID file IDs (091-094) collided with existing FlintTests.xctest (ID 091).
 - **Fix:** Renumbered new UUID file references to 9A-9D namespace; used Python for bulk replacement.
-- **Files modified:** `Lathe.xcodeproj/project.pbxproj`
+- **Files modified:** `Flint.xcodeproj/project.pbxproj`
 - **Commits:** 2fd3b34
 
 ## v7 Package Decision — Accepted Risk Rationale
@@ -178,7 +178,7 @@ None — all UUID tool functionality is fully implemented.
 
 | Flag | File | Description |
 |------|------|-------------|
-| threat_flag: supply-chain | Lathe.xcodeproj/project.pbxproj | leodabus/UUIDv7 (0 stars, commit-pinned) added to SPM dependency graph even though not imported; was vetted per T-05-SC gate |
+| threat_flag: supply-chain | Flint.xcodeproj/project.pbxproj | leodabus/UUIDv7 (0 stars, commit-pinned) added to SPM dependency graph even though not imported; was vetted per T-05-SC gate |
 
 ## Self-Check: PASSED
 
@@ -187,7 +187,7 @@ Files verified to exist:
 - /Users/chutipon/Documents/project/flint/Tools/UUID/UUIDViewModel.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Tools/UUID/UUIDView.swift — FOUND
 - /Users/chutipon/Documents/project/flint/Tools/UUID/UUIDDefinition.swift — FOUND
-- /Users/chutipon/Documents/project/flint/LatheTests/UUIDTransformerTests.swift — FOUND
+- /Users/chutipon/Documents/project/flint/FlintTests/UUIDTransformerTests.swift — FOUND
 
 Commits verified:
 - 2fd3b34: feat(01-05): UUIDTransformer — v1/v4/v5/v7 generate + inspect + export (all tests passing)

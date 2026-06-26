@@ -45,6 +45,8 @@ private struct MarkdownContentView: View {
     /// WebPreviewView coordinator reference for PDF export
     @State private var previewCoordinator: WebPreviewView.Coordinator? = nil
 
+    @State private var isDragTargeted = false
+
     // Popover threshold ~600pt (UI-SPEC)
     private var isPopover: Bool { containerWidth < 600 && containerWidth > 0 }
 
@@ -99,6 +101,17 @@ private struct MarkdownContentView: View {
                     .onChange(of: geo.size.width) { _, w in containerWidth = w }
             }
         )
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { viewModel.source = $0 },
+            onError: { viewModel.errorMessage = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 
     // MARK: - Editor panel

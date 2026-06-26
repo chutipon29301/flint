@@ -32,6 +32,7 @@ struct JSONFormatterView: View {
 
 private struct JSONFormatterContentView: View {
     @Bindable var viewModel: JSONFormatterViewModel
+    @State private var isDragTargeted = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -120,6 +121,17 @@ private struct JSONFormatterContentView: View {
         }
         .navigationTitle("JSON Formatter")
         .toolShortcuts(viewModel)
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { viewModel.input = $0 },
+            onError: { viewModel.errorMessage = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 }
 

@@ -42,8 +42,18 @@ private struct TextDiffContentView: View {
     /// Width-based detection: ≥ 600pt → side-by-side default (D-15).
     @State private var viewWidth: CGFloat = 0
 
+    // TextDiffViewModel has no errorMessage; drop errors surface via this view-local
+    // WarningBannerView (the only sanctioned drop-error surface — no new UI introduced).
+    @State private var dropError: String?
+    @State private var isDragTargeted = false
+
     var body: some View {
         VStack(spacing: 0) {
+            if let dropError {
+                WarningBannerView(message: dropError, severity: .warning)
+                    .padding(.horizontal, 12)
+                    .padding(.top, 8)
+            }
             controlBar
             Divider()
             editorsSection
@@ -70,6 +80,21 @@ private struct TextDiffContentView: View {
         )
         .navigationTitle("Text Diff")
         .toolShortcuts(viewModel)
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { text in
+                // TextDiff has two inputs — load into the primary/left (Original) input.
+                dropError = nil
+                viewModel.original = text
+            },
+            onError: { dropError = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 
     // MARK: - Control bar

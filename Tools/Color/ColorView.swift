@@ -65,9 +65,20 @@ private struct ColorContentView: View {
 
     @State private var wcagExpanded: Bool = false
 
+    // ColorViewModel has no errorMessage; drop errors surface via this view-local
+    // WarningBannerView (the only sanctioned drop-error surface — no new UI introduced).
+    @State private var dropError: String?
+    @State private var isDragTargeted = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
+                // Drop-error banner (DIST-02) — post-drop rejection of binary/oversized files.
+                if let dropError {
+                    WarningBannerView(message: dropError, severity: .warning)
+                        .padding(.horizontal, 12)
+                }
+
                 // Out-of-gamut warning banner (D-08) — above swatch
                 if viewModel.outOfGamutWarning {
                     WarningBannerView(message: "Out of sRGB gamut — clipped", severity: .warning)
@@ -88,6 +99,22 @@ private struct ColorContentView: View {
         .toolShortcuts(viewModel)
         .onAppear { syncFieldsFromVM() }
         .onChange(of: viewModel.canonicalRGBA) { _, _ in syncFieldsFromVM() }
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { text in
+                // Primary input for this tool is a color string (e.g. hex); trim and
+                // drive the existing hex-parse transform.
+                dropError = nil
+                viewModel.updateFromHex(text.trimmingCharacters(in: .whitespacesAndNewlines))
+            },
+            onError: { dropError = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 
     // MARK: - Swatch + Eyedropper + ColorPicker

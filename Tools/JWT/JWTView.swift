@@ -42,6 +42,7 @@ private struct JWTContentView: View {
     /// It is never passed to viewModel and never reaches onSaveHistory.
     @State private var hmacSecret: String = ""
     @State private var showVerifySection: Bool = false
+    @State private var isDragTargeted = false
 
     var body: some View {
         ScrollView {
@@ -156,6 +157,17 @@ private struct JWTContentView: View {
         }
         .navigationTitle("JWT Decoder")
         .toolShortcuts(viewModel)
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { viewModel.token = $0 },
+            onError: { viewModel.errorMessage = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 }
 

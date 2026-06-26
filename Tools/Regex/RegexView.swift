@@ -196,6 +196,7 @@ private struct RegexContentView: View {
     @Bindable var viewModel: RegexViewModel
     @State private var showMatchResults: Bool = true
     @State private var showReplace: Bool = false
+    @State private var isDragTargeted = false
 
     var body: some View {
         ScrollView {
@@ -425,6 +426,17 @@ private struct RegexContentView: View {
         }
         .navigationTitle("Regex Tester")
         .toolShortcuts(viewModel)
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { viewModel.testString = $0 },
+            onError: { viewModel.errorMessage = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 }
 

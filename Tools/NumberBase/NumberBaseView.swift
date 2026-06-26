@@ -33,6 +33,8 @@ private struct NumberBaseContentView: View {
     // Track which field is being edited to avoid feedback loops
     @State private var editingBase: NumberBase? = nil
 
+    @State private var isDragTargeted = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
@@ -65,6 +67,23 @@ private struct NumberBaseContentView: View {
         .onChange(of: viewModel.octText) { _, new in if editingBase != .oct { octField = new } }
         .onChange(of: viewModel.decText) { _, new in if editingBase != .dec { decField = new } }
         .onChange(of: viewModel.hexText) { _, new in if editingBase != .hex { hexField = new } }
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { text in
+                // Primary input for this tool is the decimal value; trim the dropped
+                // file (commonly trailing newlines) and drive the existing transform.
+                editingBase = nil
+                viewModel.update(from: .dec, text: text.trimmingCharacters(in: .whitespacesAndNewlines))
+                syncFieldsFromViewModel()
+            },
+            onError: { viewModel.errorMessage = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 
     // MARK: - Control Bar

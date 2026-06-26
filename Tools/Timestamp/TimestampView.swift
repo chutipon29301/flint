@@ -5,6 +5,7 @@ import SwiftUI
 
 struct TimestampView: View {
     @State private var viewModel: TimestampViewModel
+    @State private var isDragTargeted = false
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         _viewModel = State(initialValue: TimestampViewModel(onSaveHistory: onSaveHistory))
@@ -22,6 +23,17 @@ struct TimestampView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .toolShortcuts(viewModel)
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { viewModel.input = $0 },
+            onError: { viewModel.errorMessage = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 
     // MARK: - Input Section

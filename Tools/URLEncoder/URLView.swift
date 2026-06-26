@@ -33,6 +33,7 @@ struct URLView: View {
 
 private struct URLContentView: View {
     @Bindable var viewModel: URLViewModel
+    @State private var isDragTargeted = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -77,6 +78,17 @@ private struct URLContentView: View {
         }
         .navigationTitle("URL Encoder/Decoder")
         .toolShortcuts(viewModel)
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { viewModel.input = $0 },
+            onError: { viewModel.errorMessage = $0 }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to load")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
     }
 }
 

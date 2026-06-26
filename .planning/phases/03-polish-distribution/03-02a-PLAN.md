@@ -19,6 +19,7 @@ must_haves:
     - "User drags a text file onto the launcher and detect() routes it to the best-matched tool pre-filled (or stages it in the search field on no match)"
     - "A drag-over overlay covers the whole surface while dragging and disappears on drop/exit"
     - "A binary/non-UTF-8 file dropped on the launcher (text path) surfaces an inline WarningBannerView after the drop, never a crash"
+    - "Dropping a binary or oversized file on a text tool shows a WarningBannerView AFTER the drop completes — not during drag — because binary vs text is determined by UTF-8 decode (post-drop); the drag-over overlay remains the single valid-state accent style throughout"
   artifacts:
     - path: "UI/Components/DropOverlayView.swift"
       provides: "Stateless full-surface drag-over overlay (single valid state) with VoiceOver label and contextual label text"
@@ -174,3 +175,5 @@ From UI/MenuBarPopoverView.swift:
 <output>
 Create `.planning/phases/03-polish-distribution/03-02a-SUMMARY.md` when done.
 </output>
+</content>
+</invoke>

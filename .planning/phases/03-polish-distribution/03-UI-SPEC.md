@@ -122,7 +122,7 @@ Source: decisions from 03-CONTEXT.md + existing copy patterns from MenuBarPopove
 | Drag-over overlay — valid text file drop | "Drop to load" |
 | Drag-over overlay — valid binary file drop (Base64 / Hash) | "Drop to load file" |
 | Drag-over overlay — launcher surface (routes via detect()) | "Drop to open in best tool" |
-| Drop rejected — text tool received binary | "This tool only accepts text files. Try Base64 or Hash." (WarningBannerView .warning) |
+| Drop rejected — text tool received binary | "File contains non-text data and can't be loaded here. Try Base64 or Hash." (WarningBannerView .warning) — canonical; matches the Error States table (the authoritative string used by plan 03-02a) |
 | Drop rejected — file too large for text tool | "File is too large to load as text. Try dropping into Hash for checksums." (WarningBannerView .warning) |
 
 ### Onboarding Window (D-07 — shown once on first run)
@@ -260,3 +260,4 @@ New Swift packages for Phase 3: Sparkle 2.9.3 (already listed in `CLAUDE.md` loc
 - [ ] Dimension 6 Registry Safety: PASS
 
 **Approval:** pending
+</content>

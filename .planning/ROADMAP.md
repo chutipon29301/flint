@@ -29,7 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can run all seven core tools (JSON Formatter, Base64, URL Encoder, JWT Decoder, Timestamp Converter, Hash Generator, UUID Generator) and each produces correct output on valid input and a graceful error message on malformed or oversized input — no crash in any case
   4. Every transformation is recorded in a searchable, re-openable history panel (last 100 items, persisted across restarts); HMAC and JWT secret keys are never written to history by schema design
   5. App cold-starts in under 500ms, stays under 100MB RAM under normal use, and all interactive elements have VoiceOver labels and support Light/Dark mode without visual artifacts
-**Plans**: 7 plans (3 waves)
+**Plans**: 10 plans (3 build waves + 1 gap-closure wave)
 Plans:
 - [x] 01-01-PLAN.md — Walking Skeleton: frozen infra (registry/history/clipboard/hotkey/popover) + JSON Formatter integration test
 - [x] 01-02-PLAN.md — Base64 + URL tools (encoding category)
@@ -38,6 +38,9 @@ Plans:
 - [x] 01-05-PLAN.md — UUID Generator/Inspector (v7 gated on package vetting)
 - [x] 01-06-PLAN.md — First-class History view + global fuzzy search + pin/reorder + keyboard shortcuts
 - [x] 01-07-PLAN.md — Preferences + launch-at-login + workspace window + Light/Dark/VoiceOver/perf audit
+- [ ] 01-08-PLAN.md — GAP: pinned-tool drag-to-reorder (decouple onDrag from Button + fix destination off-by-one)
+- [ ] 01-09-PLAN.md — GAP: ⌘⇧C copy-output + ⌘Delete clear-input observers across all 7 tools (shared ToolShortcutActions)
+- [ ] 01-10-PLAN.md — GAP: reliable first-Esc-to-launcher (AppKit Esc interception in SyntaxEditorView)
 **UI hint**: yes
 
 ### Phase 2: Extended Tools
@@ -74,6 +77,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure + Core Tools | 7/7 | Complete   | 2026-06-25 |
+| 1. Infrastructure + Core Tools | 7/10 | Gap closure | 2026-06-25 |
 | 2. Extended Tools | 0/TBD | Not started | - |
 | 3. Polish & Distribution | 0/TBD | Not started | - |

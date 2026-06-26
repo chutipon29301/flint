@@ -25,6 +25,7 @@ struct UUIDView: View {
                 .frame(minHeight: 150)
         }
         .padding(8)
+        .toolShortcuts(viewModel)
     }
 
     // MARK: - Generator panel

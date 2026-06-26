@@ -9,7 +9,7 @@ import Foundation
 
 @Observable
 @MainActor
-final class HashViewModel {
+final class HashViewModel: ToolShortcutActions {
 
     // MARK: - Text input
 
@@ -139,6 +139,23 @@ final class HashViewModel {
         fileHashTask?.cancel()
         fileHashTask = nil
         isHashing = false
+    }
+
+    // MARK: - ToolShortcutActions (INFRA-16)
+
+    /// Returns the copy-all hash text when a text hash result is available, otherwise nil.
+    /// SECURITY (T-09-01, INFRA-09): sources only the digest text via allHashesText(from:) —
+    /// never references hmacKey (View-local @State in HashView; not a ViewModel property).
+    func primaryOutput() -> String? {
+        guard let result = textHashResult else { return nil }
+        let text = allHashesText(from: result)
+        return text.isEmpty ? nil : text
+    }
+
+    /// Clears the text input field (triggers scheduleTextHash via didSet).
+    /// SECURITY: does NOT clear hmacKey — that is View-local @State, never stored here.
+    func clearInput() {
+        textInput = ""
     }
 
     // MARK: - Copy all hashes

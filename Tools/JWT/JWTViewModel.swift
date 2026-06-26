@@ -11,7 +11,7 @@ import Observation
 
 @Observable
 @MainActor
-final class JWTViewModel {
+final class JWTViewModel: ToolShortcutActions {
 
     // MARK: - Observable State
 
@@ -141,6 +141,23 @@ final class JWTViewModel {
                 pinned: false
             ))
         }
+    }
+
+    // MARK: - ToolShortcutActions (INFRA-16)
+
+    /// Returns the composite header+payload output, or nil when nothing is decoded.
+    /// SECURITY (T-09-01, INFRA-09): sources ONLY decoded header/payload — never touches the
+    /// HMAC secret (which is View-local @State and never enters this ViewModel).
+    func primaryOutput() -> String? {
+        guard !headerJSON.isEmpty || !payloadJSON.isEmpty, errorMessage == nil else { return nil }
+        let composite = headerJSON + "\n---\n" + payloadJSON
+        return composite.isEmpty ? nil : composite
+    }
+
+    /// Clears the token input field (triggers scheduleTransform via didSet).
+    /// SECURITY: the HMAC secret is NOT cleared here — it is View-local @State, never stored here.
+    func clearInput() {
+        token = ""
     }
 
     // MARK: - HMAC Verify (JWT-04)

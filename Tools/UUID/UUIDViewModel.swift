@@ -19,7 +19,7 @@ enum UUIDVersion: String, CaseIterable, Sendable {
 
 @Observable
 @MainActor
-final class UUIDViewModel {
+final class UUIDViewModel: ToolShortcutActions {
 
     // MARK: - Generation (UUID-01)
 
@@ -55,6 +55,22 @@ final class UUIDViewModel {
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         self.onSaveHistory = onSaveHistory
+    }
+
+    // MARK: - ToolShortcutActions (INFRA-16)
+
+    /// Returns exportText() when UUIDs have been generated, otherwise nil.
+    /// Honours exportFormat + uppercase (same as the visible Copy buttons).
+    func primaryOutput() -> String? {
+        generatedUUIDs.isEmpty ? nil : exportText()
+    }
+
+    /// Resets generation/inspection inputs.
+    /// Leaves selectedVersion and uppercase as user preferences (per plan spec).
+    func clearInput() {
+        inspectInput = ""
+        generatedUUIDs = []
+        v5Name = ""
     }
 
     // MARK: - Generation (button-triggered for bulk per D-10)

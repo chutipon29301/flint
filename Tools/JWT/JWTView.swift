@@ -155,6 +155,7 @@ private struct JWTContentView: View {
             }
         }
         .navigationTitle("JWT Decoder")
+        .toolShortcuts(viewModel)
     }
 }
 

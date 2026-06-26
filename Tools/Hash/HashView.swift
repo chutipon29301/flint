@@ -28,6 +28,7 @@ struct HashView: View {
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .toolShortcuts(viewModel)
     }
 
     // MARK: - Text Input

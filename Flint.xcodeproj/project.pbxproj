@@ -17,6 +17,11 @@
 		0011000000000D6 /* NSRegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000C6 /* NSRegularExpression.swift */; };
 		0011000000000D7 /* github-markdown.css in Resources */ = {isa = PBXBuildFile; fileRef = 0012000000000C7 /* github-markdown.css */; };
 		0011000000000E1 /* SwiftDiffVendorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000E1 /* SwiftDiffVendorTests.swift */; };
+		001100000002001 /* RegexTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000002001 /* RegexTransformer.swift */; };
+		001100000002002 /* RegexViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000002002 /* RegexViewModel.swift */; };
+		001100000002003 /* RegexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000002003 /* RegexView.swift */; };
+		001100000002004 /* RegexDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000002004 /* RegexDefinition.swift */; };
+		001100000002005 /* RegexTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000002005 /* RegexTransformerTests.swift */; };
 		001100000000001 /* FlintApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000001 /* FlintApp.swift */; };
 		001100000000002 /* WindowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000002 /* WindowCoordinator.swift */; };
 		001100000000003 /* ToolCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000003 /* ToolCategory.swift */; };
@@ -169,6 +174,11 @@
 		0012000000000B0 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		0012000000000B1 /* PinnedToolReorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedToolReorderTests.swift; sourceTree = "<group>"; };
 		0012000000000E1 /* SwiftDiffVendorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDiffVendorTests.swift; sourceTree = "<group>"; };
+		001200000002001 /* RegexTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexTransformer.swift; sourceTree = "<group>"; };
+		001200000002002 /* RegexViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexViewModel.swift; sourceTree = "<group>"; };
+		001200000002003 /* RegexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexView.swift; sourceTree = "<group>"; };
+		001200000002004 /* RegexDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexDefinition.swift; sourceTree = "<group>"; };
+		001200000002005 /* RegexTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegexTransformerTests.swift; sourceTree = "<group>"; };
 		0012000000000C1 /* diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = diff.swift; sourceTree = "<group>"; };
 		0012000000000C2 /* cleanup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cleanup.swift; sourceTree = "<group>"; };
 		0012000000000C3 /* common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = common.swift; sourceTree = "<group>"; };
@@ -286,6 +296,7 @@
 				00150000000000D /* Hash */,
 				00150000000000E /* UUID */,
 				001500000000020 /* TextDiff */,
+				001500000002001 /* Regex */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -296,6 +307,17 @@
 				001500000000021 /* SwiftDiff */,
 			);
 			path = TextDiff;
+			sourceTree = "<group>";
+		};
+		001500000002001 /* Regex */ = {
+			isa = PBXGroup;
+			children = (
+				001200000002001 /* RegexTransformer.swift */,
+				001200000002002 /* RegexViewModel.swift */,
+				001200000002003 /* RegexView.swift */,
+				001200000002004 /* RegexDefinition.swift */,
+			);
+			path = Regex;
 			sourceTree = "<group>";
 		};
 		001500000000021 /* SwiftDiff */ = {
@@ -442,6 +464,7 @@
 				0012000000000A5 /* HistorySearchTests.swift */,
 				0012000000000B1 /* PinnedToolReorderTests.swift */,
 				0012000000000E1 /* SwiftDiffVendorTests.swift */,
+				001200000002005 /* RegexTransformerTests.swift */,
 			);
 			path = FlintTests;
 			sourceTree = "<group>";
@@ -637,6 +660,10 @@
 				0011000000000D4 /* String.swift in Sources */,
 				0011000000000D5 /* UnicodeScalar.swift in Sources */,
 				0011000000000D6 /* NSRegularExpression.swift in Sources */,
+				001100000002001 /* RegexTransformer.swift in Sources */,
+				001100000002002 /* RegexViewModel.swift in Sources */,
+				001100000002003 /* RegexView.swift in Sources */,
+				001100000002004 /* RegexDefinition.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -654,6 +681,7 @@
 				0011000000000A5 /* HistorySearchTests.swift in Sources */,
 				0011000000000B1 /* PinnedToolReorderTests.swift in Sources */,
 				0011000000000E1 /* SwiftDiffVendorTests.swift in Sources */,
+				001100000002005 /* RegexTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

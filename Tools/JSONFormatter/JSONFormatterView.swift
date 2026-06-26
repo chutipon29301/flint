@@ -119,6 +119,7 @@ private struct JSONFormatterContentView: View {
             }
         }
         .navigationTitle("JSON Formatter")
+        .toolShortcuts(viewModel)
     }
 }
 

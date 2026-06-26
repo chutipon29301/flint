@@ -9,7 +9,7 @@ import AppKit
 
 @Observable
 @MainActor
-final class Base64ViewModel {
+final class Base64ViewModel: ToolShortcutActions {
 
     // MARK: - Observable State
 
@@ -56,6 +56,18 @@ final class Base64ViewModel {
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         self.onSaveHistory = onSaveHistory
+    }
+
+    // MARK: - ToolShortcutActions (INFRA-16)
+
+    /// Returns the transformed output, or nil when there is nothing to copy.
+    func primaryOutput() -> String? {
+        output.isEmpty ? nil : output
+    }
+
+    /// Clears the input field (triggers scheduleTransform via didSet).
+    func clearInput() {
+        input = ""
     }
 
     // MARK: - Transform (D-10: 150ms debounce for text)

@@ -21,6 +21,7 @@ struct TimestampView: View {
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .toolShortcuts(viewModel)
     }
 
     // MARK: - Input Section

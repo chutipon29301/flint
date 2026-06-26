@@ -8,7 +8,7 @@ import Foundation
 
 @Observable
 @MainActor
-final class TimestampViewModel {
+final class TimestampViewModel: ToolShortcutActions {
 
     // MARK: - Input
 
@@ -74,6 +74,30 @@ final class TimestampViewModel {
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         self.onSaveHistory = onSaveHistory
+    }
+
+    // MARK: - ToolShortcutActions (INFRA-16)
+
+    /// Returns the composite timezone+ISO output, or nil when no conversion is available.
+    /// Returns nil when errorMessage is set or convertedDate is nil (nothing to copy).
+    func primaryOutput() -> String? {
+        guard convertedDate != nil, errorMessage == nil else { return nil }
+        let text = buildOutputString()
+        return text.isEmpty ? nil : text
+    }
+
+    /// Clears the input field (triggers scheduleTransform via didSet).
+    func clearInput() {
+        input = ""
+    }
+
+    // MARK: - Output string builder (shared by primaryOutput + runTransform)
+
+    /// Builds the composite output string: timezone rows + ISO 8601.
+    /// This is the same string saved to history — factored out to avoid duplication.
+    private func buildOutputString() -> String {
+        timezoneRows.map { "\($0.label): \($0.formatted)" }.joined(separator: "\n")
+            + (iso8601.isEmpty ? "" : "\nISO 8601: \(iso8601)")
     }
 
     // MARK: - Now (TS-04)
@@ -156,8 +180,7 @@ final class TimestampViewModel {
         relativeTimeString = TimestampTransformer.relativeTime(from: date)
 
         // Write history — input + multi-timezone output (no secrets involved here)
-        let outputLines = timezoneRows.map { "\($0.label): \($0.formatted)" }.joined(separator: "\n")
-            + "\nISO 8601: \(iso8601)"
+        let outputLines = buildOutputString()
         onSaveHistory(HistoryEntry(
             tool: "timestamp",
             input: input,

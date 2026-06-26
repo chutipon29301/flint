@@ -76,6 +76,7 @@ private struct URLContentView: View {
             }
         }
         .navigationTitle("URL Encoder/Decoder")
+        .toolShortcuts(viewModel)
     }
 }
 

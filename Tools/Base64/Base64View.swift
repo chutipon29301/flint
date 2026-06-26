@@ -189,6 +189,7 @@ private struct Base64ContentView: View {
             }
         }
         .navigationTitle("Base64 Encoder/Decoder")
+        .toolShortcuts(viewModel)
     }
 }
 

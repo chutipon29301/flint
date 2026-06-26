@@ -27,7 +27,7 @@ actor Debounce: Sendable {
 
 @Observable
 @MainActor
-final class JSONFormatterViewModel {
+final class JSONFormatterViewModel: ToolShortcutActions {
     // MARK: - Observable State
 
     var input: String = "" {
@@ -77,6 +77,18 @@ final class JSONFormatterViewModel {
                 await self?.runTransform()
             }
         }
+    }
+
+    // MARK: - ToolShortcutActions (INFRA-16)
+
+    /// Returns the formatted output, or nil when there is nothing to copy.
+    func primaryOutput() -> String? {
+        output.isEmpty ? nil : output
+    }
+
+    /// Clears the input field (triggers scheduleTransform via didSet).
+    func clearInput() {
+        input = ""
     }
 
     private func runTransform() {

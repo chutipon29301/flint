@@ -23,7 +23,7 @@ enum URLToolMode: CaseIterable, Identifiable {
 
 @Observable
 @MainActor
-final class URLViewModel {
+final class URLViewModel: ToolShortcutActions {
 
     // MARK: - Observable State
 
@@ -66,6 +66,24 @@ final class URLViewModel {
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         self.onSaveHistory = onSaveHistory
+    }
+
+    // MARK: - ToolShortcutActions (INFRA-16)
+
+    /// Returns the primary output for the active mode, or nil when there is nothing to copy.
+    /// In .parse mode, the rebuilt URL is the primary output; in .encode/.decode, encodedOutput.
+    func primaryOutput() -> String? {
+        switch mode {
+        case .parse:
+            return rebuiltURL.isEmpty ? nil : rebuiltURL
+        case .encode, .decode:
+            return encodedOutput.isEmpty ? nil : encodedOutput
+        }
+    }
+
+    /// Clears the input field (triggers scheduleTransform via didSet).
+    func clearInput() {
+        input = ""
     }
 
     // MARK: - Transform (D-10: 150ms debounce)

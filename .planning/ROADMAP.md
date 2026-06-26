@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infrastructure + Core Tools** - Full infra skeleton (ToolRegistry, HistoryStore, ClipboardDetector, HotkeyManager) plus JSON, Base64, URL, JWT, Timestamp, Hash, and UUID tools (completed 2026-06-25)
 - [x] **Phase 2: Extended Tools** - Regex, Color, Markdown, Number Base, and Text Diff tools with ChromaKit, HighlightSwift, and SwiftDiff added (completed 2026-06-26)
-- [ ] **Phase 3: Polish & Distribution** - Services menu, drag-and-drop, signed/notarized DMG, Sparkle auto-update, and VoiceOver audit
+- [x] **Phase 3: Polish & Distribution** - Services menu, drag-and-drop, signed/notarized DMG, Sparkle auto-update, and VoiceOver audit (completed 2026-06-26)
 
 ## Phase Details
 
@@ -129,7 +129,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 1 + 3 + 4 — distribution capstone, non-autonomous)*
 
-- [ ] 03-05-PLAN.md — Signed/notarized DMG + update dry-run (DIST-03/04): release.sh (Archive→Developer ID→notarytool→staple→create-dmg), dry-run-update.sh (v0.0.1→v0.0.2 appcast), DISTRIBUTION.md
+- [x] 03-05-PLAN.md — Signed/notarized DMG + update dry-run (DIST-03/04): release.sh (Archive→Developer ID→notarytool→staple→create-dmg), dry-run-update.sh (v0.0.1→v0.0.2 appcast), DISTRIBUTION.md
 
 **UI hint**: yes
 
@@ -142,4 +142,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
 | 2. Extended Tools | 8/8 | Complete   | 2026-06-26 |
-| 3. Polish & Distribution | 5/6 | In Progress|  |
+| 3. Polish & Distribution | 6/6 | Complete   | 2026-06-26 |

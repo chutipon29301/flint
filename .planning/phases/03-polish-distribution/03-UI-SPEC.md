@@ -34,7 +34,6 @@ Declared values — derived from existing codebase patterns (source: UI/Componen
 |-------|-------|-------|
 | xs | 4pt | List row vertical insets (HistoryRowView), icon-to-label gaps |
 | sm | 8pt | Banner inner padding vertical (DetectionBannerView), component gaps |
-| md | 12pt | Horizontal padding for banners, search bar horizontal inset, list row horizontal insets |
 | lg | 16pt | Section spacing in onboarding window, intra-group element spacing |
 | xl | 24pt | Onboarding window content padding, major block separation |
 | 2xl | 32pt | Horizontal text padding in empty-state fallback view |
@@ -47,6 +46,7 @@ Exceptions:
 - Drag-over overlay: covers entire tool surface with 0pt inset (full-surface drop target per D-05)
 - Corner radius: 6pt for banners/cards (WarningBannerView), 8pt for interactive hoverable surfaces (PinnedToolBarView)
 - WarningBannerView vertical padding: 6pt (shipped Phase 1 component — measured from existing rendering, off-scale; locked to preserve shipped appearance, change deferred to a later polish pass)
+- 12pt horizontal inset: used as banner inner horizontal padding, search bar horizontal inset, and list row horizontal insets across shipped Phase 1/2 components. While 12 is a multiple of 4, it falls outside the standard {4, 8, 16, 24, 32, 48, 64} scale. This value is a measured codebase value from shipped components; changing it would cause visual regression. Realignment to the nearest scale token (16pt) is deferred to a later polish pass.
 
 ---
 

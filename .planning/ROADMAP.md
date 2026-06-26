@@ -54,7 +54,15 @@ Plans:
   3. User can write Markdown in a split editor and see a live GFM preview (tables, task lists, fenced code, strikethrough); user can export the result as copied HTML or a saved HTML file
   4. User can type a value in any of binary, octal, decimal, or hex and see all other bases update in real time; toggling individual bits in the bit-field UI updates all number fields; signed/unsigned two's-complement is handled correctly for all bit widths
   5. User can compare two text blocks and see line-level changes with word-level inline highlighting, line numbers, and added/removed/unchanged color coding; user can jump between differences and export a unified patch
-**Plans**: TBD
+**Plans**: 7 plans (1 setup wave + 5 tool waves + 1 integration wave)
+Plans:
+- [ ] 02-01-PLAN.md — Dependency setup: ChromaKit + swift-markdown (SPM), vendored+patched SwiftDiff, bundled GitHub CSS
+- [ ] 02-02-PLAN.md — Regex Tester (NSRegularExpression, never-freeze off-main + 2s timeout, color-coded groups, replace, pattern library)
+- [ ] 02-03-PLAN.md — Color Converter (HEX/RGB/HSL/HSV/OKLCH, eyedropper, sliders, WCAG, out-of-gamut)
+- [ ] 02-04-PLAN.md — Markdown Previewer (swift-markdown→HTML, WebPreviewView, toolbar/footer, HTML/.html/.pdf export)
+- [ ] 02-05-PLAN.md — Number Base Converter (canonical bit pattern, two's-complement, interactive BitFieldView)
+- [ ] 02-06-PLAN.md — Text Diff (CollectionDifference line + vendored SwiftDiff word, unified/side-by-side, patch export)
+- [ ] 02-07-PLAN.md — Integration: register all five in ToolRegistry, wire detection predicates, end-to-end verification
 **UI hint**: yes
 
 ### Phase 3: Polish & Distribution
@@ -78,5 +86,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
-| 2. Extended Tools | 0/TBD | Not started | - |
+| 2. Extended Tools | 0/7 | Planned | - |
 | 3. Polish & Distribution | 0/TBD | Not started | - |

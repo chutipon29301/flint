@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: "Plan 01-10 complete — Tasks 1+2 committed (e289813, 8cb8a60); Task 3 checkpoint:human-verify requires manual UAT Test 16 Esc with NSTextView focused"
+status: completed
+stopped_at: "Phase 01 complete — all 10 plans done incl. 3 gap-closure fixes (01-08 reorder removed per UAT, 01-09 shortcuts, 01-10 Esc monitor); project renamed Lathe->Flint; UAT passed"
 last_updated: "2026-06-26T03:22:04.872Z"
 last_activity: 2026-06-26
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
   percent: 33
 ---
 
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-06-25)
 
 ## Current Position
 
-Phase: 01 (infrastructure-core-tools) — EXECUTING
-Plan: 4 of 10
-Status: Ready to execute
+Phase: 01 (infrastructure-core-tools) — COMPLETE
+Plan: 10 of 10 (all complete)
+Status: Phase 01 complete — gap-closure fixes UAT-passed; project renamed Lathe → Flint
 Last activity: 2026-06-26
 
 Progress: [██████████] 100%

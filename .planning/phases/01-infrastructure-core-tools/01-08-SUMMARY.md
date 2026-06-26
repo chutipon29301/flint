@@ -5,8 +5,8 @@ subsystem: UI/Interaction
 tags: [drag-reorder, gesture, accessibility, regression-test, gap-closure]
 dependency_graph:
   requires: [01-07]
-  provides: [INFRA-11-drag-reorder-working]
-  affects: [UI/Components/PinnedToolBarView.swift, LatheTests/PinnedToolReorderTests.swift]
+  provides: [INFRA-11-drag-reorder-REMOVED]
+  affects: [UI/Components/PinnedToolBarView.swift, FlintTests/PinnedToolReorderTests.swift]
 tech_stack:
   added: []
   patterns:
@@ -25,9 +25,16 @@ decisions:
 metrics:
   duration: "16 minutes"
   completed: "2026-06-26"
-  tasks_completed: 2
+  tasks_completed: 3
   tasks_total: 3
   files_changed: 3
+uat_outcome: |
+  Task 3 UAT (re-run after fix): drag-to-reorder STILL did not initiate — .onTapGesture
+  pre-empts .onDrag on macOS the same way Button did. Per user decision, drag-to-reorder
+  was REMOVED rather than further repaired: the launcher does not need in-place reordering.
+  PinnedToolBarView is now plain tap-to-open Buttons. INFRA-11 (drag-reorder) is dropped.
+  prefs.movePinnedTool + PinnedToolReorderTests retained (still valid; reorder could move to
+  Preferences later). UAT passed for the revised behavior (tap opens tool; no drag).
 ---
 
 # Phase 01 Plan 08: Pinned-Tool Drag Reorder Fix Summary

@@ -22,8 +22,17 @@ decisions:
 metrics:
   duration: "12 minutes"
   completed: "2026-06-26"
-  tasks: 2 auto + 1 checkpoint:human-verify
+  tasks: 3 (2 auto + 1 human-verify, all complete)
   files: 2
+uat_outcome: |
+  UAT found the original doCommandBy fix was too narrow: it only covered the focused
+  NSTextView. Opening a tool from a history row leaves the history List (NSTableView) as
+  first responder, which also swallows Esc — so Esc-from-history still failed. Superseded
+  the editor-only hack with a popover-wide local NSEvent keyDown monitor (keyCode 53) in
+  MenuBarPopoverView, installed on .onAppear / removed on .onDisappear. It catches Esc from
+  any first responder (editor, history List, or none) with one mechanism; the .escapePressed
+  notification and doCommandBy interception were removed. UAT passed (Esc from editor AND
+  from history both return to launcher; two-stage close preserved; editing keys unaffected).
 ---
 
 # Phase 01 Plan 10: AppKit Esc Interception for SyntaxEditorView Summary

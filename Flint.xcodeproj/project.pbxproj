@@ -46,6 +46,7 @@
 		0011000000000B2 /* FlintServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B2 /* FlintServiceProvider.swift */; };
 		0011000000000B3 /* SparkleUpdaterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B3 /* SparkleUpdaterService.swift */; };
 		00110000000DD01 /* DropOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD01 /* DropOverlayView.swift */; };
+		00110000000DD02 /* OnboardingWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD02 /* OnboardingWindowView.swift */; };
 		00110000000DD02 /* FileDropHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD02 /* FileDropHandler.swift */; };
 		001100000000003 /* ToolCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000003 /* ToolCategory.swift */; };
 		001100000000004 /* ToolDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000004 /* ToolDefinition.swift */; };
@@ -135,6 +136,7 @@
 		0012000000000B2 /* FlintServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintServiceProvider.swift; sourceTree = "<group>"; };
 		0012000000000B3 /* SparkleUpdaterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterService.swift; sourceTree = "<group>"; };
 		00120000000DD01 /* DropOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropOverlayView.swift; sourceTree = "<group>"; };
+		00120000000DD02 /* OnboardingWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowView.swift; sourceTree = "<group>"; };
 		00120000000DD02 /* FileDropHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDropHandler.swift; sourceTree = "<group>"; };
 		001200000000003 /* ToolCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCategory.swift; sourceTree = "<group>"; };
 		001200000000004 /* ToolDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolDefinition.swift; sourceTree = "<group>"; };
@@ -521,6 +523,7 @@
 				0012000000000A2 /* HistoryPanelView.swift */,
 				0012000000000A3 /* SearchView.swift */,
 				0012000000000B0 /* PreferencesView.swift */,
+				00120000000DD02 /* OnboardingWindowView.swift */,
 				001500000000010 /* Components */,
 			);
 			path = UI;
@@ -716,6 +719,7 @@
 				0011000000000B2 /* FlintServiceProvider.swift in Sources */,
 				0011000000000B3 /* SparkleUpdaterService.swift in Sources */,
 				00110000000DD01 /* DropOverlayView.swift in Sources */,
+				00110000000DD02 /* OnboardingWindowView.swift in Sources */,
 				00110000000DD02 /* FileDropHandler.swift in Sources */,
 				001100000000003 /* ToolCategory.swift in Sources */,
 				001100000000004 /* ToolDefinition.swift in Sources */,

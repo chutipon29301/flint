@@ -64,6 +64,16 @@ final class PreferencesStore {
         }
     }
 
+    // MARK: - Onboarding (DIST-03)
+    // First-run welcome window gate. False default (missing key) triggers onboarding on the
+    // first launch after install/update — no migration needed. A single synchronous
+    // UserDefaults bool read so the cold-start critical path is not regressed (Pitfall #6/#7).
+
+    var hasSeenOnboarding: Bool {
+        get { defaults.object(forKey: Keys.hasSeenOnboarding) as? Bool ?? false }
+        set { defaults.set(newValue, forKey: Keys.hasSeenOnboarding) }
+    }
+
     // MARK: - Show in Dock (INFRA-13)
     // When true, overrides the .accessory policy to keep the Dock icon visible persistently.
     // WindowCoordinator still manages per-window toggles; this is the persistent preference.
@@ -234,6 +244,7 @@ final class PreferencesStore {
         static let base64UrlSafe = "lathe.base64UrlSafe"
         static let hashUppercase = "lathe.hashUppercase"
         static let lastWorkspaceToolId = "lathe.lastWorkspaceToolId"
+        static let hasSeenOnboarding = "lathe.hasSeenOnboarding"
     }
 }
 

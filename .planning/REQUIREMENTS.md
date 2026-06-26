@@ -85,10 +85,10 @@
 
 ### Extended Tools — Regex (RGX)
 
-- [ ] **RGX-01**: User can enter a pattern with flag toggles (g, i, m, s, x) and a multi-line test string
-- [ ] **RGX-02**: Matches highlight live in the test string, color-coded per capture group, with a match-count badge — never freezing the UI (background eval + timeout guard against catastrophic backtracking)
-- [ ] **RGX-03**: Match results table shows index, position, full match, and capture groups (named groups supported)
-- [ ] **RGX-04**: Replace mode previews substitution output; a common-pattern library (email, URL, phone, date, IP) offers quick-insert
+- [x] **RGX-01**: User can enter a pattern with flag toggles (g, i, m, s, x) and a multi-line test string
+- [x] **RGX-02**: Matches highlight live in the test string, color-coded per capture group, with a match-count badge — never freezing the UI (background eval + timeout guard against catastrophic backtracking)
+- [x] **RGX-03**: Match results table shows index, position, full match, and capture groups (named groups supported)
+- [x] **RGX-04**: Replace mode previews substitution output; a common-pattern library (email, URL, phone, date, IP) offers quick-insert
 
 ### Extended Tools — Color (CLR)
 
@@ -215,10 +215,10 @@
 | UUID-02 | Phase 1 | Complete |
 | UUID-03 | Phase 1 | Complete |
 | UUID-04 | Phase 1 | Complete |
-| RGX-01 | Phase 2 | Pending |
-| RGX-02 | Phase 2 | Pending |
-| RGX-03 | Phase 2 | Pending |
-| RGX-04 | Phase 2 | Pending |
+| RGX-01 | Phase 2 | Complete |
+| RGX-02 | Phase 2 | Complete |
+| RGX-03 | Phase 2 | Complete |
+| RGX-04 | Phase 2 | Complete |
 | CLR-01 | Phase 2 | Complete |
 | CLR-02 | Phase 2 | Pending |
 | CLR-03 | Phase 2 | Pending |

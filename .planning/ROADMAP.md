@@ -71,7 +71,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Regex Tester (NSRegularExpression, never-freeze off-main + 2s timeout, color-coded groups, replace, pattern library)
+- [x] 02-02-PLAN.md — Regex Tester (NSRegularExpression, never-freeze off-main + 2s timeout, color-coded groups, replace, pattern library)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -119,5 +119,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
-| 2. Extended Tools | 1/7 | In Progress|  |
+| 2. Extended Tools | 2/7 | In Progress|  |
 | 3. Polish & Distribution | 0/TBD | Not started | - |

@@ -33,6 +33,7 @@
 		001100000004004 /* MarkdownDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000004004 /* MarkdownDefinition.swift */; };
 		001100000004005 /* MarkdownTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000004005 /* MarkdownTransformerTests.swift */; };
 		001100000004006 /* WebPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000004006 /* WebPreviewView.swift */; };
+		001100000004008 /* MarkdownEditorHighlightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000004008 /* MarkdownEditorHighlightTests.swift */; };
 		001100000005001 /* NumberBaseTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000005001 /* NumberBaseTransformer.swift */; };
 		001100000005002 /* NumberBaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000005002 /* NumberBaseViewModel.swift */; };
 		001100000005003 /* NumberBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000005003 /* NumberBaseView.swift */; };
@@ -212,6 +213,7 @@
 		001200000004004 /* MarkdownDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownDefinition.swift; sourceTree = "<group>"; };
 		001200000004005 /* MarkdownTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownTransformerTests.swift; sourceTree = "<group>"; };
 		001200000004006 /* WebPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPreviewView.swift; sourceTree = "<group>"; };
+		001200000004008 /* MarkdownEditorHighlightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownEditorHighlightTests.swift; sourceTree = "<group>"; };
 		001200000005001 /* NumberBaseTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberBaseTransformer.swift; sourceTree = "<group>"; };
 		001200000005002 /* NumberBaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberBaseViewModel.swift; sourceTree = "<group>"; };
 		001200000005003 /* NumberBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberBaseView.swift; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 				001200000002005 /* RegexTransformerTests.swift */,
 				001200000003005 /* ColorTransformerTests.swift */,
 				001200000004005 /* MarkdownTransformerTests.swift */,
+				001200000004008 /* MarkdownEditorHighlightTests.swift */,
 				001200000005005 /* NumberBaseTransformerTests.swift */,
 				001200000006005 /* TextDiffTransformerTests.swift */,
 			);
@@ -792,6 +795,7 @@
 				001100000002005 /* RegexTransformerTests.swift in Sources */,
 				001100000003005 /* ColorTransformerTests.swift in Sources */,
 				001100000004005 /* MarkdownTransformerTests.swift in Sources */,
+				001100000004008 /* MarkdownEditorHighlightTests.swift in Sources */,
 				001100000005005 /* NumberBaseTransformerTests.swift in Sources */,
 				001100000006005 /* TextDiffTransformerTests.swift in Sources */,
 			);

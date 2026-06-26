@@ -28,6 +28,11 @@ struct FlintApp: App {
     @State private var hotkeyManager = HotkeyManager()
     @State private var toolRegistry = ToolRegistry()
     @State private var toolSeed = ToolSeed()
+    // DIST-04: Sparkle auto-update wrapper. Owned here (lifecycle-stable), but NOT started
+    // here — start() runs lazily from the popover .onAppear to keep Sparkle init off the
+    // cold-start critical path (RESEARCH Pitfall #6). No SPUStandardUpdaterController is
+    // constructed at app init.
+    @State private var sparkle = SparkleUpdaterService()
 
     var body: some Scene {
         // MARK: - MenuBar Popover
@@ -39,6 +44,7 @@ struct FlintApp: App {
                 .environment(clipboard)
                 .environment(toolRegistry)
                 .environment(toolSeed)
+                .environment(sparkle)  // DIST-04: lazy-started from popover .onAppear
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14 live theme
                 // WR-04: sync historyLimit from PreferencesStore into HistoryStore whenever it changes
                 .onChange(of: prefs.historyLimit, initial: true) { _, newLimit in

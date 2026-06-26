@@ -34,6 +34,30 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 
+	<!-- DIST-04: Sparkle auto-update keys (plan 03-03).
+	     CRITICAL: SUPublicEDKey MUST be present in the FIRST distributed build. If Flint
+	     ever ships a release without this key, Sparkle rejects adding it later as a security
+	     downgrade and locks every existing user out of auto-update PERMANENTLY
+	     (RESEARCH Pitfall #5 / SUMMARY Pitfall #10).
+
+	     ============================ PLACEHOLDER — MUST REPLACE ============================
+	     The value below is a NON-FUNCTIONAL PLACEHOLDER, not a real EdDSA public key. The real
+	     key is produced by running Sparkle 2.9.3's `bin/generate_keys` ONCE (plan 03-05), which
+	     prints the public key here and stores the matching PRIVATE key in the login Keychain.
+	     Before ANY release build ships, replace this with the real base64 public key from
+	     generate_keys and verify with:
+	         /usr/libexec/PlistBuddy -c "Print :SUPublicEDKey" Info.plist
+	     Do NOT ship with this placeholder. (Deferred to plan 03-05 — credential-gated.)
+	     =================================================================================== -->
+	<key>SUPublicEDKey</key>
+	<string>PLACEHOLDER_REPLACE_WITH_REAL_SUPublicEDKey_FROM_generate_keys_BEFORE_RELEASE_03-05</string>
+
+	<!-- SUFeedURL: appcast location. PLACEHOLDER local/staging URL for the v0.0.1→v0.0.2
+	     local dry-run (plan 03-05). MUST be replaced with the production HTTPS appcast URL
+	     before the real v1.0 release (T-03-08: feed URL is hardcoded, not user-configurable). -->
+	<key>SUFeedURL</key>
+	<string>http://localhost:8000/appcast.xml</string>
+
 	<!-- DIST-01: single smart "Open in Flint" Services entry (D-01).
 	     NSMessage MUST equal the @objc selector base name in FlintServiceProvider.
 	     NSPortName MUST equal CFBundleName. Read-only service: NSReturnTypes omitted. -->

@@ -109,6 +109,23 @@ struct ColorTransformerTests {
         #expect(abs(back.blue  - 0.0) < 1e-4)
     }
 
+    // #CR-03: hue == 360 is equivalent to hue 0 (red), must NOT fall through to black.
+    @Test("HSL→RGB: hue 360 → red, not black")
+    func testHSLtoRGB_hue360_isRed() {
+        let back = ColorTransformer.hslToRGB(HSLA(hue: 360, saturation: 1.0, lightness: 0.5, alpha: 1.0))
+        #expect(abs(back.red   - 1.0) < 1e-4)
+        #expect(abs(back.green - 0.0) < 1e-4)
+        #expect(abs(back.blue  - 0.0) < 1e-4)
+    }
+
+    @Test("HSV→RGB: hue 360 → red, not black")
+    func testHSVtoRGB_hue360_isRed() {
+        let back = ColorTransformer.hsvToRGB(HSVA(hue: 360, saturation: 1.0, value: 1.0, alpha: 1.0))
+        #expect(abs(back.red   - 1.0) < 1e-4)
+        #expect(abs(back.green - 0.0) < 1e-4)
+        #expect(abs(back.blue  - 0.0) < 1e-4)
+    }
+
     // Achromatic: gray — S must be 0, no divide-by-zero
     @Test("RGB→HSL: gray (0.5,0.5,0.5) → S=0, L=0.5 — no divide by zero")
     func testRGBtoHSL_achromatic_noCrash() {

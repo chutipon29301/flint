@@ -166,9 +166,16 @@ enum ColorTransformer {
         return HSLA(hue: hNorm, saturation: s, lightness: l, alpha: rgba.alpha)
     }
 
+    /// Wrap a hue angle into [0, 360). Handles 360, negatives, and >360 inputs.
+    private static func normalizedHue(_ hue: Double) -> Double {
+        let h = hue.truncatingRemainder(dividingBy: 360.0)
+        return h < 0 ? h + 360.0 : h
+    }
+
     /// Convert HSLA to sRGB RGBA.
     static func hslToRGB(_ hsla: HSLA) -> RGBA {
-        let h = hsla.hue, s = hsla.saturation, l = hsla.lightness
+        // Normalize hue into [0,360) so 360 (== 0, red) doesn't fall through to black (#CR-03).
+        let h = normalizedHue(hsla.hue), s = hsla.saturation, l = hsla.lightness
         let c = (1.0 - abs(2 * l - 1)) * s
         let x = c * (1.0 - abs((h / 60.0).truncatingRemainder(dividingBy: 2.0) - 1.0))
         let m = l - c / 2.0
@@ -222,7 +229,8 @@ enum ColorTransformer {
 
     /// Convert HSVA to sRGB RGBA.
     static func hsvToRGB(_ hsva: HSVA) -> RGBA {
-        let h = hsva.hue, s = hsva.saturation, v = hsva.value
+        // Normalize hue into [0,360) so 360 (== 0, red) doesn't fall through to black (#CR-03).
+        let h = normalizedHue(hsva.hue), s = hsva.saturation, v = hsva.value
         if s < 1e-10 {
             // Achromatic — guard divide-by-zero for S=0
             return RGBA(red: v, green: v, blue: v, alpha: hsva.alpha)

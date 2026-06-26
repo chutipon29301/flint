@@ -208,7 +208,12 @@ private struct MarkdownContentView: View {
         panel.message = "Save Markdown HTML"
         panel.prompt = "Save"
         guard panel.runModal() == .OK, let url = panel.url else { return }
-        try? viewModel.html.write(to: url, atomically: true, encoding: .utf8)
+        do {
+            try viewModel.html.write(to: url, atomically: true, encoding: .utf8)
+        } catch {
+            // WR-03: surface write failures instead of swallowing them.
+            MarkdownExportError.present("Could not save HTML", error)
+        }
     }
 
     private func saveAsPDF() {
@@ -218,28 +223,63 @@ private struct MarkdownContentView: View {
         panel.message = "Save Markdown PDF"
         panel.prompt = "Save"
         guard panel.runModal() == .OK, let url = panel.url else { return }
-        // PDF export goes through the WebPreviewView coordinator
-        // We create a temporary standalone WebPreviewView coordinator to export
-        let exportView = WebPreviewView(html: viewModel.html)
-        let coordinator = exportView.makeCoordinator()
-        // Load HTML into a temporary WKWebView for PDF export
+        // CR-02: the WKWebView's navigationDelegate is weak, so the exporter must own a
+        // strong reference to itself until createPDF's completion fires — otherwise the
+        // delegate is deallocated when this method returns and didFinish never calls back.
+        MarkdownPDFExporter.export(html: viewModel.html, to: url)
+    }
+}
+
+// MARK: - PDF export (self-retaining; see #CR-02)
+
+import WebKit
+
+private final class MarkdownPDFExporter: NSObject, WKNavigationDelegate {
+    private let webView: WKWebView
+    private let destination: URL
+    private var strongSelf: MarkdownPDFExporter?
+
+    private init(html: String, to url: URL) {
         let config = WKWebViewConfiguration()
         config.defaultWebpagePreferences.allowsContentJavaScript = false
-        let tempWebView = WKWebView(frame: CGRect(x: 0, y: 0, width: 800, height: 1200), configuration: config)
-        coordinator.webView = tempWebView
-        tempWebView.navigationDelegate = coordinator
-        tempWebView.loadHTMLString(viewModel.html, baseURL: nil)
-        // PDF will be written once navigation finishes via coordinator
-        coordinator.pendingPDFExport = {
-            let pdfConfig = WKPDFConfiguration()
-            tempWebView.createPDF(configuration: pdfConfig) { result in
-                if case .success(let data) = result {
-                    try? data.write(to: url)
-                }
+        self.webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 800, height: 1200), configuration: config)
+        self.destination = url
+        super.init()
+        self.strongSelf = self          // keep alive across the async load + createPDF
+        webView.navigationDelegate = self
+        webView.loadHTMLString(html, baseURL: nil)
+    }
+
+    static func export(html: String, to url: URL) {
+        _ = MarkdownPDFExporter(html: html, to: url)
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        webView.createPDF(configuration: WKPDFConfiguration()) { [destination] result in
+            switch result {
+            case .success(let data):
+                do { try data.write(to: destination) }
+                catch { MarkdownExportError.present("Could not save PDF", error) }
+            case .failure(let error):
+                MarkdownExportError.present("Could not generate PDF", error)
             }
+            self.strongSelf = nil       // release after the write completes
         }
-        // Keep coordinator alive until export completes
-        _ = coordinator
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        MarkdownExportError.present("Could not render Markdown for PDF", error)
+        strongSelf = nil
+    }
+}
+
+private enum MarkdownExportError {
+    @MainActor static func present(_ message: String, _ error: Error) {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.informativeText = error.localizedDescription
+        alert.alertStyle = .warning
+        alert.runModal()
     }
 }
 

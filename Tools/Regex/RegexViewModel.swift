@@ -152,24 +152,19 @@ final class RegexViewModel: ToolShortcutActions {
             of: EvalResult.self
         ) { group in
             // Worker: run the transformer off the main actor.
+            // CRITICAL (#CR-01): the closure MUST call a `nonisolated` function. A bare
+            // `group.addTask {}` created inside this `@MainActor` method inherits MainActor
+            // isolation, which would run the synchronous transformer on the main thread and
+            // make the 2s timeout race below unwinnable (the UI would freeze for the whole
+            // catastrophic-backtrack duration). `runWorker` is nonisolated, forcing off-main.
             group.addTask {
-                // Run entirely non-isolated (off MainActor).
-                let matchResult = RegexTransformer.matches(
+                Self.runWorker(
                     pattern: pattern,
                     flags: flags,
-                    in: text
+                    text: text,
+                    template: template,
+                    replaceMode: replaceMode
                 )
-
-                var substitution: Result<String, RegexTransformer.TransformError>? = nil
-                if replaceMode && !template.isEmpty {
-                    substitution = RegexTransformer.substitute(
-                        pattern: pattern,
-                        flags: flags,
-                        in: text,
-                        template: template
-                    )
-                }
-                return EvalResult.completed(matchResult: matchResult, substitutionResult: substitution)
             }
 
             // Timeout sentinel: sleep 2 seconds then declare timeout.
@@ -241,6 +236,27 @@ final class RegexViewModel: ToolShortcutActions {
                 substitutionPreview = ""
             }
         }
+    }
+
+    // MARK: - Worker (nonisolated — runs off the MainActor; see #CR-01)
+
+    /// Runs the pure, synchronous transformer off the MainActor so the timeout race in
+    /// `runEval` can actually preempt a catastrophically-backtracking pattern.
+    private nonisolated static func runWorker(
+        pattern: String,
+        flags: Set<RegexFlag>,
+        text: String,
+        template: String,
+        replaceMode: Bool
+    ) -> EvalResult {
+        let matchResult = RegexTransformer.matches(pattern: pattern, flags: flags, in: text)
+        var substitution: Result<String, RegexTransformer.TransformError>? = nil
+        if replaceMode && !template.isEmpty {
+            substitution = RegexTransformer.substitute(
+                pattern: pattern, flags: flags, in: text, template: template
+            )
+        }
+        return EvalResult.completed(matchResult: matchResult, substitutionResult: substitution)
     }
 
     // MARK: - Private Types

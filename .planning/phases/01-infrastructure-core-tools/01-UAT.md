@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 01-infrastructure-core-tools
 source: [01-01-SUMMARY.md, 01-02-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md, 01-05-SUMMARY.md, 01-06-SUMMARY.md, 01-07-SUMMARY.md]
 started: 2026-06-25T00:00:00Z
@@ -114,27 +114,45 @@ blocked: 0
   reason: "User reported: draging does not works"
   severity: major
   test: 15
-  root_cause: ""     # Filled by diagnosis
-  artifacts: []      # Filled by diagnosis
-  missing: []        # Filled by diagnosis
-  debug_session: ""  # Filled by diagnosis
+  root_cause: ".onDrag is attached to a SwiftUI Button in PinnedToolButton; on macOS the Button's press gesture takes precedence over .onDrag, so the drag never begins — no NSItemProvider is vended, PinnedToolDropDelegate.performDrop never fires, movePinnedTool is never called. Persistence path is sound; failure is at drag initiation. Latent secondary: off-by-one in performDrop destination index math."
+  artifacts:
+    - path: "UI/Components/PinnedToolBarView.swift"
+      issue: ".onDrag layered on a Button (lines ~62-73, 82-84) prevents drag from starting; performDrop destination math has a forward-move off-by-one (line ~126)"
+    - path: "Core/Services/PreferencesStore.swift"
+      issue: "Not the cause — movePinnedTool/persistence (lines ~17-33) work correctly"
+  missing:
+    - "Decouple .onDrag from the tap target: move .onDrag/.onDrop off the Button onto a non-Button container (or replace Button with tappable content + .onTapGesture) so the drag gesture can claim the press"
+    - "Remove the +1 in performDrop destination math to fix the forward-move off-by-one"
+  debug_session: .planning/debug/pinned-drag-reorder.md
 
 - truth: "⌘⇧C copies the current tool's output to the clipboard"
   status: failed
   reason: "User reported: copies output does not work"
   severity: major
   test: 16
-  root_cause: ""     # Filled by diagnosis
-  artifacts: []      # Filled by diagnosis
-  missing: []        # Filled by diagnosis
-  debug_session: ""  # Filled by diagnosis
+  root_cause: "The ⌘⇧C producer is wired (MenuBarPopoverView declares Notification.Name.copyOutput and a hidden overlay button posts it on ⌘⇧C) but NO tool view observes .copyOutput — zero .onReceive/addObserver/publisher(for:) consumers across all 7 tools. The notification fires into the void; nothing writes the active tool's output to NSPasteboard. The sibling .clearInput (⌘Delete) has the identical gap — a systemic INFRA-16 omission where producers were wired but the tool-view observer side was never implemented."
+  artifacts:
+    - path: "UI/MenuBarPopoverView.swift"
+      issue: "Producer correct (.copyOutput declared line ~27, posted line ~191-197); .clearInput same (declared line ~24, posted line ~173) — but both depend on an unfulfilled observer contract"
+    - path: "Tools/*/**View.swift (all 7 tools)"
+      issue: "None registers .onReceive(NotificationCenter...copyOutput); per-tool NSPasteboard writes live only inside visible copy buttons, unreachable from the shortcut"
+  missing:
+    - "Add an .onReceive(NotificationCenter.default.publisher(for: .copyOutput)) handler to each tool view (or a shared parent hosting the active tool) that writes the tool's primary output to NSPasteboard.general"
+    - "Apply the same fix for .clearInput (⌘Delete) — also currently a no-op"
+    - "Consider centralizing via a shared protocol/modifier so all 7 tools subscribe consistently"
+  debug_session: .planning/debug/copy-output-shortcut.md
 
 - truth: "First Esc reliably returns from a tool to the launcher (stage 1 of two-stage Esc)"
   status: failed
   reason: "User reported: when pressing esc sometimes it does not go back to launcher"
   severity: major
   test: 16
-  root_cause: ""     # Filled by diagnosis
-  artifacts: []      # Filled by diagnosis
-  missing: []        # Filled by diagnosis
-  debug_session: ""  # Filled by diagnosis
+  root_cause: "Stage-1 Esc is wired ONLY via SwiftUI .onKeyPress(.escape) on the popover root (handleEscape()). The tool input is a real AppKit NSTextView (SyntaxEditorView) with no keyDown/cancelOperation override. When that NSTextView holds first-responder focus (normal after click/type/paste), AppKit delivers Esc to the text view, which consumes it and does NOT bubble to SwiftUI's .onKeyPress — so handleEscape() never fires and navigationState stays .tool. When the editor is unfocused, Esc reaches .onKeyPress and works. Intermittency correlates exactly with editor focus."
+  artifacts:
+    - path: "UI/MenuBarPopoverView.swift"
+      issue: "Esc handled only via SwiftUI .onKeyPress (lines ~111-114 → handleEscape lines ~377-386), which a focused AppKit subview starves"
+    - path: "UI/Components/SyntaxEditorView.swift"
+      issue: "NSTextView first responder (lines ~15-37) consumes Esc and never forwards it up the responder chain"
+  missing:
+    - "Intercept Esc at the AppKit layer so it works regardless of NSTextView focus — override cancelOperation:/doCommandBySelector in the SyntaxEditorView coordinator and route to the two-stage handler, OR add an app-level NSEvent local monitor that calls handleEscape() before the text view consumes the event"
+  debug_session: .planning/debug/esc-to-launcher-intermittent.md

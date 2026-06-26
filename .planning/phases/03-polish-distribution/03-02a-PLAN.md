@@ -20,6 +20,9 @@ must_haves:
     - "A drag-over overlay covers the whole surface while dragging and disappears on drop/exit"
     - "A binary/non-UTF-8 file dropped on the launcher (text path) surfaces an inline WarningBannerView after the drop, never a crash"
     - "Dropping a binary or oversized file on a text tool shows a WarningBannerView AFTER the drop completes — not during drag — because binary vs text is determined by UTF-8 decode (post-drop); the drag-over overlay remains the single valid-state accent style throughout"
+    - "Implements D-04: open-tool-only routing — a file dropped on the launcher reads its text, runs detect(), and routes to the best tool (mirrors Services D-02); binary tools (Base64, Hash) load any file directly via the existing chunked pipeline"
+    - "Implements D-05: a whole-surface drag-over overlay ('Drop to load') with no permanent dedicated drop zone consuming popover layout"
+    - "Implements D-06: graceful, async, validated — the text path rejects binary/oversized files with an inline WarningBannerView post-drop, while binary tools process any file off-main with no universal size cap (the large-file-hash path is preserved)"
   artifacts:
     - path: "UI/Components/DropOverlayView.swift"
       provides: "Stateless full-surface drag-over overlay (single valid state) with VoiceOver label and contextual label text"

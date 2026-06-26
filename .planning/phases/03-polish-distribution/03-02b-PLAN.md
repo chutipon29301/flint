@@ -21,6 +21,8 @@ must_haves:
     - "User drags a text file onto an open text tool and its contents load into that tool's input"
     - "User drags a binary/non-UTF-8 file onto a text-only tool and gets an inline WarningBannerView, not a crash"
     - "Every one of the 9 text-tool views carries the shared .fileDrop modifier and a DropOverlayView overlay"
+    - "Implements D-04 (text-tool side): a file dropped on an open text tool loads into THAT tool's input — open-tool-only routing never yanks the user out of the tool they deliberately opened"
+    - "Implements D-06 (text-tool side): a binary/oversized/non-UTF-8 file dropped on a text tool is rejected via the shared handler with an inline WarningBannerView post-drop, never a crash"
   artifacts:
     - path: "Tools/JSONFormatter/JSONFormatterView.swift"
       provides: "Representative text-tool view with .fileDrop + DropOverlayView wired to viewModel.input/errorMessage"

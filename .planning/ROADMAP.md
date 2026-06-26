@@ -116,7 +116,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 — shares MenuBarPopoverView)*
 
-- [ ] 03-02a-PLAN.md — Drag-and-drop foundation + binary (DIST-02): DropOverlayView (single state) + shared FileDropHandler, any-file drop on Base64/Hash via chunked pipeline, launcher detect() routing + post-drop WarningBannerView rejection
+- [x] 03-02a-PLAN.md — Drag-and-drop foundation + binary (DIST-02): DropOverlayView (single state) + shared FileDropHandler, any-file drop on Base64/Hash via chunked pipeline, launcher detect() routing + post-drop WarningBannerView rejection
 
 **Wave 3** *(blocked on Wave 1/2)*
 
@@ -142,4 +142,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
 | 2. Extended Tools | 8/8 | Complete   | 2026-06-26 |
-| 3. Polish & Distribution | 0/6 | Not started | - |
+| 3. Polish & Distribution | 2/6 | In Progress|  |

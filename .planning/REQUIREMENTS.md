@@ -120,7 +120,7 @@
 ### Polish & Distribution (DIST)
 
 - [x] **DIST-01**: macOS Services menu lets a user select text anywhere, route it to the best-matching tool pre-filled
-- [ ] **DIST-02**: All tools accept drag-and-drop of text files; binary tools (Base64, Hash) accept any file
+- [x] **DIST-02**: All tools accept drag-and-drop of text files; binary tools (Base64, Hash) accept any file
 - [ ] **DIST-03**: App ships as a signed, notarized `.dmg` that passes Gatekeeper, with a first-run onboarding flow
 - [ ] **DIST-04**: App auto-updates via Sparkle (EdDSA-signed updates)
 
@@ -235,7 +235,7 @@
 | DIFF-03 | Phase 2 | Complete |
 | DIFF-04 | Phase 2 | Complete |
 | DIST-01 | Phase 3 | Complete |
-| DIST-02 | Phase 3 | Pending |
+| DIST-02 | Phase 3 | Complete |
 | DIST-03 | Phase 3 | Pending |
 | DIST-04 | Phase 3 | Pending |
 

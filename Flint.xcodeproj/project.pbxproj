@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		0011000000000C1 /* ChromaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000021 /* ChromaKit */; };
 		0011000000000C2 /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000022 /* Markdown */; };
+		0011000000000D1 /* diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000C1 /* diff.swift */; };
+		0011000000000D2 /* cleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000C2 /* cleanup.swift */; };
+		0011000000000D3 /* common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000C3 /* common.swift */; };
+		0011000000000D4 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000C4 /* String.swift */; };
+		0011000000000D5 /* UnicodeScalar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000C5 /* UnicodeScalar.swift */; };
+		0011000000000D6 /* NSRegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000C6 /* NSRegularExpression.swift */; };
+		0011000000000D7 /* github-markdown.css in Resources */ = {isa = PBXBuildFile; fileRef = 0012000000000C7 /* github-markdown.css */; };
 		001100000000001 /* FlintApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000001 /* FlintApp.swift */; };
 		001100000000002 /* WindowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000002 /* WindowCoordinator.swift */; };
 		001100000000003 /* ToolCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000003 /* ToolCategory.swift */; };
@@ -160,6 +167,13 @@
 		0012000000000A6 /* SearchResultsMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsMerger.swift; sourceTree = "<group>"; };
 		0012000000000B0 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		0012000000000B1 /* PinnedToolReorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedToolReorderTests.swift; sourceTree = "<group>"; };
+		0012000000000C1 /* diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = diff.swift; sourceTree = "<group>"; };
+		0012000000000C2 /* cleanup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cleanup.swift; sourceTree = "<group>"; };
+		0012000000000C3 /* common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = common.swift; sourceTree = "<group>"; };
+		0012000000000C4 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		0012000000000C5 /* UnicodeScalar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeScalar.swift; sourceTree = "<group>"; };
+		0012000000000C6 /* NSRegularExpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSRegularExpression.swift; sourceTree = "<group>"; };
+		0012000000000C7 /* github-markdown.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "github-markdown.css"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,8 +283,30 @@
 				00150000000000C /* Timestamp */,
 				00150000000000D /* Hash */,
 				00150000000000E /* UUID */,
+				001500000000020 /* TextDiff */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		001500000000020 /* TextDiff */ = {
+			isa = PBXGroup;
+			children = (
+				001500000000021 /* SwiftDiff */,
+			);
+			path = TextDiff;
+			sourceTree = "<group>";
+		};
+		001500000000021 /* SwiftDiff */ = {
+			isa = PBXGroup;
+			children = (
+				0012000000000C1 /* diff.swift */,
+				0012000000000C2 /* cleanup.swift */,
+				0012000000000C3 /* common.swift */,
+				0012000000000C4 /* String.swift */,
+				0012000000000C5 /* UnicodeScalar.swift */,
+				0012000000000C6 /* NSRegularExpression.swift */,
+			);
+			path = SwiftDiff;
 			sourceTree = "<group>";
 		};
 		001500000000008 /* JSONFormatter */ = {
@@ -386,6 +422,7 @@
 				001200000000020 /* Assets.xcassets */,
 				001200000000021 /* Flint-debug.entitlements */,
 				001200000000022 /* Flint-release.entitlements */,
+				0012000000000C7 /* github-markdown.css */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -522,6 +559,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				001100000000020 /* Assets.xcassets in Resources */,
+				0011000000000D7 /* github-markdown.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,6 +628,12 @@
 				0011000000000B2 /* ToolShortcutActions.swift in Sources */,
 				0011000000000A6 /* SearchResultsMerger.swift in Sources */,
 				0011000000000B0 /* PreferencesView.swift in Sources */,
+				0011000000000D1 /* diff.swift in Sources */,
+				0011000000000D2 /* cleanup.swift in Sources */,
+				0011000000000D3 /* common.swift in Sources */,
+				0011000000000D4 /* String.swift in Sources */,
+				0011000000000D5 /* UnicodeScalar.swift in Sources */,
+				0011000000000D6 /* NSRegularExpression.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

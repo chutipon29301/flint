@@ -42,6 +42,8 @@
 		001100000005006 /* BitFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000005006 /* BitFieldView.swift */; };
 		001100000000001 /* FlintApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000001 /* FlintApp.swift */; };
 		001100000000002 /* WindowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000002 /* WindowCoordinator.swift */; };
+		0011000000000B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B1 /* AppDelegate.swift */; };
+		0011000000000B2 /* FlintServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B2 /* FlintServiceProvider.swift */; };
 		001100000000003 /* ToolCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000003 /* ToolCategory.swift */; };
 		001100000000004 /* ToolDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000004 /* ToolDefinition.swift */; };
 		001100000000005 /* DetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000005 /* DetectionResult.swift */; };
@@ -125,6 +127,8 @@
 /* Begin PBXFileReference section */
 		001200000000001 /* FlintApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintApp.swift; sourceTree = "<group>"; };
 		001200000000002 /* WindowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCoordinator.swift; sourceTree = "<group>"; };
+		0012000000000B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		0012000000000B2 /* FlintServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlintServiceProvider.swift; sourceTree = "<group>"; };
 		001200000000003 /* ToolCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCategory.swift; sourceTree = "<group>"; };
 		001200000000004 /* ToolDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolDefinition.swift; sourceTree = "<group>"; };
 		001200000000005 /* DetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionResult.swift; sourceTree = "<group>"; };
@@ -284,6 +288,7 @@
 			children = (
 				001200000000001 /* FlintApp.swift */,
 				001200000000002 /* WindowCoordinator.swift */,
+				0012000000000B1 /* AppDelegate.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -318,6 +323,7 @@
 				00120000000000A /* ClipboardDetector.swift */,
 				00120000000000B /* HotkeyManager.swift */,
 				0012000000000A6 /* SearchResultsMerger.swift */,
+				0012000000000B2 /* FlintServiceProvider.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -693,6 +699,8 @@
 			files = (
 				001100000000001 /* FlintApp.swift in Sources */,
 				001100000000002 /* WindowCoordinator.swift in Sources */,
+				0011000000000B1 /* AppDelegate.swift in Sources */,
+				0011000000000B2 /* FlintServiceProvider.swift in Sources */,
 				001100000000003 /* ToolCategory.swift in Sources */,
 				001100000000004 /* ToolDefinition.swift in Sources */,
 				001100000000005 /* DetectionResult.swift in Sources */,

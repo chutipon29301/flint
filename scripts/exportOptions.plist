@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      exportOptions.plist for `xcodebuild -exportArchive`.
+
+      method = developer-id : produces a Developer-ID-signed app for distribution
+      OUTSIDE the Mac App Store. This path re-signs Sparkle's nested XPC services
+      (Installer.xpc / Downloader.xpc / Autoupdate) in the correct inside-out order
+      and strips get-task-allow. NEVER post-process with `codesign --deep`.
+
+      ┌──────────────────────────────────────────────────────────────────────┐
+      │ ACTION REQUIRED before first release:                                  │
+      │   Replace REPLACE_WITH_YOUR_TEAM_ID below with your real 10-character  │
+      │   Apple Developer Team ID (find it at developer.apple.com → Membership, │
+      │   or: `security find-identity -v -p codesigning` shows it in the        │
+      │   "Developer ID Application: <name> (TEAMID)" identity).                │
+      └──────────────────────────────────────────────────────────────────────┘
+    -->
+    <key>method</key>
+    <string>developer-id</string>
+
+    <key>teamID</key>
+    <string>REPLACE_WITH_YOUR_TEAM_ID</string>
+
+    <!--
+      signingStyle = automatic : Xcode picks the matching Developer ID Application
+      certificate from the login Keychain. Switch to "manual" and add a
+      <key>signingCertificate</key><string>Developer ID Application</string>
+      block only if you manage signing identities explicitly.
+    -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+
+    <!--
+      Notarization is performed explicitly in release.sh via `xcrun notarytool`,
+      so we do NOT request Xcode's built-in upload here.
+    -->
+    <key>destination</key>
+    <string>export</string>
+</dict>
+</plist>

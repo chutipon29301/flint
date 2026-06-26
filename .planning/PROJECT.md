@@ -39,12 +39,12 @@ A developer can paste content and get the right transformation in under a second
 - [ ] Hash Generator (MD5/SHA-1/256/384/512/CRC32, HMAC, text + file)
 - [ ] UUID Generator & Inspector (v1/v4/v5/v7, bulk to 1000, parse/inspect)
 
-**Phase 2 Extended Tools**
-- [ ] Regex Tester (flags, live highlight, capture groups, replace, pattern library)
-- [ ] Color Converter (HEX/RGB/HSL/HSV/OKLCH, screen picker, contrast checker)
-- [ ] Markdown Previewer (split live preview, GFM, export HTML/PDF)
-- [ ] Number Base Converter (bin/oct/dec/hex, bit-width, signed, bit-field UI)
-- [ ] Text Diff Viewer (side-by-side/unified, word-level, patch export)
+**Phase 2 Extended Tools** — ✅ Complete (2026-06-26)
+- [x] Regex Tester (flags, live highlight, capture groups, replace, pattern library)
+- [x] Color Converter (HEX/RGB/HSL/HSV/OKLCH, screen picker, contrast checker)
+- [x] Markdown Previewer (split live preview, GFM, export HTML/PDF)
+- [x] Number Base Converter (bin/oct/dec/hex, bit-width, signed, bit-field UI)
+- [x] Text Diff Viewer (side-by-side/unified, word-level, patch export)
 
 **Phase 3 Polish & Distribution**
 - [ ] macOS Services menu integration (right-click text → route to best tool)
@@ -111,4 +111,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-25 after initialization*
+*Last updated: 2026-06-26 — Phase 2 (Extended Tools) complete; all 12 tools shipped. Next: Phase 3 Polish & Distribution.*

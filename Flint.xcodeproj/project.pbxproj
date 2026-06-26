@@ -114,6 +114,11 @@
 		0011000000000A6 /* SearchResultsMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000A6 /* SearchResultsMerger.swift */; };
 		0011000000000B0 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B0 /* PreferencesView.swift */; };
 		0011000000000B1 /* PinnedToolReorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B1 /* PinnedToolReorderTests.swift */; };
+		001100000006001 /* TextDiffTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006001 /* TextDiffTransformer.swift */; };
+		001100000006002 /* TextDiffViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006002 /* TextDiffViewModel.swift */; };
+		001100000006003 /* TextDiffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006003 /* TextDiffView.swift */; };
+		001100000006004 /* TextDiffDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006004 /* TextDiffDefinition.swift */; };
+		001100000006005 /* TextDiffTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006005 /* TextDiffTransformerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -220,6 +225,11 @@
 		0012000000000C5 /* UnicodeScalar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeScalar.swift; sourceTree = "<group>"; };
 		0012000000000C6 /* NSRegularExpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSRegularExpression.swift; sourceTree = "<group>"; };
 		0012000000000C7 /* github-markdown.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "github-markdown.css"; sourceTree = "<group>"; };
+		001200000006001 /* TextDiffTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffTransformer.swift; sourceTree = "<group>"; };
+		001200000006002 /* TextDiffViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffViewModel.swift; sourceTree = "<group>"; };
+		001200000006003 /* TextDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffView.swift; sourceTree = "<group>"; };
+		001200000006004 /* TextDiffDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffDefinition.swift; sourceTree = "<group>"; };
+		001200000006005 /* TextDiffTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffTransformerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -342,6 +352,10 @@
 			isa = PBXGroup;
 			children = (
 				001500000000021 /* SwiftDiff */,
+				001200000006001 /* TextDiffTransformer.swift */,
+				001200000006002 /* TextDiffViewModel.swift */,
+				001200000006003 /* TextDiffView.swift */,
+				001200000006004 /* TextDiffDefinition.swift */,
 			);
 			path = TextDiff;
 			sourceTree = "<group>";
@@ -540,6 +554,7 @@
 				001200000003005 /* ColorTransformerTests.swift */,
 				001200000004005 /* MarkdownTransformerTests.swift */,
 				001200000005005 /* NumberBaseTransformerTests.swift */,
+				001200000006005 /* TextDiffTransformerTests.swift */,
 			);
 			path = FlintTests;
 			sourceTree = "<group>";
@@ -753,6 +768,10 @@
 				001100000005003 /* NumberBaseView.swift in Sources */,
 				001100000005004 /* NumberBaseDefinition.swift in Sources */,
 				001100000005006 /* BitFieldView.swift in Sources */,
+				001100000006001 /* TextDiffTransformer.swift in Sources */,
+				001100000006002 /* TextDiffViewModel.swift in Sources */,
+				001100000006003 /* TextDiffView.swift in Sources */,
+				001100000006004 /* TextDiffDefinition.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -774,6 +793,7 @@
 				001100000003005 /* ColorTransformerTests.swift in Sources */,
 				001100000004005 /* MarkdownTransformerTests.swift in Sources */,
 				001100000005005 /* NumberBaseTransformerTests.swift in Sources */,
+				001100000006005 /* TextDiffTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -87,8 +87,7 @@ final class WindowCoordinator {
     }
 }
 
-// MARK: - Notification Names (plan 03-03)
-// Relocated from FlintServiceProvider.swift (plan 260627-lef) — same raw string, same behavior.
+// MARK: - Notification Names (plan 03-03, relocated here plan 260627-lef)
 extension Notification.Name {
     /// Posted by WindowCoordinator.openOnboarding() after the activation-policy dance.
     /// FlintApp receives this and opens the onboarding WindowGroup by id (DIST-03).

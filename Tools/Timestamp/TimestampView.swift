@@ -6,6 +6,7 @@ import SwiftUI
 struct TimestampView: View {
     @State private var viewModel: TimestampViewModel
     @State private var isDragTargeted = false
+    @Environment(ToolSeed.self) private var toolSeed
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         _viewModel = State(initialValue: TimestampViewModel(onSaveHistory: onSaveHistory))
@@ -23,6 +24,12 @@ struct TimestampView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .toolShortcuts(viewModel)
+        .onAppear {
+            // DIST-02: launcher detect()-routing pre-fill. consume() is one-shot.
+            if let seed = toolSeed.consume(for: "timestamp") {
+                viewModel.input = seed
+            }
+        }
         .fileDrop(
             isTargeted: $isDragTargeted,
             onText: { viewModel.input = $0 },

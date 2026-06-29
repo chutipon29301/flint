@@ -12,6 +12,7 @@ struct UUIDView: View {
 
     @State private var viewModel: UUIDViewModel
     @Environment(HistoryStore.self) private var historyStore
+    @Environment(ToolSeed.self) private var toolSeed
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         _viewModel = State(wrappedValue: UUIDViewModel(onSaveHistory: onSaveHistory))
@@ -26,6 +27,13 @@ struct UUIDView: View {
         }
         .padding(8)
         .toolShortcuts(viewModel)
+        .onAppear {
+            // DIST-02: launcher detect()-routing pre-fill. A detected UUID is a value
+            // to INSPECT, so it populates the inspect panel. consume() is one-shot.
+            if let seed = toolSeed.consume(for: "uuid-generator") {
+                viewModel.inspectInput = seed
+            }
+        }
     }
 
     // MARK: - Generator panel

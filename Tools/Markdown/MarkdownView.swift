@@ -151,10 +151,17 @@ private struct MarkdownContentView: View {
             .padding(.top, 8)
             .padding(.bottom, 4)
 
-            WebPreviewView(html: viewModel.html)
-                .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .accessibilityLabel("Markdown preview pane")
+            if viewModel.source.isEmpty {
+                Text("Paste or type content above")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            } else {
+                WebPreviewView(html: viewModel.html)
+                    .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .accessibilityLabel("Markdown preview pane")
+            }
         }
     }
 

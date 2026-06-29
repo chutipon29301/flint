@@ -117,9 +117,16 @@ private struct JSONFormatterContentView: View {
                     .padding(.top, 8)
 
                     // D-11: opacity dims to 0.4 when output is from last-good (no animation per UI-SPEC)
-                    CodeDisplayView(code: viewModel.output, language: "json")
-                        .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    if viewModel.input.isEmpty {
+                        Text("Paste or type content above")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    } else {
+                        CodeDisplayView(code: viewModel.output, language: "json")
+                            .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
                 }
                 .frame(minWidth: 200)
             }

@@ -189,10 +189,17 @@ private struct Base64ContentView: View {
                     .padding(.top, 8)
 
                     // D-11: dims to 40% opacity when output is stale (last-good-output-dimmed)
-                    CodeDisplayView(code: viewModel.output, language: "text")
-                        .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .font(.system(size: 13, design: .monospaced))
+                    if viewModel.input.isEmpty && !viewModel.isProcessingFile {
+                        Text("Paste or type content above")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    } else {
+                        CodeDisplayView(code: viewModel.output, language: "text")
+                            .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .font(.system(size: 13, design: .monospaced))
+                    }
                 }
                 .frame(minWidth: 200)
             }

@@ -127,8 +127,9 @@ struct UUIDView: View {
 
             // UUID list (UUID-04: per-UUID copy via CopyButtonView — D-12)
             if viewModel.generatedUUIDs.isEmpty {
-                Text("Press Generate to produce UUIDs")
-                    .foregroundStyle(.tertiary)
+                Text("Paste or type content above")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.top, 8)
             } else {

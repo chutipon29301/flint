@@ -57,7 +57,14 @@ private struct TextDiffContentView: View {
             controlBar
             Divider()
             editorsSection
-            if viewModel.result != nil || shouldShowEmptyMessage {
+            if viewModel.original.isEmpty && viewModel.changed.isEmpty {
+                Divider()
+                Text("Paste or type content above")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(16)
+            } else if viewModel.result != nil || shouldShowEmptyMessage {
                 Divider()
                 diffOutputSection
             }

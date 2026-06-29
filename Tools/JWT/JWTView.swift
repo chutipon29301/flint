@@ -98,6 +98,15 @@ private struct JWTContentView: View {
 
                 Divider()
 
+                // Empty state — shown when no token has been entered (D-05)
+                if viewModel.token.isEmpty {
+                    Text("Paste or type content above")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 24)
+                }
+
                 // Decoded segments — shown when token is valid and decoded
                 if !viewModel.headerJSON.isEmpty || !viewModel.payloadJSON.isEmpty {
                     // Header (JWT-02)

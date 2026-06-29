@@ -72,6 +72,8 @@ struct FlintApp: App {
                 .environment(clipboard)
                 .environment(toolRegistry)
                 .environment(toolSeed)
+                .environment(hotkeyManager)     // D-09: tool views read previousFrontmostApp
+                .environment(pasteBackService)  // D-09: tool views call synthesizePaste
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14
         }
         .defaultSize(width: 900, height: 650)

@@ -5,6 +5,7 @@
 import SwiftUI
 import AppKit
 import UniformTypeIdentifiers
+import ApplicationServices
 
 struct HashView: View {
     @State private var viewModel: HashViewModel
@@ -15,6 +16,12 @@ struct HashView: View {
 
     // DIST-02: binary tool drop — accepts ANY file via the existing off-main startFileHash pipeline.
     @State private var isDragTargeted = false
+
+    // D-09: paste-back environments (CF-02: only used when pasteBackEnabled is true)
+    @Environment(PreferencesStore.self) private var prefs
+    @Environment(HotkeyManager.self) private var hotkeyManager
+    @Environment(PasteBackService.self) private var pasteBackService
+    @Environment(ClipboardDetector.self) private var clipboard
 
     init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
         _viewModel = State(initialValue: HashViewModel(onSaveHistory: onSaveHistory))
@@ -186,11 +193,18 @@ struct HashView: View {
             // D-08 per-tool .selectOutputRow observer — handles ⌘1–⌘6 for Hash rows.
             // Index 1 also resolves via the shared ToolShortcutsModifier (idempotent: same MD5 value).
             // Out-of-range (⌘7–⌘9): outputForRow returns nil → harmless no-op (CF-01, T-04-06).
+            // D-09 paste-back: gated on pasteBackEnabled && AXIsProcessTrusted() re-verify (T-04-12).
+            // CF-02: when pasteBackEnabled == false, NO synthetic event and NO permission check runs.
             .onReceive(NotificationCenter.default.publisher(for: .selectOutputRow)) { note in
                 guard let index = note.userInfo?["index"] as? Int else { return }
                 guard let text = viewModel.outputForRow(index), !text.isEmpty else { return }
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(text, forType: .string)
+                if prefs.pasteBackEnabled, AXIsProcessTrusted(),
+                   let app = hotkeyManager.previousFrontmostApp {
+                    clipboard.isPopoverPresented = false
+                    pasteBackService.synthesizePaste(into: app)
+                }
             }
         }
     }

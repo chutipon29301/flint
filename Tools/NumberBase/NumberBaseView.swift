@@ -5,6 +5,7 @@
 
 import SwiftUI
 import AppKit
+import ApplicationServices
 
 // MARK: - Entry wrapper (Convention B — HashView pattern)
 
@@ -24,6 +25,12 @@ struct NumberBaseView: View {
 
 private struct NumberBaseContentView: View {
     @Bindable var viewModel: NumberBaseViewModel
+
+    // D-09: paste-back environments (CF-02: only used when pasteBackEnabled is true)
+    @Environment(PreferencesStore.self) private var prefs
+    @Environment(HotkeyManager.self) private var hotkeyManager
+    @Environment(PasteBackService.self) private var pasteBackService
+    @Environment(ClipboardDetector.self) private var clipboard
 
     // Editable text-field bindings — transient per-field strings that drive update(from:text:)
     @State private var binField: String = "00000000"
@@ -138,11 +145,18 @@ private struct NumberBaseContentView: View {
         // DEC via shared modifier, BIN via per-tool observer. The badge index 1 is BIN per UI-SPEC,
         // so the per-tool observer correctly handles ⌘1 → BIN for this tool.
         // Out-of-range (⌘5–⌘9): outputForRow returns nil → harmless no-op (CF-01, T-04-06).
+        // D-09 paste-back: gated on pasteBackEnabled && AXIsProcessTrusted() re-verify (T-04-12).
+        // CF-02: when pasteBackEnabled == false, NO synthetic event and NO permission check runs.
         .onReceive(NotificationCenter.default.publisher(for: .selectOutputRow)) { note in
             guard let index = note.userInfo?["index"] as? Int else { return }
             guard let text = viewModel.outputForRow(index), !text.isEmpty else { return }
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(text, forType: .string)
+            if prefs.pasteBackEnabled, AXIsProcessTrusted(),
+               let app = hotkeyManager.previousFrontmostApp {
+                clipboard.isPopoverPresented = false
+                pasteBackService.synthesizePaste(into: app)
+            }
         }
     }
 

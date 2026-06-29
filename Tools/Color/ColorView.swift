@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppKit
+import ApplicationServices
 
 // MARK: - ColorView (Convention A wrapper)
 
@@ -43,6 +44,12 @@ struct ColorView: View {
 
 private struct ColorContentView: View {
     @Bindable var viewModel: ColorViewModel
+
+    // D-09: paste-back environments (CF-02: only used when pasteBackEnabled is true)
+    @Environment(PreferencesStore.self) private var prefs
+    @Environment(HotkeyManager.self) private var hotkeyManager
+    @Environment(PasteBackService.self) private var pasteBackService
+    @Environment(ClipboardDetector.self) private var clipboard
 
     // Local TextFields for editable format rows — track last-committed values to avoid feedback loop
     @State private var hexFieldText: String = ""
@@ -219,11 +226,18 @@ private struct ColorContentView: View {
         // D-08 per-tool .selectOutputRow observer — handles ⌘1–⌘5 for Color rows.
         // Index 1 also resolves via the shared ToolShortcutsModifier (idempotent: same HEX value).
         // Out-of-range (⌘6–⌘9): outputForRow returns nil → harmless no-op (CF-01, T-04-06).
+        // D-09 paste-back: gated on pasteBackEnabled && AXIsProcessTrusted() re-verify (T-04-12).
+        // CF-02: when pasteBackEnabled == false, NO synthetic event and NO permission check runs.
         .onReceive(NotificationCenter.default.publisher(for: .selectOutputRow)) { note in
             guard let index = note.userInfo?["index"] as? Int else { return }
             guard let text = viewModel.outputForRow(index), !text.isEmpty else { return }
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(text, forType: .string)
+            if prefs.pasteBackEnabled, AXIsProcessTrusted(),
+               let app = hotkeyManager.previousFrontmostApp {
+                clipboard.isPopoverPresented = false
+                pasteBackService.synthesizePaste(into: app)
+            }
         }
     }
 

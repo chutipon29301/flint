@@ -351,6 +351,21 @@ struct MenuBarPopoverView: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("Clear search")
             }
+
+            // DIST-02: always-visible path to the drag-and-drop workspace. The popover NSPanel
+            // dismisses on the Finder click needed to grab a file, so file drops live in the
+            // resizable workspace window. Mirrors the hidden ⌘N handler.
+            Button {
+                WindowCoordinator.shared.openWorkspace()
+                openWindow(id: "workspace")
+                clipboard.isPopoverPresented = false
+            } label: {
+                Image(systemName: "macwindow")
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Open Flint in a resizable window to drag and drop files")
+            .help("Open in a window to drag and drop files")
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)

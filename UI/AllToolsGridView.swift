@@ -54,9 +54,7 @@ private struct ToolGridTile: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
             .background(
-                isHovered
-                    ? Color.quaternary.opacity(0.85)
-                    : Color.quaternary.opacity(0.5)
+                Color(NSColor.quaternaryLabelColor).opacity(isHovered ? 1.0 : 0.6)
             )
             .cornerRadius(8)
         }

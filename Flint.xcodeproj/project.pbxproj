@@ -125,6 +125,8 @@
 		001100000006003 /* TextDiffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006003 /* TextDiffView.swift */; };
 		001100000006004 /* TextDiffDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006004 /* TextDiffDefinition.swift */; };
 		001100000006005 /* TextDiffTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000006005 /* TextDiffTransformerTests.swift */; };
+		00110000000DD04 /* AllToolsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD04 /* AllToolsGridView.swift */; };
+		00110000000DD05 /* ToolHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD05 /* ToolHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -133,6 +135,8 @@
 		0012000000000B3 /* SparkleUpdaterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterService.swift; sourceTree = "<group>"; };
 		00120000000DD01 /* DropOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropOverlayView.swift; sourceTree = "<group>"; };
 		00120000000DD03 /* OnboardingWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowView.swift; sourceTree = "<group>"; };
+		00120000000DD04 /* AllToolsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllToolsGridView.swift; sourceTree = "<group>"; };
+		00120000000DD05 /* ToolHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolHeaderView.swift; sourceTree = "<group>"; };
 		00120000000DD02 /* FileDropHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDropHandler.swift; sourceTree = "<group>"; };
 		001200000000003 /* ToolCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCategory.swift; sourceTree = "<group>"; };
 		001200000000004 /* ToolDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolDefinition.swift; sourceTree = "<group>"; };
@@ -518,6 +522,8 @@
 				0012000000000A3 /* SearchView.swift */,
 				0012000000000B0 /* PreferencesView.swift */,
 				00120000000DD03 /* OnboardingWindowView.swift */,
+				00120000000DD04 /* AllToolsGridView.swift */,
+				00120000000DD05 /* ToolHeaderView.swift */,
 				001500000000010 /* Components */,
 			);
 			path = UI;
@@ -797,6 +803,8 @@
 				001100000006002 /* TextDiffViewModel.swift in Sources */,
 				001100000006003 /* TextDiffView.swift in Sources */,
 				001100000006004 /* TextDiffDefinition.swift in Sources */,
+				00110000000DD04 /* AllToolsGridView.swift in Sources */,
+				00110000000DD05 /* ToolHeaderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

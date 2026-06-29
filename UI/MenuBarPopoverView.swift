@@ -377,8 +377,16 @@ struct MenuBarPopoverView: View {
     private var bodyContent: some View {
         switch navigationState {
         case .root:
-            // Recent history (last 5 entries)
-            recentHistoryView
+            // D-01: All-tools grid above recent history. Additive — pinned bar (Zone 3)
+            // and recent history are preserved. Grid replaces sparse empty space below
+            // the pinned row; history remains accessible by scrolling below the grid.
+            VStack(spacing: 0) {
+                AllToolsGridView(onSelect: { toolId in
+                    navigationState = .tool(toolId: toolId)
+                })
+                Divider()
+                recentHistoryView
+            }
 
         case .searchResults(let query):
             SearchView(
@@ -405,9 +413,15 @@ struct MenuBarPopoverView: View {
             })
 
         case .tool(let toolId):
+            // D-02: ToolHeaderView wraps every tool uniformly — added here at the switch site
+            // so individual tool views stay unchanged. Back button sets navigationState = .root,
+            // the same target as Esc stage-1 (both affordances coexist, no change to escMonitor).
             if let tool = toolRegistry.tools.first(where: { $0.id == toolId }) {
-                tool.makeView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                VStack(spacing: 0) {
+                    ToolHeaderView(toolName: tool.name, onBack: { navigationState = .root })
+                    tool.makeView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             } else {
                 ContentUnavailableView("Tool Not Found", systemImage: "questionmark")
             }

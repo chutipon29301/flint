@@ -10,6 +10,7 @@ import AppKit
 
 struct JWTView: View {
     @Environment(HistoryStore.self) private var historyStore
+    @Environment(ToolSeed.self) private var toolSeed
     @State private var viewModel: JWTViewModel?
 
     var body: some View {
@@ -28,6 +29,10 @@ struct JWTView: View {
                         historyStore.save(entry)
                     }
                 )
+            }
+            // DIST-02: launcher detect()-routing pre-fill. consume() is one-shot.
+            if let seed = toolSeed.consume(for: "jwt-decoder") {
+                viewModel?.token = seed
             }
         }
     }

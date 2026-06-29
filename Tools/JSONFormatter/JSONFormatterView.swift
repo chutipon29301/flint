@@ -7,6 +7,7 @@ import AppKit
 
 struct JSONFormatterView: View {
     @Environment(HistoryStore.self) private var historyStore
+    @Environment(ToolSeed.self) private var toolSeed
     @State private var viewModel: JSONFormatterViewModel?
 
     var body: some View {
@@ -25,6 +26,10 @@ struct JSONFormatterView: View {
                         historyStore.save(entry)
                     }
                 )
+            }
+            // DIST-02: launcher detect()-routing pre-fill. consume() is one-shot.
+            if let seed = toolSeed.consume(for: "json-formatter") {
+                viewModel?.input = seed
             }
         }
     }

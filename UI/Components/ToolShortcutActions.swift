@@ -35,6 +35,8 @@ protocol ToolShortcutActions: AnyObject {
 /// Attaches INFRA-16 shortcut observers to a tool content view.
 /// - Cmd+Shift+C: copies primaryOutput() to NSPasteboard.general (no-op if nil/empty).
 /// - Cmd+Delete:  calls clearInput().
+/// - Cmd+1:       copies primaryOutput() — row 1 = primary output for all single-output tools (D-08).
+/// - Cmd+2…9:     silent no-op at this shared layer (multi-output tools wire their own observer).
 @MainActor
 private struct ToolShortcutsModifier<Actions: ToolShortcutActions>: ViewModifier {
     let actions: Actions
@@ -54,6 +56,21 @@ private struct ToolShortcutsModifier<Actions: ToolShortcutActions>: ViewModifier
             // Cmd+Delete — clear active tool's input (INFRA-16)
             .onReceive(NotificationCenter.default.publisher(for: .clearInput)) { _ in
                 actions.clearInput()
+            }
+            // Cmd+1–9 row copy (D-08): row 1 = primaryOutput() for all 12 tools via this shared
+            // layer. Multi-output tools (Color/Hash/NumberBase) add their OWN .selectOutputRow
+            // observer on their content view body, which handles indices 1–N for their specific
+            // rows. For those three tools, both observers fire on ⌘1 — both produce the same
+            // primary output, so the copy is idempotent (no corruption). Indices 2–9 at this
+            // shared layer are silent no-ops (multi-output tool observer handles them).
+            // Out-of-range or nil: harmless no-op — CF-01, T-04-06.
+            .onReceive(NotificationCenter.default.publisher(for: .selectOutputRow)) { note in
+                guard let index = note.userInfo?["index"] as? Int else { return }
+                guard index == 1 else { return } // only row 1 handled at shared layer
+                guard let text = actions.primaryOutput(), !text.isEmpty else { return }
+                let pb = NSPasteboard.general
+                pb.clearContents()
+                pb.setString(text, forType: .string)
             }
     }
 }

@@ -209,6 +209,35 @@ final class ColorViewModel: ToolShortcutActions {
         canonicalRGBA = .black
     }
 
+    // MARK: - D-08 Row Copy (⌘1–⌘9)
+
+    /// Returns the copyable string for the given row index.
+    /// Row map (UI-SPEC D-08): 1=HEX, 2=RGB, 3=HSL, 4=HSV, 5=OKLCH.
+    /// Returns nil for out-of-range index — silent no-op (CF-01, T-04-06).
+    func outputForRow(_ index: Int) -> String? {
+        let rgba = canonicalRGBA
+        switch index {
+        case 1:
+            return hexString.isEmpty ? nil : hexString
+        case 2:
+            return rgbString.isEmpty ? nil : rgbString
+        case 3:
+            let alpha = rgba.alpha
+            let full = "hsl(\(hslString) / \(String(format: "%.2f", alpha)))"
+            return full.isEmpty ? nil : full
+        case 4:
+            let alpha = rgba.alpha
+            let full = "hsv(\(hsvString) / \(String(format: "%.2f", alpha)))"
+            return full.isEmpty ? nil : full
+        case 5:
+            let alpha = rgba.alpha
+            let full = "oklch(\(oklchString) / \(String(format: "%.2f", alpha)))"
+            return full.isEmpty ? nil : full
+        default:
+            return nil // out-of-range: silent no-op (CF-01, T-04-06)
+        }
+    }
+
     // MARK: - Private Helpers
 
     private func deriveAllRows() {

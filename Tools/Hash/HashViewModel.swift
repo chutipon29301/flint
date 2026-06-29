@@ -158,6 +158,27 @@ final class HashViewModel: ToolShortcutActions {
         textInput = ""
     }
 
+    // MARK: - D-08 Row Copy (⌘1–⌘9)
+
+    /// Returns the copyable hash string for the given row index.
+    /// Row map (UI-SPEC D-08): 1=MD5, 2=SHA-1, 3=SHA-256, 4=SHA-384, 5=SHA-512, 6=CRC32.
+    /// Returns nil when there is no text hash result or the index is out-of-range (CF-01, T-04-06).
+    /// SECURITY (INFRA-09): returns only digest text — HMAC key is View-local @State, never here.
+    func outputForRow(_ index: Int) -> String? {
+        guard let result = textHashResult else { return nil }
+        let val: String
+        switch index {
+        case 1: val = uppercase ? result.md5.uppercased() : result.md5
+        case 2: val = uppercase ? result.sha1.uppercased() : result.sha1
+        case 3: val = uppercase ? result.sha256.uppercased() : result.sha256
+        case 4: val = uppercase ? result.sha384.uppercased() : result.sha384
+        case 5: val = uppercase ? result.sha512.uppercased() : result.sha512
+        case 6: val = uppercase ? result.crc32.uppercased() : result.crc32
+        default: return nil // out-of-range: silent no-op (CF-01, T-04-06)
+        }
+        return val.isEmpty ? nil : val
+    }
+
     // MARK: - Copy all hashes
 
     func allHashesText(from result: HashTransformer.HashResult) -> String {

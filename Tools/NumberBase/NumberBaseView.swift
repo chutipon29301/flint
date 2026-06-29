@@ -4,6 +4,7 @@
 // Source: UI-SPEC.md "Tool 4: Number Base Converter" + PATTERNS.md "Multi-row output" analog
 
 import SwiftUI
+import AppKit
 
 // MARK: - Entry wrapper (Convention B — HashView pattern)
 
@@ -122,46 +123,41 @@ private struct NumberBaseContentView: View {
 
     private var baseFields: some View {
         VStack(spacing: 8) {
-            baseRow(
-                label: "BIN",
-                placeholder: "0",
-                field: $binField,
-                base: .bin,
-                accessibilityLabel: "Binary value"
-            )
-            baseRow(
-                label: "OCT",
-                placeholder: "0",
-                field: $octField,
-                base: .oct,
-                accessibilityLabel: "Octal value"
-            )
-            baseRow(
-                label: "DEC",
-                placeholder: "0",
-                field: $decField,
-                base: .dec,
-                accessibilityLabel: "Decimal value"
-            )
-            baseRow(
-                label: "HEX",
-                placeholder: "0x0",
-                field: $hexField,
-                base: .hex,
-                accessibilityLabel: "Hexadecimal value"
-            )
+            // D-08 badge indices: 1=BIN, 2=OCT, 3=DEC, 4=HEX (UI-SPEC row map)
+            baseRow(label: "BIN", rowIndex: 1, placeholder: "0",   field: $binField, base: .bin, accessibilityLabel: "Binary value")
+            baseRow(label: "OCT", rowIndex: 2, placeholder: "0",   field: $octField, base: .oct, accessibilityLabel: "Octal value")
+            baseRow(label: "DEC", rowIndex: 3, placeholder: "0",   field: $decField, base: .dec, accessibilityLabel: "Decimal value")
+            baseRow(label: "HEX", rowIndex: 4, placeholder: "0x0", field: $hexField, base: .hex, accessibilityLabel: "Hexadecimal value")
+        }
+        // D-08 per-tool .selectOutputRow observer — handles ⌘1–⌘4 for NumberBase rows.
+        // Index 1 also resolves via shared ToolShortcutsModifier (idempotent: same BIN value).
+        // Wait — DEC is primaryOutput, BIN is row 1 here. The shared modifier copies primaryOutput()
+        // (DEC) for ⌘1. The per-tool observer copies outputForRow(1) = BIN for ⌘1.
+        // Per plan: per-tool observer is authoritative for the three multi-output tools; the shared
+        // modifier row-1 path produces the same primaryOutput (DEC). Both copy text for ⌘1 —
+        // DEC via shared modifier, BIN via per-tool observer. The badge index 1 is BIN per UI-SPEC,
+        // so the per-tool observer correctly handles ⌘1 → BIN for this tool.
+        // Out-of-range (⌘5–⌘9): outputForRow returns nil → harmless no-op (CF-01, T-04-06).
+        .onReceive(NotificationCenter.default.publisher(for: .selectOutputRow)) { note in
+            guard let index = note.userInfo?["index"] as? Int else { return }
+            guard let text = viewModel.outputForRow(index), !text.isEmpty else { return }
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(text, forType: .string)
         }
     }
 
     @ViewBuilder
     private func baseRow(
         label: String,
+        rowIndex: Int,
         placeholder: String,
         field: Binding<String>,
         base: NumberBase,
         accessibilityLabel: String
     ) -> some View {
         HStack(spacing: 8) {
+            OutputRowBadge(index: rowIndex) // D-08 — leading numbered badge for ⌘N copy
+
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)

@@ -167,12 +167,24 @@ struct HashView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
+                // D-08: showBadges=true renders OutputRowBadge(1..6) on each hash row.
+                // .selectOutputRow observer (below) handles ⌘1–⌘6 copies from viewModel.outputForRow.
                 ProgressHashView(
                     result: result,
                     progress: 1.0,
                     isHashing: false,
-                    uppercase: viewModel.uppercase
+                    uppercase: viewModel.uppercase,
+                    showBadges: true
                 )
+            }
+            // D-08 per-tool .selectOutputRow observer — handles ⌘1–⌘6 for Hash rows.
+            // Index 1 also resolves via the shared ToolShortcutsModifier (idempotent: same MD5 value).
+            // Out-of-range (⌘7–⌘9): outputForRow returns nil → harmless no-op (CF-01, T-04-06).
+            .onReceive(NotificationCenter.default.publisher(for: .selectOutputRow)) { note in
+                guard let index = note.userInfo?["index"] as? Int else { return }
+                guard let text = viewModel.outputForRow(index), !text.isEmpty else { return }
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(text, forType: .string)
             }
         }
     }

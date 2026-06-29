@@ -79,6 +79,21 @@ final class NumberBaseViewModel: ToolShortcutActions {
         pattern = 0
     }
 
+    // MARK: - D-08 Row Copy (⌘1–⌘9)
+
+    /// Returns the copyable string for the given row index.
+    /// Row map (UI-SPEC D-08): 1=BIN, 2=OCT, 3=DEC, 4=HEX (with "0x" prefix).
+    /// Returns nil for out-of-range index — silent no-op (CF-01, T-04-06).
+    func outputForRow(_ index: Int) -> String? {
+        switch index {
+        case 1: return binText.isEmpty ? nil : binText
+        case 2: return octText.isEmpty ? nil : octText
+        case 3: return decText.isEmpty ? nil : decText
+        case 4: return hexText.isEmpty ? nil : "0x" + hexText
+        default: return nil // out-of-range: silent no-op (CF-01, T-04-06)
+        }
+    }
+
     // MARK: - Update from base field edit
 
     /// Called when the user edits any of the four text fields.

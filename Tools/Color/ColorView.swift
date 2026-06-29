@@ -164,8 +164,8 @@ private struct ColorContentView: View {
 
     private var formatRowsSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // HEX row
-            formatRow(label: "HEX", copyTooltip: "Copy HEX", copyText: { viewModel.hexString }) {
+            // HEX row (D-08 badge index 1)
+            formatRow(label: "HEX", rowIndex: 1, copyTooltip: "Copy HEX", copyText: { viewModel.hexString }) {
                 TextField("#RRGGBB", text: $hexFieldText)
                     .font(.system(size: 13, design: .monospaced))
                     .textFieldStyle(.roundedBorder)
@@ -175,8 +175,8 @@ private struct ColorContentView: View {
                     .onChange(of: hexFieldText) { _, _ in }
             }
 
-            // RGB row
-            formatRow(label: "RGB", copyTooltip: "Copy RGB", copyText: { "\(viewModel.rgbString)" }) {
+            // RGB row (D-08 badge index 2)
+            formatRow(label: "RGB", rowIndex: 2, copyTooltip: "Copy RGB", copyText: { "\(viewModel.rgbString)" }) {
                 HStack(spacing: 4) {
                     componentField("R:", $rgbR, label: "Red channel") { commitRGB() }
                     componentField("G:", $rgbG, label: "Green channel") { commitRGB() }
@@ -185,8 +185,8 @@ private struct ColorContentView: View {
                 }
             }
 
-            // HSL row
-            formatRow(label: "HSL", copyTooltip: "Copy HSL", copyText: { "hsl(\(viewModel.hslString) / \(String(format: "%.2f", viewModel.canonicalRGBA.alpha)))" }) {
+            // HSL row (D-08 badge index 3)
+            formatRow(label: "HSL", rowIndex: 3, copyTooltip: "Copy HSL", copyText: { "hsl(\(viewModel.hslString) / \(String(format: "%.2f", viewModel.canonicalRGBA.alpha)))" }) {
                 HStack(spacing: 4) {
                     componentField("H:", $hslH, label: "Hue degrees") { commitHSL() }
                     componentField("S:", $hslS, label: "Saturation percent") { commitHSL() }
@@ -195,8 +195,8 @@ private struct ColorContentView: View {
                 }
             }
 
-            // HSV row
-            formatRow(label: "HSV", copyTooltip: "Copy HSV", copyText: { "hsv(\(viewModel.hsvString) / \(String(format: "%.2f", viewModel.canonicalRGBA.alpha)))" }) {
+            // HSV row (D-08 badge index 4)
+            formatRow(label: "HSV", rowIndex: 4, copyTooltip: "Copy HSV", copyText: { "hsv(\(viewModel.hsvString) / \(String(format: "%.2f", viewModel.canonicalRGBA.alpha)))" }) {
                 HStack(spacing: 4) {
                     componentField("H:", $hsvH, label: "Hue degrees") { commitHSV() }
                     componentField("S:", $hsvS, label: "HSV saturation percent") { commitHSV() }
@@ -205,8 +205,8 @@ private struct ColorContentView: View {
                 }
             }
 
-            // OKLCH row
-            formatRow(label: "OKLCH", copyTooltip: "Copy OKLCH", copyText: { "oklch(\(viewModel.oklchString) / \(String(format: "%.2f", viewModel.canonicalRGBA.alpha)))" }) {
+            // OKLCH row (D-08 badge index 5)
+            formatRow(label: "OKLCH", rowIndex: 5, copyTooltip: "Copy OKLCH", copyText: { "oklch(\(viewModel.oklchString) / \(String(format: "%.2f", viewModel.canonicalRGBA.alpha)))" }) {
                 HStack(spacing: 4) {
                     componentField("L:", $oklchL, label: "OKLCH lightness") { commitOKLCH() }
                     componentField("C:", $oklchC, label: "OKLCH chroma") { commitOKLCH() }
@@ -216,17 +216,28 @@ private struct ColorContentView: View {
             }
         }
         .padding(.horizontal, 12)
+        // D-08 per-tool .selectOutputRow observer — handles ⌘1–⌘5 for Color rows.
+        // Index 1 also resolves via the shared ToolShortcutsModifier (idempotent: same HEX value).
+        // Out-of-range (⌘6–⌘9): outputForRow returns nil → harmless no-op (CF-01, T-04-06).
+        .onReceive(NotificationCenter.default.publisher(for: .selectOutputRow)) { note in
+            guard let index = note.userInfo?["index"] as? Int else { return }
+            guard let text = viewModel.outputForRow(index), !text.isEmpty else { return }
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(text, forType: .string)
+        }
     }
 
-    // Generic labeled format row: label + fields + copy button
+    // Generic labeled format row: badge + label + fields + copy button (D-08)
     @ViewBuilder
     private func formatRow<Content: View>(
         label: String,
+        rowIndex: Int,
         copyTooltip: String,
         copyText: @escaping () -> String,
         @ViewBuilder content: () -> Content
     ) -> some View {
         HStack(alignment: .center, spacing: 8) {
+            OutputRowBadge(index: rowIndex) // D-08 — leading numbered badge for ⌘N copy
             Text(label)
                 .font(.system(size: 11, weight: .semibold))
                 .frame(width: 42, alignment: .leading)

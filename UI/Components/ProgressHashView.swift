@@ -1,6 +1,7 @@
 // UI/Components/ProgressHashView.swift
 // Displays file hashing progress + per-hash copy rows once complete.
 // HASH-02 (progress), HASH-04 (per-hash copy, uppercase toggle), D-12.
+// D-08: showBadges=true renders OutputRowBadge(index: N) on text hash rows (1=MD5…6=CRC32).
 
 import SwiftUI
 
@@ -9,6 +10,9 @@ struct ProgressHashView: View {
     let progress: Double          // 0.0 – 1.0; nil when not hashing
     let isHashing: Bool
     let uppercase: Bool
+    /// D-08: when true, numbered OutputRowBadge is shown on each row (text hash section only).
+    /// File hash section passes false — badges are not meaningful there (D-08 targets text rows).
+    var showBadges: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -31,18 +35,23 @@ struct ProgressHashView: View {
     @ViewBuilder
     private func hashRows(_ result: HashTransformer.HashResult) -> some View {
         VStack(spacing: 6) {
-            hashRow(algorithm: "MD5",    value: result.md5)
-            hashRow(algorithm: "SHA-1",  value: result.sha1)
-            hashRow(algorithm: "SHA-256",value: result.sha256)
-            hashRow(algorithm: "SHA-384",value: result.sha384)
-            hashRow(algorithm: "SHA-512",value: result.sha512)
-            hashRow(algorithm: "CRC32",  value: result.crc32)
+            hashRow(algorithm: "MD5",    value: result.md5,    rowIndex: 1)
+            hashRow(algorithm: "SHA-1",  value: result.sha1,   rowIndex: 2)
+            hashRow(algorithm: "SHA-256",value: result.sha256, rowIndex: 3)
+            hashRow(algorithm: "SHA-384",value: result.sha384, rowIndex: 4)
+            hashRow(algorithm: "SHA-512",value: result.sha512, rowIndex: 5)
+            hashRow(algorithm: "CRC32",  value: result.crc32,  rowIndex: 6)
         }
     }
 
-    private func hashRow(algorithm: String, value: String) -> some View {
+    private func hashRow(algorithm: String, value: String, rowIndex: Int) -> some View {
         let displayValue = uppercase ? value.uppercased() : value
         return HStack(alignment: .top) {
+            // D-08: leading numbered badge for ⌘N copy; hidden when showBadges=false
+            if showBadges {
+                OutputRowBadge(index: rowIndex)
+                    .alignmentGuide(.top) { d in d[.top] }
+            }
             VStack(alignment: .leading, spacing: 2) {
                 Text(algorithm)
                     .font(.caption)

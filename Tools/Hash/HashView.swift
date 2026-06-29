@@ -151,7 +151,7 @@ struct HashView: View {
                     }
                 }
                 .padding(10)
-                .background(.blue.opacity(0.05))
+                .background(Color(NSColor.controlBackgroundColor).opacity(0.6))
                 .cornerRadius(8)
             }
         }
@@ -161,7 +161,13 @@ struct HashView: View {
 
     @ViewBuilder
     private var textHashOutputSection: some View {
-        if let result = viewModel.textHashResult {
+        if viewModel.textInput.isEmpty && viewModel.fileURL == nil {
+            Text("Paste or type content above")
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 8)
+        } else if let result = viewModel.textHashResult {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Text Hashes")
                     .font(.subheadline)

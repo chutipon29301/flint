@@ -137,9 +137,16 @@ private struct EncodeDecodeModeView: View {
                 .padding(.top, 8)
 
                 // D-11: dims to 40% opacity when output is stale
-                CodeDisplayView(code: viewModel.encodedOutput, language: "text")
-                    .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                if viewModel.input.isEmpty {
+                    Text("Paste or type content above")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                } else {
+                    CodeDisplayView(code: viewModel.encodedOutput, language: "text")
+                        .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             }
             .frame(minWidth: 200)
         }
@@ -219,17 +226,11 @@ private struct ParseModeView: View {
                             .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
                         }
                     } else {
-                        // Empty state
-                        VStack(spacing: 8) {
-                            Image(systemName: "link.badge.magnifyingglass")
-                                .font(.largeTitle)
-                                .foregroundColor(.secondary)
-                            Text("Enter a URL to parse its components")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 120)
-                        .padding()
+                        // Empty state (D-05)
+                        Text("Paste or type content above")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, minHeight: 120, alignment: .center)
                     }
                 }
                 .padding(.vertical, 12)

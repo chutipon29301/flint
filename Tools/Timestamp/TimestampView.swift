@@ -95,7 +95,14 @@ struct TimestampView: View {
 
     @ViewBuilder
     private var outputSection: some View {
-        if viewModel.convertedDate != nil || viewModel.outputDimmed {
+        // D-05: show empty state when input is blank
+        if viewModel.input.isEmpty {
+            Text("Paste or type content above")
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 8)
+        } else if viewModel.convertedDate != nil || viewModel.outputDimmed {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Converted Date")
                     .font(.headline)

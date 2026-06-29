@@ -321,15 +321,25 @@ private struct RegexContentView: View {
                     .padding(.bottom, 4)
 
                     // Highlighted test-string editor (attribute-only, re-entrancy guarded).
-                    RegexHighlightedEditorView(
-                        text: $viewModel.testString,
-                        matches: viewModel.matches,
-                        outputDimmed: viewModel.outputDimmed,
-                        groupCount: viewModel.matches.first?.numberedGroups.count ?? 0
-                    )
-                    .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
+                    ZStack(alignment: .center) {
+                        RegexHighlightedEditorView(
+                            text: $viewModel.testString,
+                            matches: viewModel.matches,
+                            outputDimmed: viewModel.outputDimmed,
+                            groupCount: viewModel.matches.first?.numberedGroups.count ?? 0
+                        )
+                        .opacity(viewModel.outputDimmed ? 0.4 : 1.0)
+                        .accessibilityLabel("Test string editor with match highlights")
+
+                        // D-05: empty state when no test string entered
+                        if viewModel.testString.isEmpty {
+                            Text("Paste or type content above")
+                                .font(.system(size: 13))
+                                .foregroundStyle(.secondary)
+                                .allowsHitTesting(false)
+                        }
+                    }
                     .frame(minHeight: 120, maxHeight: 240)
-                    .accessibilityLabel("Test string editor with match highlights")
                 }
 
                 Divider()

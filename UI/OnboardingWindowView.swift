@@ -74,6 +74,44 @@ struct OnboardingWindowView: View {
                 }
             }
 
+            // Step 3: Services menu (D-06)
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "text.cursor")
+                    .font(.system(size: 22))
+                    .foregroundColor(.accentColor)
+                    .frame(width: 28)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Route text from any app")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.primary)
+                    Text("Select text anywhere, right-click, and choose Services > Open in Flint to process it instantly.")
+                        .font(.system(size: 13))
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            // Step 4: Drag-and-drop (D-06)
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "arrow.down.circle")
+                    .font(.system(size: 22))
+                    .foregroundColor(.accentColor)
+                    .frame(width: 28)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Drag files directly")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.primary)
+                    Text("Drop a text or binary file onto any tool — Base64 and Hash accept any file type.")
+                        .font(.system(size: 13))
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
             Spacer(minLength: 0)
 
             // Actions
@@ -113,7 +151,7 @@ struct OnboardingWindowView: View {
             }
         }
         .padding(24)
-        .frame(width: 480, height: 360)
+        .frame(width: 480, height: 480)
         .background(Color(NSColor.windowBackgroundColor))
         .onDisappear {
             // Restore .accessory activation policy when the window closes (mirrors PreferencesView).

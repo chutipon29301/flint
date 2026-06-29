@@ -126,15 +126,8 @@ struct MenuBarPopoverView: View {
 
             Divider()
 
-            // Zone 3: Pinned tools row (D-13) — visible at root
-            if navigationState == .root && searchText.isEmpty {
-                PinnedToolBarView(onSelectTool: { toolId in
-                    navigationState = .tool(toolId: toolId)
-                })
-                Divider()
-            }
-
-            // Zone 4: Body — recent history, search results, or active tool
+            // Zone 3: Body — tool grid (filtered live while typing), history, or active tool.
+            // The old pinned-tool icon strip (D-13) was removed: it duplicated the grid below it.
             bodyContent
         }
         .frame(width: 480, height: 600)
@@ -263,12 +256,7 @@ struct MenuBarPopoverView: View {
                 .hidden()
 
                 // ⌘, — preferences (INFRA-12)
-                // pitfall #2: openSettings() is broken on macOS 14 with .accessory.
-                // Use WindowCoordinator activation dance instead.
-                Button("Preferences") {
-                    WindowCoordinator.shared.openPreferences()
-                    clipboard.isPopoverPresented = false
-                }
+                Button("Preferences") { openPreferences() }
                 .keyboardShortcut(",", modifiers: .command)
                 .accessibilityHidden(true)
                 .hidden()
@@ -314,6 +302,20 @@ struct MenuBarPopoverView: View {
     }
 
     // MARK: - Keyboard Action Helpers (INFRA-16)
+
+    /// Open the Settings window. The app runs as `.accessory` (no Dock icon), so a settings
+    /// window opens *behind* the frontmost app unless we first switch to `.regular` and activate.
+    /// After the activation dance we call SwiftUI's supported `openSettings()` action (the raw
+    /// `showPreferencesWindow:`/`showSettingsWindow:` selectors do not resolve on macOS 14+).
+    private func openPreferences() {
+        clipboard.isPopoverPresented = false
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate(ignoringOtherApps: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            openSettings()
+        }
+        WindowCoordinator.shared.notePreferencesOpened() // tracks windowCount for .accessory restore
+    }
 
     private func focusSearch() {
         searchFocused = true
@@ -401,6 +403,17 @@ struct MenuBarPopoverView: View {
             .buttonStyle(.plain)
             .accessibilityLabel("Open Flint in a resizable window to drag and drop files")
             .help("Open in a window to drag and drop files")
+
+            // Preferences (gear) — was only reachable via ⌘, before; now always visible (UX).
+            Button {
+                openPreferences()
+            } label: {
+                Image(systemName: "gearshape")
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Open Preferences")
+            .help("Preferences (⌘,)")
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
@@ -412,9 +425,7 @@ struct MenuBarPopoverView: View {
     private var bodyContent: some View {
         switch navigationState {
         case .root:
-            // D-01: All-tools grid above recent history. Additive — pinned bar (Zone 3)
-            // and recent history are preserved. Grid replaces sparse empty space below
-            // the pinned row; history remains accessible by scrolling below the grid.
+            // D-01: All-tools grid above recent history.
             VStack(spacing: 0) {
                 AllToolsGridView(onSelect: { toolId in
                     navigationState = .tool(toolId: toolId)
@@ -424,20 +435,21 @@ struct MenuBarPopoverView: View {
             }
 
         case .searchResults(let query):
-            SearchView(
-                query: query,
-                onSelectTool: { toolId in
+            // Typing filters the SAME grid in-place (no separate results page) and filters
+            // the history list below it. Content hugs the top; remaining space stays empty
+            // (no stretching the grid/history to fill the popover).
+            let historyMatches = historyStore.search(query)
+            VStack(spacing: 0) {
+                AllToolsGridView(filter: query, onSelect: { toolId in
                     navigationState = .tool(toolId: toolId)
                     searchText = ""
-                },
-                onSelectHistoryEntry: { entry in
-                    navigationState = .tool(toolId: entry.tool)
-                    searchText = ""
-                },
-                onShowHistory: {
-                    navigationState = .history
+                })
+                if !historyMatches.isEmpty {
+                    Divider()
+                    filteredHistoryList(historyMatches)
                 }
-            )
+                Spacer(minLength: 0)
+            }
 
         case .history:
             // D-07: First-class history view
@@ -501,6 +513,26 @@ struct MenuBarPopoverView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+    }
+
+    /// History list filtered by the search query (shown below the filtered grid while typing).
+    /// Bounded height so it wraps its content instead of stretching to fill the popover.
+    private func filteredHistoryList(_ matches: [HistoryEntry]) -> some View {
+        List(matches, id: \.id) { entry in
+            HistoryRowView(
+                entry: entry,
+                onOpen: {
+                    navigationState = .tool(toolId: entry.tool)
+                    searchText = ""
+                },
+                onPin: { historyStore.togglePin(entry: entry) },
+                onDelete: { historyStore.delete(entry: entry) }
+            )
+            .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
+        }
+        .listStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .frame(maxHeight: 240) // ponytail: cap; longer history scrolls inside the List
     }
 
     // MARK: - Esc Handler (Two-Stage, D-03)

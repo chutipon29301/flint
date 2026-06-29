@@ -1,5 +1,5 @@
 ---
-status: partial
+status: diagnosed
 phase: 03-polish-distribution
 source: [03-01-SUMMARY.md, 03-02a-SUMMARY.md, 03-02b-SUMMARY.md, 03-03-SUMMARY.md, 03-04-SUMMARY.md, 03-05-SUMMARY.md]
 started: 2026-06-26T17:42:36Z
@@ -44,27 +44,23 @@ note: Void — user is removing the Services feature (see Test 3). DIST-01 to be
 
 ### 5. Drag Text File onto a Tool
 expected: Open JSON Formatter, drag a `.json` text file over it — a "Drop to load" overlay appears during drag. On drop, the file contents populate the input and format. Repeat on ≥3 other text tools (e.g. JWT, Regex, Text Diff — TextDiff loads into its left "Original" input) — content loads, overlay appears each time.
-result: issue
-reported: "it is impossible to drag the file in. the problem is when i open the menu the menu open but when i click on the file the menu disappear"
-severity: blocker
+result: pass
+note: "Re-tested against the workspace window after gap-closure plan 03-07 (drag-drop routed to the resizable WindowGroup, which does not dismiss on resign-key). User verified: contents load with overlay across tools."
 
 ### 6. Drag Binary onto a Text Tool (graceful reject)
 expected: Drag an image or `.zip` onto JSON Formatter. The drag-over overlay stays the normal valid style; AFTER the drop a warning banner appears ("non-text data… Try Base64 or Hash"). No crash.
-result: blocked
-blocked_by: prior-phase
-reason: "Same root cause as Test 5 — popover dismisses on outside-click, so a file can never be dragged in. Re-test after the drag-and-drop blocker is fixed."
+result: pass
+note: "Re-tested in the workspace window (plan 03-07). Post-drop warning banner appears with a dismiss button; no crash."
 
 ### 7. Drag Any File onto Binary Tools (Base64 / Hash)
 expected: Open Hash, drag a large binary file — it hashes off-main with progress, the UI stays responsive, no size-cap regression. Open Base64, drag any file — it encodes off-main without blocking the UI.
-result: blocked
-blocked_by: prior-phase
-reason: "Same root cause as Test 5 — popover dismisses on outside-click, so a file can never be dragged in. Re-test after the drag-and-drop blocker is fixed."
+result: pass
+note: "Re-tested in the workspace window (plan 03-07). Off-main processing, UI responsive."
 
 ### 8. Launcher File Drop Routing
 expected: Open the launcher (root popover). Drag a text file containing a JWT — detect() routes to the JWT Decoder pre-filled. Drag a text file with non-matching content — text staged in the search field. Drag a binary file — warning banner rejection appears post-drop.
-result: blocked
-blocked_by: prior-phase
-reason: "Same root cause as Test 5 — popover dismisses on outside-click, so a file can never be dragged in. Re-test after the drag-and-drop blocker is fixed."
+result: pass
+note: "Re-tested against the WORKSPACE window (plan 03-07) — the popover NSPanel cannot host Finder drags. Chrome drop → detect() selects + pre-fills the matched tool (pre-fill wired by plan 03-06). No-match shows a dismissible post-drop notice (D-03 analog: workspace has no search field to stage into — confirmed acceptable by user). Binary → post-drop warning banner. An always-visible 'Open in Window' button in the popover search bar provides the discoverable entry point."
 
 ### 9. Sparkle Auto-Update Readiness
 expected: The app compiles with Sparkle linked and launches normally. On first launch NO Sparkle update sheet appears (Sparkle skips the first-launch check — correct). Cold start is unaffected by Sparkle (service starts in popover .onAppear, not at app init). NOTE: SUPublicEDKey is a known placeholder — full update flow is credential-gated (Test 11).
@@ -85,24 +81,34 @@ reason: "Requires Apple Developer cert, notarytool keychain profile, real EdDSA 
 ## Summary
 
 total: 11
-passed: 3
-issues: 1
+passed: 7
+issues: 0
 pending: 0
 skipped: 1
-blocked: 4
-superseded: 2
-skipped: 0
-blocked: 0
+blocked: 1
 superseded: 2
 
 ## Gaps
 
 - truth: "Dragging a text file onto a tool (or the launcher) loads its contents"
-  status: failed
+  status: resolved
+  resolved_by: "plan 03-07 (gap closure) — drag-drop routed to the resizable workspace window; verified at human checkpoint. Tests 5, 6, 7, 8 all pass."
   reason: "User reported: it is impossible to drag the file in. the problem is when i open the menu the menu open but when i click on the file the menu disappear"
   severity: blocker
   test: 5
-  root_cause: ""     # Filled by diagnosis
-  artifacts: []      # Filled by diagnosis
-  missing: []        # Filled by diagnosis
-  debug_session: ""  # Filled by diagnosis
+  also_blocks: [6, 7, 8]
+  root_cause: "MenuBarExtra + .menuBarExtraStyle(.window) backs the popover with an NSPanel that SwiftUI auto-dismisses on resign-key (any outside click). Starting a Finder drag requires clicking a file in Finder first, which makes Finder key, resigns the panel, and SwiftUI tears down the popover — destroying the .onDrop target before the drag can land. The drop code (FileDropHandler) is correct and simply never runs. SwiftUI exposes no API to disable this dismissal (Apple FB11984872)."
+  artifacts:
+    - path: "App/FlintApp.swift"
+      issue: "MenuBarExtra + .menuBarExtraStyle(.window) at lines 39-61 — the dismiss-on-resign-key behavior lives here; this is where the fix must go"
+    - path: "App/WindowCoordinator.swift"
+      issue: "Window/activation orchestration — would own a custom NSPanel under the fix"
+    - path: "UI/MenuBarPopoverView.swift"
+      issue: "Drop target (.fileDrop, lines 129-151) is correct but unreachable; unchanged by fix"
+    - path: "Core/Services/FileDropHandler.swift"
+      issue: ".onDrop logic (lines 28-72) is sound; unchanged by fix"
+  missing:
+    - "Window must survive resign-key so the drop target persists during a cross-app Finder drag"
+    - "Option 1: replace MenuBarExtra(.window) with NSStatusItem + custom NSPanel (.nonactivatingPanel, hidesOnDeactivate=false), dismiss via global mouse-down monitor suspended while an NSDraggingSession is active"
+    - "Option 2 (low-risk): route file drops to the existing WindowGroup workspace / MainWindowView (a normal window that does not dismiss on resign-key) instead of the menubar popover"
+  debug_session: ".planning/debug/popover-dismiss-blocks-drag.md"

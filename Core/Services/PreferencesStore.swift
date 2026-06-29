@@ -197,6 +197,15 @@ final class PreferencesStore {
         }
     }
 
+    // MARK: - Paste Back (D-09)
+    // Default: false — no Accessibility permission prompt without explicit opt-in (CF-02).
+    // AXIsProcessTrustedWithOptions is ONLY called when the user explicitly flips this ON in
+    // Preferences (handlePasteBackToggleOn). Threat: T-04-11 (elevation of privilege).
+    var pasteBackEnabled: Bool {
+        get { defaults.object(forKey: Keys.pasteBackEnabled) as? Bool ?? false }
+        set { defaults.set(newValue, forKey: Keys.pasteBackEnabled) }
+    }
+
     // MARK: - Per-Tool Defaults
 
     /// JSON Formatter: default indent size (2, 4, or 0 for tab)
@@ -245,6 +254,7 @@ final class PreferencesStore {
         static let hashUppercase = "lathe.hashUppercase"
         static let lastWorkspaceToolId = "lathe.lastWorkspaceToolId"
         static let hasSeenOnboarding = "lathe.hasSeenOnboarding"
+        static let pasteBackEnabled = "lathe.pasteBackEnabled"
     }
 }
 

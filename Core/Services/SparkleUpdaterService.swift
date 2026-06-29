@@ -40,7 +40,7 @@ enum UpdateStatus: Equatable {
 
 @Observable
 @MainActor
-final class SparkleUpdaterService {
+final class SparkleUpdaterService: NSObject {
     /// The standard Sparkle controller. Nil until start() is first called from the popover.
     private(set) var controller: SPUStandardUpdaterController?
 

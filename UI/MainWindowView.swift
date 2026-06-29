@@ -11,9 +11,14 @@ struct MainWindowView: View {
     @Environment(HistoryStore.self) private var historyStore
     @Environment(PreferencesStore.self) private var prefs
     @Environment(ClipboardDetector.self) private var clipboard
+    @Environment(ToolSeed.self) private var toolSeed
 
     // Persisted last-selected tool ID — restored on reopen (INFRA-02)
     @State private var selectedToolId: String? = nil
+
+    // DIST-02: launcher-style drop on the workspace chrome (mirrors MenuBarPopoverView.fileDrop).
+    @State private var isDragTargeted = false
+    @State private var dropError: String?
 
     var body: some View {
         NavigationSplitView {
@@ -43,6 +48,42 @@ struct MainWindowView: View {
         }
         // INFRA-02: cannot shrink below 800×600
         .frame(minWidth: 800, minHeight: 600)
+        // DIST-02 (D-06): post-drop rejection surface — binary/oversized dropped on the
+        // workspace chrome is reported here AFTER the drop, never during drag.
+        .safeAreaInset(edge: .top) {
+            if let dropError {
+                WarningBannerView(message: dropError, severity: .warning)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 4)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        // DIST-02 (D-04): launcher drop on the workspace — read file text, run detect(),
+        // select + pre-fill the best tool. Per-tool drops in the detail pane are handled by
+        // each tool's own .fileDrop (innermost target wins). Binary/oversized → onError banner.
+        .fileDrop(
+            isTargeted: $isDragTargeted,
+            onText: { text in
+                dropError = nil
+                if let result = toolRegistry.detect(from: text) {
+                    toolSeed.set(toolId: result.toolId, value: text)
+                    selectedToolId = result.toolId
+                } else {
+                    // No search field in the workspace chrome (D-03 analog): a non-destructive
+                    // post-drop notice instead of staging — never a dead end, never a crash.
+                    dropError = "No matching tool for that text — pick a tool from the sidebar and drop again, or paste it in."
+                }
+            },
+            onError: { message in
+                dropError = message
+            }
+        )
+        .overlay {
+            if isDragTargeted {
+                DropOverlayView(label: "Drop to open in best tool")
+                    .transition(.opacity.animation(.easeOut(duration: 0.15)))
+            }
+        }
         .onAppear {
             // Restore last-open tool from PreferencesStore (INFRA-02)
             let lastTool = prefs.lastWorkspaceToolId

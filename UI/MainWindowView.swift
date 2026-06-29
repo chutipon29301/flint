@@ -33,31 +33,44 @@ struct MainWindowView: View {
             .listStyle(.sidebar)
             .accessibilityLabel("Tool list")
         } detail: {
-            if let toolId = selectedToolId,
-               let tool = toolRegistry.tools.first(where: { $0.id == toolId }) {
-                tool.makeView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ContentUnavailableView(
-                    "Select a Tool",
-                    systemImage: "wrench.and.screwdriver",
-                    description: Text("Choose a tool from the sidebar to get started.")
-                )
-                .accessibilityLabel("No tool selected. Choose a tool from the sidebar.")
-            }
-        }
-        // INFRA-02: cannot shrink below 800×600
-        .frame(minWidth: 800, minHeight: 600)
-        // DIST-02 (D-06): post-drop rejection surface — binary/oversized dropped on the
-        // workspace chrome is reported here AFTER the drop, never during drag.
-        .safeAreaInset(edge: .top) {
-            if let dropError {
-                WarningBannerView(message: dropError, severity: .warning)
+            // Detail pane hosts the post-drop banner so it lands BELOW the window toolbar
+            // and does not overlap the sidebar (a window-wide overlay floats over both panes).
+            VStack(spacing: 0) {
+                // DIST-02 (D-06): post-drop rejection surface — binary/oversized/no-match dropped
+                // on the chrome is reported here AFTER the drop, never during drag. Tap to dismiss.
+                if let dropError {
+                    HStack(spacing: 8) {
+                        WarningBannerView(message: dropError, severity: .warning)
+                        Button(action: { self.dropError = nil }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Dismiss notice")
+                        .help("Dismiss")
+                    }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 4)
                     .transition(.move(edge: .top).combined(with: .opacity))
+                }
+
+                if let toolId = selectedToolId,
+                   let tool = toolRegistry.tools.first(where: { $0.id == toolId }) {
+                    tool.makeView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ContentUnavailableView(
+                        "Select a Tool",
+                        systemImage: "wrench.and.screwdriver",
+                        description: Text("Choose a tool from the sidebar to get started.")
+                    )
+                    .accessibilityLabel("No tool selected. Choose a tool from the sidebar.")
+                }
             }
+            .animation(.easeOut(duration: 0.15), value: dropError)
         }
+        // INFRA-02: cannot shrink below 800×600
+        .frame(minWidth: 800, minHeight: 600)
         // DIST-02 (D-04): launcher drop on the workspace — read file text, run detect(),
         // select + pre-fill the best tool. Per-tool drops in the detail pane are handled by
         // each tool's own .fileDrop (innermost target wins). Binary/oversized → onError banner.

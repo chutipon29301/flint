@@ -177,7 +177,7 @@ Plans:
 
 **Wave 3** *(blocked on 04-03 — shares the multi-output tool views)*
 
-- [ ] 04-04-PLAN.md — Visual consistency pass across 12 tools (D-05) + onboarding Steps 3/4 (D-06)
+- [x] 04-04-PLAN.md — Visual consistency pass across 12 tools (D-05) + onboarding Steps 3/4 (D-06)
 
 **Wave 4** *(blocked on 04-02/04-03/04-04 — paste-back opt-in, non-autonomous)*
 
@@ -195,4 +195,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
 | 2. Extended Tools | 8/8 | Complete   | 2026-06-26 |
 | 3. Polish & Distribution | 8/8 | Complete   | 2026-06-29 |
-| 4. UX Improvement | 3/5 | In Progress|  |
+| 4. UX Improvement | 4/5 | In Progress|  |

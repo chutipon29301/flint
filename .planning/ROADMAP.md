@@ -173,7 +173,7 @@ Plans:
 
 **Wave 2** *(blocked on 04-01 — shares MenuBarPopoverView)*
 
-- [ ] 04-03-PLAN.md — Keyboard ⌘1–⌘9 row copy (D-08) + arrow-key search nav verify (D-07) — copy-only, no new permissions
+- [x] 04-03-PLAN.md — Keyboard ⌘1–⌘9 row copy (D-08) + arrow-key search nav verify (D-07) — copy-only, no new permissions
 
 **Wave 3** *(blocked on 04-03 — shares the multi-output tool views)*
 
@@ -195,4 +195,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Infrastructure + Core Tools | 10/10 | Complete   | 2026-06-26 |
 | 2. Extended Tools | 8/8 | Complete   | 2026-06-26 |
 | 3. Polish & Distribution | 8/8 | Complete   | 2026-06-29 |
-| 4. UX Improvement | 2/5 | In Progress|  |
+| 4. UX Improvement | 3/5 | In Progress|  |

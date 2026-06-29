@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 4 UI-SPEC approved
-last_updated: "2026-06-29T09:25:41.897Z"
-last_activity: 2026-06-29 -- Phase 04 planning complete
+last_updated: "2026-06-29T09:27:59.038Z"
+last_activity: 2026-06-29 -- Phase 04 execution started
 progress:
   total_phases: 4
   completed_phases: 3
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-25)
 
 **Core value:** A developer can paste content and get the right transformation in under a second — fully offline, from anywhere on the system, never crashing on bad input.
-**Current focus:** Phase 04 — UX Improvement (menu-landing navigation defect, failing update-checker fix, visual/onboarding/flow polish). Added to roadmap; not yet planned.
+**Current focus:** Phase 04 — ux-improvement
 
 ## Current Position
 
-Phase: 04 (UX Improvement) — NOT STARTED
-Plan: — (needs planning)
-Status: Ready to execute
-Last activity: 2026-06-29 -- Phase 04 planning complete
+Phase: 04 (ux-improvement) — EXECUTING
+Plan: 1 of 5
+Status: Executing Phase 04
+Last activity: 2026-06-29 -- Phase 04 execution started
 
 Progress: [██████████] 100%
 

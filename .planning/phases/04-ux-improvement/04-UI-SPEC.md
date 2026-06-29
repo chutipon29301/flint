@@ -48,7 +48,7 @@ Carried forward from Phase 1 (01-UI-SPEC.md). All values in logical points, mult
 | Token | Value | SwiftUI Usage |
 |-------|-------|---------------|
 | xs    | 4pt   | Icon-to-label gap, badge inner padding, grid item spacing |
-| sm    | 8pt   | Grid row spacing, banner vertical padding, back-header vertical inset |
+| sm    | 8pt   | Grid row spacing, banner vertical padding, back-header vertical inset, grid tile vertical padding, grid tile VStack internal spacing |
 | md    | 16pt  | Default `.padding()` for tool content areas; grid section horizontal padding |
 | lg    | 24pt  | Onboarding window padding (established `OnboardingWindowView.padding(24)`); section-level padding |
 | xl    | 32pt  | Not used in 480×600 popover; workspace window major regions |
@@ -58,7 +58,7 @@ Carried forward from Phase 1 (01-UI-SPEC.md). All values in logical points, mult
 **Phase 4 exceptions / additions:**
 
 - All-tools grid (`AllToolsGridView`): 3 adaptive columns, `GridItem(.adaptive(minimum: 100, maximum: 140), spacing: 8)`. Grid row spacing: 8pt (sm token). Grid outer padding: 12pt horizontal, 8pt vertical. 12pt is an off-scale inherited value matching the existing search bar and list row insets — do NOT normalize to 16pt this phase (would cause visual discontinuity against shipped components).
-- Tool tile in the grid: `.padding(.vertical, 10)`. 10pt is an off-scale value acceptable for grid cells; closest scale value (8pt sm) feels cramped at 3 columns, closest above (12pt) is already the outer inset. 10pt is the confirmed design intent from RESEARCH.md Pattern 1.
+- Tool tile in the grid: `.padding(.vertical, 8)` (sm token). 8pt chosen over 12pt to keep tiles compact at 3 columns and avoid equal padding top/bottom equaling the outer horizontal inset, which would look unintentional.
 - Back-affordance header (`ToolHeaderView`): 44pt minimum height (existing hit-target rule). Back button hit area: 44×44pt. Horizontal padding: 12pt (matches existing list row inset).
 - Number badge on output rows (D-08): 16×16pt badge, 4pt inner padding, 4pt corner radius.
 - Popover fixed size: **480×600pt** (INFRA-01 — locked, unchanged).
@@ -136,7 +136,7 @@ These are the behavior rules the executor must implement exactly. Each maps to a
 **New surface:** `AllToolsGridView.swift` displayed at the `.root` navigation state below the pinned tool bar and above or replacing the recent history area when the user chooses to browse.
 
 - Layout: `LazyVGrid` with `GridItem(.adaptive(minimum: 100, maximum: 140), spacing: 8)`. 12pt outer horizontal padding, 8pt outer vertical padding.
-- Tiles: `VStack(spacing: 6)` — SF Symbol icon (22pt, accent) over tool name (13pt regular, 2-line max, centered).
+- Tiles: `VStack(spacing: 8)` — SF Symbol icon (22pt, accent) over tool name (13pt regular, 2-line max, centered).
 - Tile background: `Color.quaternary.opacity(0.5)` fill, `cornerRadius(8)`.
 - Tile tap action: `navigationState = .tool(toolId: tool.id)`.
 - Tile hover state: `.background(.quaternary.opacity(0.85))` on hover (standard macOS hover tint; use `.onHover` + `@State` flag).

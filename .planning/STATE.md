@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 5 context gathered
-last_updated: "2026-06-30T07:38:23.022Z"
-last_activity: 2026-06-30 -- Phase 05 execution started
+last_updated: "2026-06-30T09:25:52.113Z"
+last_activity: 2026-06-30
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 35
-  completed_plans: 31
+  total_plans: 37
+  completed_plans: 35
   percent: 60
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-06-25)
 ## Current Position
 
 Phase: 05 (add-image-compression-feature) — EXECUTING
-Plan: 1 of 3
-Status: Executing Phase 05
-Last activity: 2026-06-30 -- Phase 05 execution started
+Plan: 2 of 5
+Status: Ready to execute
+Last activity: 2026-06-30
 
-Progress: [██████████] 100%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Progress: [██████████] 100%
 | Phase 03 P03 | 4 min | 4 tasks | 5 files |
 | Phase 03 P04 | 18min | 2 tasks | 6 files |
 | Phase 03 P05 | 3 min | 4 tasks | 4 files |
+| Phase 05 P04 | 15 minutes | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,8 @@ Recent decisions affecting current work:
 - [Phase 03-polish-distribution]: [Phase 03 Plan 01]: Migrated app target to manual Info.plist (GENERATE_INFOPLIST_FILE=NO) because NSServices array-of-dict cannot be a scalar INFOPLIST_KEY_*; test target untouched; foundation for 03-04 Sparkle keys.
 - [Phase 03]: ColorViewModel Color(red:) literals are domain logic (user RGBA to SwiftUI.Color for the system ColorPicker), not INFRA-14 chrome violations; left unchanged
 - [Phase 03]: First-run onboarding gated by a cheap hasSeenOnboarding UserDefaults bool in the popover .onAppear (no cold-start regression); window surfaced via the WindowCoordinator activation dance
+- [Phase 05 Plan 04]: PNG quantization engine — pure-Swift median-cut quantizer + indexed-color (color-type-3) PNG encoder, zero dependencies (Foundation + Compression only); CRC-32 implemented in-file to avoid zlib bridging; COMPRESSION_ZLIB emits raw DEFLATE on Apple, wrapped with zlib header + Adler-32
+- [Phase 05 Plan 04]: Indexed PNG beats truecolor only on photographic/high-variation content (~3.5x on UAT Test 8 image); on perfectly smooth gradients PNG row filters can win, so the end-to-end size-win test uses a noise image
 
 ### Roadmap Evolution
 
@@ -142,6 +145,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-06-30T06:48:50.020Z
+Last session: 2026-06-30T09:24:19.373Z
 Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-add-image-compression-feature/05-CONTEXT.md
+Resume file: None

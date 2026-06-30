@@ -118,6 +118,15 @@ final class ImageCompressViewModel: ToolShortcutActions {
     /// True while the batch Task is running. Used to show/hide the Cancel button.
     var isCompressing: Bool = false
 
+    /// The source URLs of the most recent compress() call, retained so recompress() can replay the
+    /// batch at a new quality without re-dropping (05-08, GAP 2). MainActor-confined @Observable
+    /// state — never captured off-main, so no Sendable concern (D-04).
+    private(set) var lastSourceURLs: [URL] = []
+
+    /// The quality (0.0–1.0) of the most recent compress() call. The View compares the live slider
+    /// value against this to decide whether to surface the "Re-compress at {n}%" button (05-08).
+    private(set) var lastRunQuality: Double = 0
+
     // MARK: - Private
 
     private var task: Task<Void, Never>?
@@ -158,6 +167,12 @@ final class ImageCompressViewModel: ToolShortcutActions {
         // currently-running per-image work Task, so a superseded image stops quantizing too).
         task?.cancel()
         currentWorkTask?.cancel()
+
+        // Retain the source URLs + quality of this run so recompress() can replay the batch at a
+        // new quality without re-dropping, and so the View can detect "quality changed since last
+        // run" to surface the explicit Re-compress affordance (05-08, GAP 2).
+        lastSourceURLs = urls
+        lastRunQuality = quality
 
         // Build the row list with format tags BEFORE compression starts (D-05 gate)
         rows = urls.map { CompressRow(sourceURL: $0, format: ImageFormatTag.from(url: $0), state: .pending) }
@@ -285,6 +300,23 @@ final class ImageCompressViewModel: ToolShortcutActions {
                 ))
             }
         }
+    }
+
+    // MARK: - Re-compress
+
+    /// Re-runs the most recent batch at a new quality (05-08, GAP 2). Compress-on-drop is immediate,
+    /// so the quality slider can never affect images already dropped; this gives the user an explicit
+    /// affordance to re-apply a changed quality to the existing batch.
+    ///
+    /// No-op when there is no retained batch (lastSourceURLs empty) — never crashes, never compresses
+    /// an empty set (T-05-08B). Re-compression fires ONLY from this explicit call (the View's button
+    /// press) — there is deliberately no .onChange(of: quality) auto-trigger, which would spew a new
+    /// -compressed-N file on every slider tick (T-05-08A, locked decision).
+    ///
+    /// - Parameter quality: New lossy quality (0.0–1.0), already mapped from the 0–100 slider.
+    func recompress(quality: Double) {
+        guard !lastSourceURLs.isEmpty else { return }
+        compress(urls: lastSourceURLs, quality: quality)
     }
 
     // MARK: - Cancellation

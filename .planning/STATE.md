@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 4 UI-SPEC approved
-last_updated: "2026-06-29T09:27:59.038Z"
+stopped_at: Phase 5 context gathered
+last_updated: "2026-06-30T06:48:50.038Z"
 last_activity: 2026-06-29 -- Phase 04 execution started
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 3
-  total_plans: 31
-  completed_plans: 26
-  percent: 75
+  total_plans: 32
+  completed_plans: 31
+  percent: 60
 ---
 
 # Project State
@@ -110,6 +110,10 @@ Recent decisions affecting current work:
 - [Phase 03]: ColorViewModel Color(red:) literals are domain logic (user RGBA to SwiftUI.Color for the system ColorPicker), not INFRA-14 chrome violations; left unchanged
 - [Phase 03]: First-run onboarding gated by a cheap hasSeenOnboarding UserDefaults bool in the popover .onAppear (no cold-start regression); window surfaced via the WindowCoordinator activation dance
 
+### Roadmap Evolution
+
+- Phase 5 added: add image compression feature
+
 ### Pending Todos
 
 None yet.
@@ -138,6 +142,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-06-29T09:01:01.260Z
-Stopped at: Phase 4 UI-SPEC approved
-Resume file: .planning/phases/04-ux-improvement/04-UI-SPEC.md
+Last session: 2026-06-30T06:48:50.020Z
+Stopped at: Phase 5 context gathered
+Resume file: .planning/phases/05-add-image-compression-feature/05-CONTEXT.md

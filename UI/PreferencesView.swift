@@ -6,6 +6,7 @@
 
 import SwiftUI
 import KeyboardShortcuts
+import ApplicationServices
 
 struct PreferencesView: View {
     @Environment(PreferencesStore.self) private var prefs
@@ -56,6 +57,12 @@ struct PreferencesView: View {
 private struct GeneralPreferencesTab: View {
     @Environment(PreferencesStore.self) private var prefs
     @Environment(SparkleUpdaterService.self) private var sparkle
+
+    // D-09: Accessibility permission polling state
+    // Timer fires every 0.5s for up to 30s (60 polls) after the user enables the paste-back toggle.
+    @State private var accessibilityPollTimer: Timer?
+    // showDenialMessage: true when polling completes with no permission granted.
+    @State private var showDenialMessage: Bool = false
 
     var body: some View {
         @Bindable var prefs = prefs
@@ -151,10 +158,112 @@ private struct GeneralPreferencesTab: View {
                         .lineLimit(3)
                 }
             }
+            // MARK: Keyboard Flow (D-09)
+            Section("Keyboard Flow") {
+                // Toggle uses a custom Binding setter so we can intercept the enable path
+                // and request Accessibility permission on-demand (prompt-on-enable, T-04-11).
+                // With toggle OFF (default), AXIsProcessTrustedWithOptions is NEVER called.
+                Toggle(
+                    "Auto-paste result after copying",
+                    isOn: Binding(
+                        get: { prefs.pasteBackEnabled },
+                        set: { newValue in
+                            if newValue {
+                                handlePasteBackToggleOn()
+                            } else {
+                                prefs.pasteBackEnabled = false
+                                showDenialMessage = false
+                                accessibilityPollTimer?.invalidate()
+                                accessibilityPollTimer = nil
+                            }
+                        }
+                    )
+                )
+                .accessibilityLabel("Enable automatic paste-back after copying a result")
+                .help("When enabled, pressing ⌘1–⌘9 copies the result AND pastes it into the previously-focused app. Requires Accessibility permission.")
+
+                // Confirmed state: shown when toggle is ON and permission is verified.
+                if prefs.pasteBackEnabled {
+                    Text("Accessibility permission granted. ⌘1–⌘9 will copy and paste the result into the previously-focused app.")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.secondary)
+                }
+
+                // Denial state: shown after polling timeout with no permission granted.
+                if showDenialMessage {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Accessibility permission was denied. To enable paste-back, go to System Settings > Privacy & Security > Accessibility and add Flint.")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.orange)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Button("Open System Settings") {
+                            // Deep link to Accessibility pane (Pitfall 3: provide escape hatch).
+                            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(.link)
+                        .accessibilityLabel("Open System Settings Privacy and Security Accessibility")
+                    }
+                }
+            }
         }
         .formStyle(.grouped)
         .padding()
         .frame(minWidth: 420)
+    }
+
+    // MARK: - D-09 Permission Flow
+
+    /// Called when the user flips the paste-back toggle ON.
+    ///
+    /// If Accessibility is already granted, arms immediately.
+    /// Otherwise calls `AXIsProcessTrustedWithOptions` to trigger the macOS permission
+    /// prompt, then polls every 0.5s for up to 30s (RESEARCH OQ-01(b)).
+    /// Reverts the toggle + shows denial message if not granted within 30s (Pitfall 3).
+    ///
+    /// SECURITY (T-04-11): This is the ONLY call site for `AXIsProcessTrustedWithOptions`.
+    /// It is reached exclusively via explicit user opt-in. Never called at launch or hotkey use.
+    private func handlePasteBackToggleOn() {
+        showDenialMessage = false
+
+        if AXIsProcessTrusted() {
+            // Permission already granted — arm immediately.
+            prefs.pasteBackEnabled = true
+            return
+        }
+
+        // Request permission with prompt — opens System Settings Accessibility pane.
+        // Returns immediately (usually false on first call); user must grant manually.
+        // Use string literal key to avoid Swift 6 Sendable issue with kAXTrustedCheckOptionPrompt
+        // CFString global. The key value is "AXTrustedCheckOptionPrompt" (stable since macOS 10.9).
+        let options: NSDictionary = ["AXTrustedCheckOptionPrompt": true]
+        AXIsProcessTrustedWithOptions(options)
+
+        // Poll every 0.5s for up to 30s (60 polls) — macOS has no TCC change callback.
+        var pollCount = 0
+        accessibilityPollTimer?.invalidate()
+        accessibilityPollTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [self] timer in
+            pollCount += 1
+            if AXIsProcessTrusted() {
+                // Granted — arm the toggle.
+                timer.invalidate()
+                accessibilityPollTimer = nil
+                DispatchQueue.main.async {
+                    prefs.pasteBackEnabled = true
+                    showDenialMessage = false
+                }
+            } else if pollCount >= 60 {
+                // 30 seconds elapsed without grant — revert toggle + show denial message.
+                timer.invalidate()
+                accessibilityPollTimer = nil
+                DispatchQueue.main.async {
+                    prefs.pasteBackEnabled = false
+                    showDenialMessage = true
+                }
+            }
+        }
     }
 }
 

@@ -32,6 +32,8 @@ struct FlintApp: App {
     // cold-start critical path (RESEARCH Pitfall #6). No SPUStandardUpdaterController is
     // constructed at app init.
     @State private var sparkle = SparkleUpdaterService()
+    // D-09: paste-back service — isolates CGEvent ⌘V synthesis, gated on AXIsProcessTrusted.
+    @State private var pasteBackService = PasteBackService()
 
     var body: some Scene {
         // MARK: - MenuBar Popover
@@ -44,6 +46,8 @@ struct FlintApp: App {
                 .environment(toolRegistry)
                 .environment(toolSeed)
                 .environment(sparkle)  // DIST-04: lazy-started from popover .onAppear
+                .environment(hotkeyManager)  // D-09: tool observers read previousFrontmostApp
+                .environment(pasteBackService)  // D-09: synthesizes ⌘V into previously-focused app
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14 live theme
                 // WR-04: sync historyLimit from PreferencesStore into HistoryStore whenever it changes
                 .onChange(of: prefs.historyLimit, initial: true) { _, newLimit in
@@ -68,6 +72,8 @@ struct FlintApp: App {
                 .environment(clipboard)
                 .environment(toolRegistry)
                 .environment(toolSeed)
+                .environment(hotkeyManager)     // D-09: tool views read previousFrontmostApp
+                .environment(pasteBackService)  // D-09: tool views call synthesizePaste
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14
         }
         .defaultSize(width: 900, height: 650)

@@ -59,6 +59,52 @@ struct ImageCompressViewModelTests {
         return url
     }
 
+    /// Synthesises a LARGE many-color photographic-style PNG (default 1024×1024): a smooth gradient
+    /// base plus per-pixel pseudo-random noise. The size + per-pixel uniqueness make the median-cut
+    /// quantization + nearest-palette mapping loop slow enough that cancel() lands mid-flight — the
+    /// fixture the rewritten cancellation test needs (mirrors the transformer-test gradient idiom).
+    @discardableResult
+    private func writeSlowGradientPNG(to url: URL, width: Int = 1024, height: Int = 1024) throws -> URL {
+        let bytesPerRow = width * 4
+        var pixelData = [UInt8](repeating: 0, count: height * bytesPerRow)
+        var seed: UInt64 = 0x9E3779B97F4A7C15
+        func nextNoise() -> Int {
+            seed = seed &* 6364136223846793005 &+ 1442695040888963407
+            return Int((seed >> 33) & 0x1F) - 16 // -16...15
+        }
+        for y in 0..<height {
+            for x in 0..<width {
+                let o = y * bytesPerRow + x * 4
+                let r = max(0, min(255, (x * 255 / max(1, width - 1)) + nextNoise()))
+                let g = max(0, min(255, (y * 255 / max(1, height - 1)) + nextNoise()))
+                let b = max(0, min(255, ((x + y) * 255 / max(1, width + height - 2)) + nextNoise()))
+                pixelData[o] = UInt8(r)
+                pixelData[o + 1] = UInt8(g)
+                pixelData[o + 2] = UInt8(b)
+                pixelData[o + 3] = 255
+            }
+        }
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let ctx = CGContext(
+            data: &pixelData,
+            width: width, height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: bytesPerRow,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ), let cgImage = ctx.makeImage() else {
+            throw NSError(domain: "TestHelper", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not create slow gradient CGImage"])
+        }
+        guard let dst = CGImageDestinationCreateWithURL(url as CFURL, "public.png" as CFString, 1, nil) else {
+            throw NSError(domain: "TestHelper", code: 2, userInfo: [NSLocalizedDescriptionKey: "Could not create destination"])
+        }
+        CGImageDestinationAddImage(dst, cgImage, nil)
+        guard CGImageDestinationFinalize(dst) else {
+            throw NSError(domain: "TestHelper", code: 3, userInfo: [NSLocalizedDescriptionKey: "CGImageDestinationFinalize failed"])
+        }
+        return url
+    }
+
     // MARK: - Test 1: Batch state progression (D-01, D-09)
 
     @Test("Batch with 2 valid JPEGs: 2 rows, both end .done with CompressedImage")
@@ -142,34 +188,55 @@ struct ImageCompressViewModelTests {
         }
     }
 
-    // MARK: - Test 3: Cancellation (D-09 / INFRA-18)
+    // MARK: - Test 3: Cancellation resolves the in-flight row (UAT Test 9, GAP 3)
 
-    @Test("Cancel: isCompressing becomes false, already-finished rows retained")
+    @Test("Cancel mid-flight: NO row stays .compressing forever; isCompressing ends false")
     func testCancellation() async throws {
         let dir = try makeTempDir()
         defer { try? FileManager.default.removeItem(at: dir) }
 
-        // Use a single file so we have a short batch; call cancel immediately
-        let url1 = dir.appendingPathComponent("cancel1.jpg")
-        try writeTinyJPEG(to: url1)
+        // SLOW fixture: a large noisy RGBA PNG. Quantization of a 1024×1024 fully-unique-color image
+        // takes long enough that cancel() lands while the row is still .compressing.
+        let slowPNG = dir.appendingPathComponent("slow.png")
+        try writeSlowGradientPNG(to: slowPNG)
 
         let vm = await MainActor.run {
             ImageCompressViewModel(onSaveHistory: { _ in })
         }
 
         await MainActor.run {
-            vm.compress(urls: [url1], quality: 0.6)
+            vm.compress(urls: [slowPNG], quality: 0.6)
+        }
+
+        // Wait a short beat so the row reaches .compressing, then cancel mid-flight.
+        try await Task.sleep(nanoseconds: 60_000_000) // 60ms
+        await MainActor.run {
             vm.cancel()
         }
 
-        // After cancel, isCompressing must be false
-        let isCompressing = await MainActor.run(body: { vm.isCompressing })
-        #expect(isCompressing == false)
+        // Poll (bounded deadline) until the in-flight row has RESOLVED out of .compressing.
+        // Final invariant: NO row remains .compressing — every row is .pending, .done, or .failed.
+        // (Either it finished just-in-time, or cancel resolved it — but it is NEVER stuck spinning.)
+        let deadline = Date().addingTimeInterval(5)
+        var anyCompressing = true
+        while Date() < deadline {
+            anyCompressing = await MainActor.run(body: {
+                vm.rows.contains { if case .compressing = $0.state { return true } else { return false } }
+            })
+            if !anyCompressing { break }
+            try await Task.sleep(nanoseconds: 50_000_000) // 50ms
+        }
 
-        // Brief wait to confirm no late transitions arrive
-        try await Task.sleep(nanoseconds: 200_000_000) // 200ms
+        let rows = await MainActor.run(body: { vm.rows })
+        for row in rows {
+            if case .compressing = row.state {
+                #expect(Bool(false), "Row stuck in .compressing after cancel — must resolve to a terminal state")
+            }
+        }
+
+        // isCompressing must end false — the button is hidden only AFTER the row resolves.
         let finalCompressing = await MainActor.run(body: { vm.isCompressing })
-        #expect(finalCompressing == false)
+        #expect(finalCompressing == false, "isCompressing must be false after the in-flight row resolves")
     }
 
     // MARK: - Test 4: History fires exactly once per successful batch

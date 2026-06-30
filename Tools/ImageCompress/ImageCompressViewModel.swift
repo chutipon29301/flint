@@ -176,6 +176,10 @@ final class ImageCompressViewModel: ToolShortcutActions {
                     }
                 }.value
 
+                // WR-01: re-check cancellation after the await — a cancelled batch must not
+                // apply its stale ImageIO result onto the NEXT batch's rows (same index reuse).
+                guard !Task.isCancelled else { break }
+
                 // Live per-row update on MainActor (D-09) — failure = row state, not a crash (INFRA-17)
                 await MainActor.run { [weak self] in
                     guard let self else { return }
@@ -184,6 +188,11 @@ final class ImageCompressViewModel: ToolShortcutActions {
                     }
                 }
             }
+
+            // CR-02: if this batch was cancelled (superseded by a newer compress() call), do NOT
+            // touch shared state — isCompressing belongs to the new batch, and firing history here
+            // would save the new batch's rows under this stale task.
+            guard !Task.isCancelled else { return }
 
             // Batch complete — update isCompressing and fire history (MainActor, so capturedOnSave is safe)
             await MainActor.run { [weak self] in

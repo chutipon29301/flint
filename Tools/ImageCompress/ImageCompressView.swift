@@ -43,18 +43,23 @@ struct ImageCompressView: View {
         .onDrop(of: [.fileURL], isTargeted: $isDragTargeted) { providers in
             var urls: [URL] = []
             let group = DispatchGroup()
+            // CR-01: loadItem callbacks fire concurrently on background queues; Array is not
+            // thread-safe for concurrent append. Serialize all mutations through this queue.
+            let urlsQueue = DispatchQueue(label: "com.flint.imagecompress.drop")
             for provider in providers {
                 group.enter()
                 _ = provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
                     defer { group.leave() }
                     if let data = item as? Data,
                        let url = URL(dataRepresentation: data, relativeTo: nil) {
-                        urls.append(url)
+                        urlsQueue.sync { urls.append(url) }
                     }
                 }
             }
-            // quality / 100.0 maps 0-100 slider to ImageIO 0.0-1.0 (RESEARCH lines 369-378)
-            let capturedQuality = quality / 100.0
+            // quality / 100.0 maps 0-100 slider to ImageIO 0.0-1.0 (RESEARCH lines 369-378).
+            // WR-03: clamp — a corrupt @AppStorage value bypasses the Slider and could send
+            // ImageIO a quality outside 0.0–1.0.
+            let capturedQuality = min(max(quality / 100.0, 0.0), 1.0)
             group.notify(queue: .main) {
                 Task { @MainActor in
                     viewModel.compress(urls: urls, quality: capturedQuality)
@@ -217,9 +222,21 @@ struct ImageCompressView: View {
         .accessibilityLabel(rowAccessibilityLabel(for: row))
     }
 
+    /// WR-02: NSImage(contentsOf:) is synchronous main-thread disk I/O, re-run on every row
+    /// re-render. Cache per-URL so a batch reads each source image once, not per state change.
+    /// ponytail: NSCache (auto-evicting, thread-safe) over a hand-rolled dictionary.
+    private static let thumbnailCache = NSCache<NSURL, NSImage>()
+
+    private func thumbnail(for url: URL) -> NSImage? {
+        if let cached = Self.thumbnailCache.object(forKey: url as NSURL) { return cached }
+        guard let image = NSImage(contentsOf: url) else { return nil }
+        Self.thumbnailCache.setObject(image, forKey: url as NSURL)
+        return image
+    }
+
     @ViewBuilder
     private func thumbnailView(for url: URL) -> some View {
-        if let nsImage = NSImage(contentsOf: url) {
+        if let nsImage = thumbnail(for: url) {
             Image(nsImage: nsImage)
                 .resizable()
                 .aspectRatio(contentMode: .fill)

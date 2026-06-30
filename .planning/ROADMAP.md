@@ -3,7 +3,7 @@
 **Goal:** A developer drops one or more image files onto the new Image Compressor tool and gets smaller, same-format versions back — re-encoded at a chosen quality, written beside each original as `-compressed`, never overwriting the source, with a live results table showing per-image thumbnail, original→new size, and % saved — all offline and never crashing on a non-image or corrupt file.
 **Requirements**: D-01..D-10 (CONTEXT.md locked decisions), INFRA-17 (never crash), INFRA-18 (memory)
 **Depends on:** Phase 4
-**Plans:** 5/9 plans complete (4 gap-closure plans added from UAT Tests 5/6/9/10)
+**Plans:** 6/9 plans executed
 
 Plans:
 **Wave 1**
@@ -22,7 +22,7 @@ Plans:
 - [x] 05-05-PLAN.md — GAP: wire quantize+encode into ImageCompressTransformer PNG path (with never-larger truecolor fallback, D-06), register 3 new files in Flint.xcodeproj, transformer PNG-savings/alpha tests, full build + test suite green (D-02/05/06, INFRA-17/18) *(depends on 05-04)*
 
 **Wave 6 — GAP CLOSURE** *(UAT Test 5: compressed output can be LARGER than the original)*
-- [ ] 05-06-PLAN.md — GAP 1: never-larger-than-ORIGINAL guard — make the original source a writable candidate on the PNG path (smallest of {original, quantized, truecolor}) AND add a post-finalize guard to the non-PNG ImageIO path; TDD failing-first tests (D-02/06, INFRA-17)
+- [x] 05-06-PLAN.md — GAP 1: never-larger-than-ORIGINAL guard — make the original source a writable candidate on the PNG path (smallest of {original, quantized, truecolor}) AND add a post-finalize guard to the non-PNG ImageIO path; TDD failing-first tests (D-02/06, INFRA-17)
 
 **Wave 7 — GAP CLOSURE** *(UAT Tests 9 & 10, coupled; blocked on 05-06)*
 - [ ] 05-07-PLAN.md — GAP 3+4: cancellable compression — cooperative Task.isCancelled checkpoint in the quantize loop + cancellation-propagating off-main work (not Task.detached, keep outer Task { } MainActor-bound per 05-02 Sendable gotcha) + resolve the in-flight .compressing row + keep Cancel visible until resolved; verify clean re-drop writes -compressed-1; slow-fixture cancellation test (D-01/09, INFRA-17/18)

@@ -135,6 +135,9 @@
 		001100000007004 /* ImageCompressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007004 /* ImageCompressViewModelTests.swift */; };
 		001100000007005 /* ImageCompressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007005 /* ImageCompressView.swift */; };
 		001100000007006 /* ImageCompressDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007006 /* ImageCompressDefinition.swift */; };
+		001100000007007 /* PNGColorQuantizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007007 /* PNGColorQuantizer.swift */; };
+		001100000007008 /* IndexedPNGEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007008 /* IndexedPNGEncoder.swift */; };
+		001100000007009 /* PNGQuantizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007009 /* PNGQuantizationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -262,6 +265,9 @@
 		001200000007004 /* ImageCompressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressViewModelTests.swift; sourceTree = "<group>"; };
 		001200000007005 /* ImageCompressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressView.swift; sourceTree = "<group>"; };
 		001200000007006 /* ImageCompressDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressDefinition.swift; sourceTree = "<group>"; };
+		001200000007007 /* PNGColorQuantizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PNGColorQuantizer.swift; sourceTree = "<group>"; };
+		001200000007008 /* IndexedPNGEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexedPNGEncoder.swift; sourceTree = "<group>"; };
+		001200000007009 /* PNGQuantizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PNGQuantizationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,6 +398,8 @@
 				001200000007003 /* ImageCompressViewModel.swift */,
 				001200000007005 /* ImageCompressView.swift */,
 				001200000007006 /* ImageCompressDefinition.swift */,
+				001200000007007 /* PNGColorQuantizer.swift */,
+				001200000007008 /* IndexedPNGEncoder.swift */,
 			);
 			path = ImageCompress;
 			sourceTree = "<group>";
@@ -611,6 +619,7 @@
 				001200000006005 /* TextDiffTransformerTests.swift */,
 				001200000007002 /* ImageCompressTransformerTests.swift */,
 				001200000007004 /* ImageCompressViewModelTests.swift */,
+				001200000007009 /* PNGQuantizationTests.swift */,
 			);
 			path = FlintTests;
 			sourceTree = "<group>";
@@ -840,6 +849,8 @@
 				001100000007003 /* ImageCompressViewModel.swift in Sources */,
 				001100000007005 /* ImageCompressView.swift in Sources */,
 				001100000007006 /* ImageCompressDefinition.swift in Sources */,
+				001100000007007 /* PNGColorQuantizer.swift in Sources */,
+				001100000007008 /* IndexedPNGEncoder.swift in Sources */,
 				00110000000DD04 /* AllToolsGridView.swift in Sources */,
 				00110000000DD05 /* ToolHeaderView.swift in Sources */,
 				00110000000DD06 /* OutputRowBadge.swift in Sources */,
@@ -868,6 +879,7 @@
 				001100000006005 /* TextDiffTransformerTests.swift in Sources */,
 				001100000007002 /* ImageCompressTransformerTests.swift in Sources */,
 				001100000007004 /* ImageCompressViewModelTests.swift in Sources */,
+				001100000007009 /* PNGQuantizationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

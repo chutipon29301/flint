@@ -133,6 +133,8 @@
 		001100000007002 /* ImageCompressTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007002 /* ImageCompressTransformerTests.swift */; };
 		001100000007003 /* ImageCompressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007003 /* ImageCompressViewModel.swift */; };
 		001100000007004 /* ImageCompressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007004 /* ImageCompressViewModelTests.swift */; };
+		001100000007005 /* ImageCompressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007005 /* ImageCompressView.swift */; };
+		001100000007006 /* ImageCompressDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007006 /* ImageCompressDefinition.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -258,6 +260,8 @@
 		001200000007002 /* ImageCompressTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressTransformerTests.swift; sourceTree = "<group>"; };
 		001200000007003 /* ImageCompressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressViewModel.swift; sourceTree = "<group>"; };
 		001200000007004 /* ImageCompressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressViewModelTests.swift; sourceTree = "<group>"; };
+		001200000007005 /* ImageCompressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressView.swift; sourceTree = "<group>"; };
+		001200000007006 /* ImageCompressDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressDefinition.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -386,6 +390,8 @@
 			children = (
 				001200000007001 /* ImageCompressTransformer.swift */,
 				001200000007003 /* ImageCompressViewModel.swift */,
+				001200000007005 /* ImageCompressView.swift */,
+				001200000007006 /* ImageCompressDefinition.swift */,
 			);
 			path = ImageCompress;
 			sourceTree = "<group>";
@@ -832,6 +838,8 @@
 				001100000006004 /* TextDiffDefinition.swift in Sources */,
 				001100000007001 /* ImageCompressTransformer.swift in Sources */,
 				001100000007003 /* ImageCompressViewModel.swift in Sources */,
+				001100000007005 /* ImageCompressView.swift in Sources */,
+				001100000007006 /* ImageCompressDefinition.swift in Sources */,
 				00110000000DD04 /* AllToolsGridView.swift in Sources */,
 				00110000000DD05 /* ToolHeaderView.swift in Sources */,
 				00110000000DD06 /* OutputRowBadge.swift in Sources */,

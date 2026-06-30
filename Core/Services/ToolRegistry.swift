@@ -33,6 +33,10 @@ final class ToolRegistry {
             MarkdownDefinition.make(),
             NumberBaseDefinition.make(),
             TextDiffDefinition.make(),
+            // SANCTIONED PHASE-5 APPEND (05-03-PLAN.md — single approved mutation):
+            // Image Compressor — no detectionPredicate (nil), search-only like Hash.
+            // detect() skips it via optional chain; search() picks up image/compress/jpeg/png keywords.
+            ImageCompressDefinition.make(),
         ]
     }
 

@@ -434,21 +434,20 @@ func isLossy(uti: CFString) -> Bool {
 | A5 | New `.swift` files need explicit Xcode target membership (Phase-2 precedent added definitions via `ToolRegistry` append, but those were new files too) | Runtime State Inventory | Medium — if pbxproj target-add is missed, the tool won't compile in; confirm at plan time |
 | A6 | Suggested preset values (Web 60 / Email 75 / Max 95) are reasonable defaults | Code Examples | None — explicitly Claude's discretion per CONTEXT.md; tune freely |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should a re-encoded file that came out *larger* be written at all, or skipped/flagged?**
    - What we know: PNG/TIFF (and occasionally HEIC at high quality) can produce a larger file than the original.
-   - What's unclear: Product behavior — write anyway and show negative "% saved", or skip the write and tell the user "already optimal"?
-   - Recommendation: Default to writing and showing honest negative savings (simplest, never-lose-data aligned). Optionally add a "skip if larger" behavior — flag as a small planner decision, not a blocker.
+   - RESOLVED: Write anyway and show honest negative "% saved" (never-lose-data aligned). Implemented in 05-03 (writes + `.secondary` "+{n}%") and 05-01 (returns raw byte counts unconditionally).
 
 2. **TIFF in the lossy/lossless bucket.**
    - What we know: TIFF can hold compressed (LZW/JPEG-in-TIFF) or uncompressed data; ImageIO's `kCGImageDestinationLossyCompressionQuality` interaction with TIFF is not as clear-cut as JPEG/HEIC.
    - What's unclear: Whether the quality key meaningfully shrinks TIFF.
-   - Recommendation: Treat TIFF as lossless (slider disabled), re-encode best-effort like PNG. If a TIFF test shows the quality key works, can revisit. Low stakes — TIFF is the least-common input.
+   - RESOLVED: Treat TIFF as lossless (`isLossless` true, nil props, slider disabled) — applied across 05-01/02/03.
 
 3. **Single dropped file: table vs. simplified view (D-09 / discretion).**
    - What we know: Table is the baseline; UI may simplify for N=1.
-   - Recommendation: Use the same 1-row table for consistency and less code; let the UI plan decide.
+   - RESOLVED: Use the same 1-row table for all N (including N=1) — applied in 05-03.
 
 ## Environment Availability
 

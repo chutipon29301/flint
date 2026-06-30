@@ -42,12 +42,7 @@ protocol ToolShortcutActions: AnyObject {
 private struct ToolShortcutsModifier<Actions: ToolShortcutActions>: ViewModifier {
     let actions: Actions
 
-    // D-09: paste-back environments — read at modifier level so the observer closure
-    // can gate on pasteBackEnabled and call synthesizePaste without capturing stale references.
-    @Environment(PreferencesStore.self) private var prefs
-    @Environment(HotkeyManager.self) private var hotkeyManager
-    @Environment(PasteBackService.self) private var pasteBackService
-    @Environment(ClipboardDetector.self) private var clipboard
+    // Paste-back is NOT handled here — the multi-output tools own it (see .selectOutputRow below).
 
     func body(content: Content) -> some View {
         content
@@ -79,13 +74,10 @@ private struct ToolShortcutsModifier<Actions: ToolShortcutActions>: ViewModifier
                 let pb = NSPasteboard.general
                 pb.clearContents()
                 pb.setString(text, forType: .string)
-                // D-09: paste-back branch — gated on toggle + AXIsProcessTrusted re-verify (T-04-12).
-                // CF-02: when pasteBackEnabled == false, NO synthetic event and NO permission check runs.
-                if prefs.pasteBackEnabled, AXIsProcessTrusted(),
-                   let app = hotkeyManager.previousFrontmostApp {
-                    clipboard.isPopoverPresented = false
-                    pasteBackService.synthesizePaste(into: app)
-                }
+                // NO paste-back here. The multi-output tools (Color/Hash/NumberBase) own a
+                // per-tool .selectOutputRow observer that handles row 1 AND does paste-back.
+                // Doing paste-back here too would synthesize ⌘V twice for those tools (the
+                // "#FF5733#FF5733" double-paste bug). Single-output tools don't paste-back.
             }
     }
 }

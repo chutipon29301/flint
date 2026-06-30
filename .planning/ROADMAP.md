@@ -202,7 +202,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 **Goal:** A developer drops one or more image files onto the new Image Compressor tool and gets smaller, same-format versions back — re-encoded at a chosen quality, written beside each original as `-compressed`, never overwriting the source, with a live results table showing per-image thumbnail, original→new size, and % saved — all offline and never crashing on a non-image or corrupt file.
 **Requirements**: D-01..D-10 (CONTEXT.md locked decisions), INFRA-17 (never crash), INFRA-18 (memory)
 **Depends on:** Phase 4
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 **Wave 1**
@@ -218,4 +218,4 @@ Plans:
 - [x] 05-04-PLAN.md — GAP: pure-Swift PNG quantization engine — median-cut PNGColorQuantizer (RGBA→≤256-color palette) + IndexedPNGEncoder (color-type-3 PNG via Compression-framework zlib, PLTE/tRNS) + full unit tests, zero external deps (D-02, INFRA-17)
 
 **Wave 5 — GAP CLOSURE** *(blocked on 05-04)*
-- [ ] 05-05-PLAN.md — GAP: wire quantize+encode into ImageCompressTransformer PNG path (with never-larger truecolor fallback, D-06), register 3 new files in Flint.xcodeproj, transformer PNG-savings/alpha tests, full build + test suite green (D-02/05/06, INFRA-17/18) *(depends on 05-04)*
+- [x] 05-05-PLAN.md — GAP: wire quantize+encode into ImageCompressTransformer PNG path (with never-larger truecolor fallback, D-06), register 3 new files in Flint.xcodeproj, transformer PNG-savings/alpha tests, full build + test suite green (D-02/05/06, INFRA-17/18) *(depends on 05-04)*

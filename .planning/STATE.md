@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-07-PLAN.md
-last_updated: "2026-06-30T18:11:26.332Z"
+last_updated: "2026-06-30T18:15:31.670Z"
 last_activity: 2026-06-30
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-06-25)
 ## Current Position
 
 Phase: 05 (add-image-compression-feature) — EXECUTING
-Plan: 3 of 9
+Plan: 4 of 9
 Status: Ready to execute
 Last activity: 2026-06-30
 
-Progress: [████████░░] 78%
+Progress: [█████████░] 89%
 
 ## Performance Metrics
 
@@ -78,6 +78,7 @@ Progress: [████████░░] 78%
 | Phase 05-add-image-compression-feature P05 | ~25 minutes | 3 tasks | 3 files |
 | Phase 05 P06 | 9 min | 2 tasks | 2 files |
 | Phase 05 P07 | 80 min | 2 tasks | 4 files |
+| Phase 05 P08 | 2 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -117,6 +118,8 @@ Recent decisions affecting current work:
 - [Phase 05 Plan 04]: Indexed PNG beats truecolor only on photographic/high-variation content (~3.5x on UAT Test 8 image); on perfectly smooth gradients PNG row filters can win, so the end-to-end size-win test uses a noise image
 - [Phase ?]: [Phase 05 Plan 05]: ImageCompressTransformer PNG path now quantizes to indexed color-type-3 PNG (PNGColorQuantizer + IndexedPNGEncoder); D-06 never-larger guard keeps min(quantized, truecolor re-encode); nil at any stage falls back to truecolor (INFRA-17); closes UAT Test 8
 - [Phase 05]: 05-07: Task.detached + direct-cancel for off-main cancellable image compression (plain Task in MainActor ctx runs sync nonisolated work on main thread)
+- [Phase 05]: Re-compression fires only on explicit button press — no .onChange auto-trigger (avoids -compressed-N disk spew per slider tick, T-05-08A)
+- [Phase 05]: Re-compress button hidden when batch entirely lossless and only quality changed (D-05)
 
 ### Roadmap Evolution
 
@@ -150,6 +153,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-06-30T18:11:26.193Z
+Last session: 2026-06-30T18:15:25.090Z
 Stopped at: Completed 05-07-PLAN.md
 Resume file: None

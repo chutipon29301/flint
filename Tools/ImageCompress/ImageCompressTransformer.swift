@@ -2,9 +2,15 @@
 // Pure ImageIO round-trip compress + path disambiguation + size delta.
 // NO SwiftUI/AppKit imports — pure transformer (thumbnail/NSImage work belongs in ViewModel/View).
 // D-02: same-format-in same-format-out via CGImageSourceGetType.
-// D-05: lossy formats (JPEG/HEIC/HEIF) get quality prop; PNG/TIFF get nil props.
+// D-05: lossy formats (JPEG/HEIC/HEIF) get a quality prop. PNG takes the quantization path
+//       (PNGColorQuantizer + IndexedPNGEncoder → indexed color-type-3 PNG, which ImageIO cannot
+//       emit) to achieve pngquant-class savings on photographic content (UAT Test 8). TIFF and any
+//       other lossless format keep the nil-props truecolor re-encode.
+// D-06: honest reporting — the PNG path never hands the user a file larger than a plain truecolor
+//       re-encode (it keeps whichever of {quantized, truecolor} is smaller).
 // D-07/D-08: writes beside original as -compressed, disambiguates with -1/-2/… on collision.
-// INFRA-17: every ImageIO call guard-gated; function never throws; corrupt input → typed .failure.
+// INFRA-17: every ImageIO/quantize/encode call guard-gated; function never throws; corrupt input
+//           → typed .failure; any nil mid-path falls back to the truecolor re-encode.
 
 import Foundation
 import ImageIO
@@ -62,29 +68,40 @@ enum ImageCompressTransformer {
         // 4. Collision-safe destination path beside the original (D-07/D-08)
         let destURL = disambiguatedCompressedURL(for: url)
 
-        // 5. Destination uses the SOURCE's UTI — no format-mapping table needed (D-02)
-        guard let dst = CGImageDestinationCreateWithURL(destURL as CFURL, uti, 1, nil) else {
-            return .failure(.writeFailed)
-        }
-
-        // 6. Quality only applies to lossy formats (JPEG/HEIC/HEIF). PNG/TIFF → nil props (D-05).
-        //    Re-encoded PNG/TIFF may grow slightly — that is honest reporting (Open Question 1, RESEARCH).
+        // 5. PNG takes the quantization path; everything else takes the ImageIO re-encode path.
         let utType = UTType(uti as String)
-        let isLossy = utType?.conforms(to: .jpeg) == true
-            || utType?.conforms(to: .heic) == true
-            || utType == UTType("public.heif")
-        let props: CFDictionary? = isLossy
-            ? [kCGImageDestinationLossyCompressionQuality: quality] as CFDictionary
-            : nil
+        let isPNG = utType?.conforms(to: .png) == true
 
-        // 7. AddImageFromSource (NOT AddImage) → carries EXIF, ICC profile, orientation forward.
-        //    Prevents the "re-encoded photo rotated 90°" orientation-loss bug (RESEARCH Pitfall 1).
-        CGImageDestinationAddImageFromSource(dst, src, 0, props)
+        if isPNG {
+            // Quantize → indexed-PNG encode → never-larger guard (D-06). Any nil falls back to
+            // the truecolor re-encode; the function still returns a typed Result (INFRA-17).
+            guard writePNGCompressed(src: src, source: url, uti: uti, destURL: destURL) else {
+                try? FileManager.default.removeItem(at: destURL)
+                return .failure(.writeFailed)
+            }
+        } else {
+            // 5a. Destination uses the SOURCE's UTI — no format-mapping table needed (D-02)
+            guard let dst = CGImageDestinationCreateWithURL(destURL as CFURL, uti, 1, nil) else {
+                return .failure(.writeFailed)
+            }
 
-        // 8. Finalize returns false on failure — gate it, clean up partial write, never assume success
-        guard CGImageDestinationFinalize(dst) else {
-            try? FileManager.default.removeItem(at: destURL) // clean up partial write
-            return .failure(.writeFailed)
+            // 5b. Quality only applies to lossy formats (JPEG/HEIC/HEIF). TIFF/other → nil props (D-05).
+            let isLossy = utType?.conforms(to: .jpeg) == true
+                || utType?.conforms(to: .heic) == true
+                || utType == UTType("public.heif")
+            let props: CFDictionary? = isLossy
+                ? [kCGImageDestinationLossyCompressionQuality: quality] as CFDictionary
+                : nil
+
+            // 5c. AddImageFromSource (NOT AddImage) → carries EXIF, ICC profile, orientation forward.
+            //     Prevents the "re-encoded photo rotated 90°" orientation-loss bug (RESEARCH Pitfall 1).
+            CGImageDestinationAddImageFromSource(dst, src, 0, props)
+
+            // 5d. Finalize returns false on failure — gate it, clean up partial write.
+            guard CGImageDestinationFinalize(dst) else {
+                try? FileManager.default.removeItem(at: destURL) // clean up partial write
+                return .failure(.writeFailed)
+            }
         }
 
         // 9. Size delta for the hero "% saved" metric — never Data(contentsOf:) for large files
@@ -96,6 +113,74 @@ enum ImageCompressTransformer {
             originalBytes: origBytes,
             compressedBytes: newBytes
         ))
+    }
+
+    // MARK: - PNG quantization path (UAT Test 8)
+
+    /// Writes a compressed PNG to `destURL` using quantization, with a truecolor-re-encode fallback
+    /// and a never-larger guard (D-06). Returns false only if NO output could be written at all
+    /// (so the caller can surface a typed .writeFailed without throwing — INFRA-17).
+    ///
+    /// Strategy:
+    ///   1. Decode frame 0 → CGImage. nil → truecolor re-encode (never fail outright).
+    ///   2. PNGColorQuantizer.quantize → IndexedPNGEncoder.encode → indexed PNG `Data`.
+    ///      Any nil at this stage → truecolor re-encode.
+    ///   3. Compare the quantized byte count against the original source file size. If the quantized
+    ///      output is NOT smaller than the original, also produce the plain truecolor re-encode and
+    ///      keep whichever of {quantized, truecolor} is smaller (D-06: never hand back a bigger file).
+    ///   4. Write the chosen bytes to destURL.
+    private static func writePNGCompressed(src: CGImageSource, source: URL, uti: CFString, destURL: URL) -> Bool {
+        // 1. Decode the source image. On failure, fall back to a plain truecolor re-encode.
+        guard let cgImage = CGImageSourceCreateImageAtIndex(src, 0, nil) else {
+            return truecolorReencode(src: src, uti: uti, destURL: destURL)
+        }
+
+        // 2. Quantize → indexed-PNG encode. Any nil → truecolor re-encode.
+        guard let quantized = PNGColorQuantizer.quantize(cgImage: cgImage),
+              let indexedData = IndexedPNGEncoder.encode(
+                width: quantized.width,
+                height: quantized.height,
+                palette: quantized.palette,
+                alpha: quantized.alpha,
+                indices: quantized.indices
+              )
+        else {
+            return truecolorReencode(src: src, uti: uti, destURL: destURL)
+        }
+
+        // 3. Never-larger guard (D-06). The common photographic case wins outright and skips the
+        //    truecolor re-encode entirely (cheap in-memory / file-size comparison, no huge reads).
+        let origBytes = (try? source.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? Int.max
+        if indexedData.count < origBytes {
+            // Quantized output already beats the source — write it directly.
+            return (try? indexedData.write(to: destURL)) != nil
+        }
+
+        // Quantized output did NOT beat the source: produce the plain truecolor re-encode and keep
+        // whichever of {quantized, truecolor} is smaller, so the user never gets a bigger file.
+        let truecolorURL = destURL.deletingLastPathComponent()
+            .appendingPathComponent(".\(UUID().uuidString)-truecolor.png")
+        defer { try? FileManager.default.removeItem(at: truecolorURL) }
+
+        if truecolorReencode(src: src, uti: uti, destURL: truecolorURL),
+           let truecolorBytes = try? truecolorURL.resourceValues(forKeys: [.fileSizeKey]).fileSize {
+            if truecolorBytes <= indexedData.count {
+                // Truecolor wins — move it into place.
+                return (try? FileManager.default.moveItem(at: truecolorURL, to: destURL)) != nil
+            }
+        }
+        // Quantized is the smaller (or only) option — write it.
+        return (try? indexedData.write(to: destURL)) != nil
+    }
+
+    /// Plain truecolor PNG re-encode via ImageIO (carries metadata forward), written to `destURL`.
+    /// Returns true on success.
+    private static func truecolorReencode(src: CGImageSource, uti: CFString, destURL: URL) -> Bool {
+        guard let dst = CGImageDestinationCreateWithURL(destURL as CFURL, uti, 1, nil) else {
+            return false
+        }
+        CGImageDestinationAddImageFromSource(dst, src, 0, nil)
+        return CGImageDestinationFinalize(dst)
     }
 
     // MARK: - Path disambiguation helper

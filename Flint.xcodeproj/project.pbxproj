@@ -129,6 +129,8 @@
 		00110000000DD04 /* AllToolsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD04 /* AllToolsGridView.swift */; };
 		00110000000DD05 /* ToolHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD05 /* ToolHeaderView.swift */; };
 		00110000000DD06 /* OutputRowBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD06 /* OutputRowBadge.swift */; };
+		001100000007001 /* ImageCompressTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007001 /* ImageCompressTransformer.swift */; };
+		001100000007002 /* ImageCompressTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007002 /* ImageCompressTransformerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -250,6 +252,8 @@
 		001200000006003 /* TextDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffView.swift; sourceTree = "<group>"; };
 		001200000006004 /* TextDiffDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffDefinition.swift; sourceTree = "<group>"; };
 		001200000006005 /* TextDiffTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffTransformerTests.swift; sourceTree = "<group>"; };
+		001200000007001 /* ImageCompressTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressTransformer.swift; sourceTree = "<group>"; };
+		001200000007002 /* ImageCompressTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressTransformerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -368,8 +372,17 @@
 				001500000003001 /* Color */,
 				001500000004001 /* Markdown */,
 				001500000005001 /* NumberBase */,
+				001500000007001 /* ImageCompress */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		001500000007001 /* ImageCompress */ = {
+			isa = PBXGroup;
+			children = (
+				001200000007001 /* ImageCompressTransformer.swift */,
+			);
+			path = ImageCompress;
 			sourceTree = "<group>";
 		};
 		001500000000020 /* TextDiff */ = {
@@ -585,6 +598,7 @@
 				001200000004008 /* MarkdownEditorHighlightTests.swift */,
 				001200000005005 /* NumberBaseTransformerTests.swift */,
 				001200000006005 /* TextDiffTransformerTests.swift */,
+				001200000007002 /* ImageCompressTransformerTests.swift */,
 			);
 			path = FlintTests;
 			sourceTree = "<group>";
@@ -810,6 +824,7 @@
 				001100000006002 /* TextDiffViewModel.swift in Sources */,
 				001100000006003 /* TextDiffView.swift in Sources */,
 				001100000006004 /* TextDiffDefinition.swift in Sources */,
+				001100000007001 /* ImageCompressTransformer.swift in Sources */,
 				00110000000DD04 /* AllToolsGridView.swift in Sources */,
 				00110000000DD05 /* ToolHeaderView.swift in Sources */,
 				00110000000DD06 /* OutputRowBadge.swift in Sources */,
@@ -836,6 +851,7 @@
 				001100000004008 /* MarkdownEditorHighlightTests.swift in Sources */,
 				001100000005005 /* NumberBaseTransformerTests.swift in Sources */,
 				001100000006005 /* TextDiffTransformerTests.swift in Sources */,
+				001100000007002 /* ImageCompressTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

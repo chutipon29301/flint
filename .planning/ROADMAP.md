@@ -196,3 +196,20 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Extended Tools | 8/8 | Complete   | 2026-06-26 |
 | 3. Polish & Distribution | 8/8 | Complete   | 2026-06-29 |
 | 4. UX Improvement | 4/5 | In Progress|  |
+
+### Phase 5: add image compression feature
+
+**Goal:** A developer drops one or more image files onto the new Image Compressor tool and gets smaller, same-format versions back — re-encoded at a chosen quality, written beside each original as `-compressed`, never overwriting the source, with a live results table showing per-image thumbnail, original→new size, and % saved — all offline and never crashing on a non-image or corrupt file.
+**Requirements**: D-01..D-10 (CONTEXT.md locked decisions), INFRA-17 (never crash), INFRA-18 (memory)
+**Depends on:** Phase 4
+**Plans:** 3 plans (3 waves)
+
+Plans:
+**Wave 1**
+- [ ] 05-01-PLAN.md — ImageCompressTransformer: pure ImageIO round-trip re-encode (same format in/out) + `-compressed` disambiguation + size delta + unit tests (D-02/03/05/06/07/08, INFRA-17)
+
+**Wave 2** *(blocked on 05-01)*
+- [ ] 05-02-PLAN.md — ImageCompressViewModel: off-main batch loop + CompressRow + per-row progress + cancellation + history + autoreleasepool memory bound (D-01/05/09, INFRA-17/18)
+
+**Wave 3** *(blocked on 05-02)*
+- [ ] 05-03-PLAN.md — ImageCompressView (multi-file drop + quality slider/presets + live results table) + Definition + ToolRegistry sanctioned-append registration + full build (D-01/04/05/09/10, INFRA-14/15/17)

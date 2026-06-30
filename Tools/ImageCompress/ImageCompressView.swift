@@ -83,6 +83,25 @@ struct ImageCompressView: View {
         !viewModel.rows.isEmpty && viewModel.rows.allSatisfy { $0.format.isLossless }
     }
 
+    /// Live slider quality mapped to ImageIO's 0.0–1.0 range (mirrors the compress call-site clamp,
+    /// line 62 / WR-03). Compared against viewModel.lastRunQuality to detect a pending quality change.
+    private var mappedQuality: Double {
+        min(max(quality / 100.0, 0.0), 1.0)
+    }
+
+    /// Whether to surface the explicit "Re-compress at {n}%" affordance (05-08, GAP 2 / D-04).
+    /// Compress-on-drop is immediate, so a changed slider can never reach the already-dropped batch;
+    /// this button is the ONLY re-run trigger (no .onChange auto-spew — T-05-08A locked decision).
+    /// Shown only when: a batch exists, no batch is currently running, the live quality differs from
+    /// the last run, AND the batch is not entirely lossless (for PNG/TIFF the slider doesn't apply, so
+    /// a quality-only change is meaningless — keep it hidden per the locked decision, D-05).
+    private var shouldShowRecompress: Bool {
+        !viewModel.rows.isEmpty
+            && !viewModel.isCompressing
+            && !isEntirelyLossless
+            && mappedQuality != viewModel.lastRunQuality
+    }
+
     @ViewBuilder
     private var qualitySection: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -171,6 +190,14 @@ struct ImageCompressView: View {
                         }
                         .foregroundStyle(Color.red)
                         .accessibilityLabel("Cancel compression")
+                    } else if shouldShowRecompress {
+                        // Explicit re-run affordance (05-08). Mutually exclusive with Cancel:
+                        // shouldShowRecompress requires !isCompressing, so only one is ever visible.
+                        // The button press is the ONLY re-compression trigger (no auto-spew, T-05-08A).
+                        Button("Re-compress at \(Int(quality))%") {
+                            viewModel.recompress(quality: mappedQuality)
+                        }
+                        .accessibilityLabel("Re-compress at \(Int(quality)) percent")
                     }
                 }
 

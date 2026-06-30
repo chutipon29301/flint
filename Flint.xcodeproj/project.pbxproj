@@ -131,6 +131,8 @@
 		00110000000DD06 /* OutputRowBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000DD06 /* OutputRowBadge.swift */; };
 		001100000007001 /* ImageCompressTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007001 /* ImageCompressTransformer.swift */; };
 		001100000007002 /* ImageCompressTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007002 /* ImageCompressTransformerTests.swift */; };
+		001100000007003 /* ImageCompressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007003 /* ImageCompressViewModel.swift */; };
+		001100000007004 /* ImageCompressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000007004 /* ImageCompressViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -254,6 +256,8 @@
 		001200000006005 /* TextDiffTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDiffTransformerTests.swift; sourceTree = "<group>"; };
 		001200000007001 /* ImageCompressTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressTransformer.swift; sourceTree = "<group>"; };
 		001200000007002 /* ImageCompressTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressTransformerTests.swift; sourceTree = "<group>"; };
+		001200000007003 /* ImageCompressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressViewModel.swift; sourceTree = "<group>"; };
+		001200000007004 /* ImageCompressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +385,7 @@
 			isa = PBXGroup;
 			children = (
 				001200000007001 /* ImageCompressTransformer.swift */,
+				001200000007003 /* ImageCompressViewModel.swift */,
 			);
 			path = ImageCompress;
 			sourceTree = "<group>";
@@ -599,6 +604,7 @@
 				001200000005005 /* NumberBaseTransformerTests.swift */,
 				001200000006005 /* TextDiffTransformerTests.swift */,
 				001200000007002 /* ImageCompressTransformerTests.swift */,
+				001200000007004 /* ImageCompressViewModelTests.swift */,
 			);
 			path = FlintTests;
 			sourceTree = "<group>";
@@ -825,6 +831,7 @@
 				001100000006003 /* TextDiffView.swift in Sources */,
 				001100000006004 /* TextDiffDefinition.swift in Sources */,
 				001100000007001 /* ImageCompressTransformer.swift in Sources */,
+				001100000007003 /* ImageCompressViewModel.swift in Sources */,
 				00110000000DD04 /* AllToolsGridView.swift in Sources */,
 				00110000000DD05 /* ToolHeaderView.swift in Sources */,
 				00110000000DD06 /* OutputRowBadge.swift in Sources */,
@@ -852,6 +859,7 @@
 				001100000005005 /* NumberBaseTransformerTests.swift in Sources */,
 				001100000006005 /* TextDiffTransformerTests.swift in Sources */,
 				001100000007002 /* ImageCompressTransformerTests.swift in Sources */,
+				001100000007004 /* ImageCompressViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

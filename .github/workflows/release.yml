@@ -21,8 +21,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select latest Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+      # KeyboardShortcuts 3.0.1 needs Swift tools 6.2, so pick the newest installed
+      # Xcode (not the default, which may be an older Swift 6.1 toolchain).
+      - name: Select newest Xcode
+        run: |
+          NEWEST=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)
+          NEWEST=${NEWEST:-/Applications/Xcode.app}
+          echo "Using $NEWEST"
+          sudo xcode-select -s "$NEWEST"
+          swift --version
 
       - name: Build unsigned DMG
         env:

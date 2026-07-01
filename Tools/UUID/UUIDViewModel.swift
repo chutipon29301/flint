@@ -4,7 +4,6 @@
 // UUID-02: v7 via leodabus/UUIDv7 (approved package)
 // UUID-03: inspect UUID live-debounced 150ms
 // UUID-04: case toggle, export format selection
-// NEVER imports GRDB — history via injected onSaveHistory closure (INFRA-09).
 
 import SwiftUI
 import Foundation
@@ -50,12 +49,9 @@ final class UUIDViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - ToolShortcutActions (INFRA-16)
 
@@ -95,18 +91,6 @@ final class UUIDViewModel: ToolShortcutActions {
         case .v7:
             generatedUUIDs = UUIDTransformer.generateV7(count: count)
         }
-        // Write to history if we generated at least one UUID
-        if !generatedUUIDs.isEmpty {
-            let output = UUIDTransformer.export(generatedUUIDs, format: exportFormat, uppercase: uppercase)
-            let versionStr = selectedVersion.rawValue
-            onSaveHistory(HistoryEntry(
-                tool: "uuid-generator",
-                input: "Generated \(generatedUUIDs.count) \(versionStr) UUID(s)",
-                output: output,
-                timestamp: Date(),
-                pinned: false
-            ))
-        }
     }
 
     // MARK: - Export (UUID-04)
@@ -140,14 +124,6 @@ final class UUIDViewModel: ToolShortcutActions {
         if let info = UUIDTransformer.inspect(input) {
             inspectResult = info
             inspectError = nil
-            // Write to history
-            onSaveHistory(HistoryEntry(
-                tool: "uuid-generator",
-                input: input.trimmingCharacters(in: .whitespacesAndNewlines),
-                output: inspectSummary(info),
-                timestamp: Date(),
-                pinned: false
-            ))
         } else {
             inspectResult = nil
             inspectError = "Not a valid UUID string."

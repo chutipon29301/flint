@@ -11,11 +11,10 @@ import SwiftUI
 struct UUIDView: View {
 
     @State private var viewModel: UUIDViewModel
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(ToolSeed.self) private var toolSeed
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        _viewModel = State(wrappedValue: UUIDViewModel(onSaveHistory: onSaveHistory))
+    init() {
+        _viewModel = State(wrappedValue: UUIDViewModel())
     }
 
     var body: some View {

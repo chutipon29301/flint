@@ -15,20 +15,8 @@ enum MarkdownDefinition {
             sfSymbol: "doc.richtext",
             detectionPredicate: nil,   // search-only — no clipboard auto-detection
             makeView: { @MainActor in
-                AnyView(MarkdownViewWrapper())
+                AnyView(MarkdownView())
             }
         )
-    }
-}
-
-// MARK: - Wrapper for environment-injected history store
-
-private struct MarkdownViewWrapper: View {
-    @Environment(HistoryStore.self) private var historyStore
-
-    var body: some View {
-        MarkdownView { entry in
-            historyStore.save(entry)
-        }
     }
 }

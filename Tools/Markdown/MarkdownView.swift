@@ -7,11 +7,9 @@
 import SwiftUI
 import AppKit
 
-// MARK: - MarkdownView (history-injected entry point)
+// MARK: - MarkdownView
 
 struct MarkdownView: View {
-    let onSaveHistory: (HistoryEntry) -> Void
-
     @State private var viewModel: MarkdownViewModel?
 
     var body: some View {
@@ -25,7 +23,7 @@ struct MarkdownView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = MarkdownViewModel(onSaveHistory: onSaveHistory)
+                viewModel = MarkdownViewModel()
             }
         }
     }

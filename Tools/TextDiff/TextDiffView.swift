@@ -11,7 +11,6 @@ import AppKit
 // MARK: - Outer wrapper (lazy init, environment injection)
 
 struct TextDiffView: View {
-    @Environment(HistoryStore.self) private var historyStore
     @State private var viewModel: TextDiffViewModel?
 
     var body: some View {
@@ -25,11 +24,7 @@ struct TextDiffView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = TextDiffViewModel(
-                    onSaveHistory: { [historyStore] entry in
-                        historyStore.save(entry)
-                    }
-                )
+                viewModel = TextDiffViewModel()
             }
         }
     }
@@ -543,6 +538,5 @@ private struct WordSegmentsView: View {
 
 #Preview {
     TextDiffView()
-        .environment(HistoryStore())
         .frame(width: 700, height: 600)
 }

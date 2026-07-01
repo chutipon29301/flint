@@ -1,6 +1,5 @@
 // Tools/Markdown/MarkdownViewModel.swift
-// Debounced Markdown ViewModel — owns render scheduling, last-good output, history write.
-// SECURITY: Never imports GRDB. History write via injected onSaveHistory closure (INFRA-09).
+// Debounced Markdown ViewModel — owns render scheduling and last-good output.
 // Reuses project-wide Debounce actor (defined in JSONFormatterViewModel.swift).
 
 import Foundation
@@ -33,14 +32,11 @@ final class MarkdownViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - ToolShortcutActions (INFRA-16)
 
@@ -82,14 +78,6 @@ final class MarkdownViewModel: ToolShortcutActions {
             let rt = MarkdownTransformer.readingTimeMinutes(words: wc)
             wordCountText = "words: \(wc)"
             readingTimeText = "~\(rt) min read"
-            // Write to history (INFRA-07)
-            onSaveHistory(HistoryEntry(
-                tool: "markdown",
-                input: source,
-                output: rendered,
-                timestamp: Date(),
-                pinned: false
-            ))
         case .failure(let error):
             // CF-02: keep last-good html visible but dimmed — do NOT clear html
             outputDimmed = true

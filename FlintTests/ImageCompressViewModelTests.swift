@@ -1,6 +1,6 @@
 // FlintTests/ImageCompressViewModelTests.swift
 // Tests for ImageCompressViewModel — batch progression, never-crash on corrupt, cancellation,
-// single-fire history, and off-main proof.
+// and off-main proof.
 // D-01: N URLs → N rows; D-09: live per-row updates; INFRA-17: mixed valid+corrupt batch survives;
 // INFRA-18: off-main compression (no main-thread deadlock).
 
@@ -118,7 +118,7 @@ struct ImageCompressViewModelTests {
         try writeTinyJPEG(to: url2)
 
         let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { _ in })
+            ImageCompressViewModel()
         }
 
         await MainActor.run {
@@ -154,7 +154,7 @@ struct ImageCompressViewModelTests {
         try "this is not an image".data(using: .utf8)!.write(to: corruptURL)
 
         let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { _ in })
+            ImageCompressViewModel()
         }
 
         await MainActor.run {
@@ -201,7 +201,7 @@ struct ImageCompressViewModelTests {
         try writeSlowGradientPNG(to: slowPNG)
 
         let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { _ in })
+            ImageCompressViewModel()
         }
 
         await MainActor.run {
@@ -253,49 +253,6 @@ struct ImageCompressViewModelTests {
         #expect(leftovers.isEmpty, "Cancelled compress left an output file on disk: \(leftovers.map(\.lastPathComponent))")
     }
 
-    // MARK: - Test 4: History fires exactly once per successful batch
-
-    @Test("Successful single-image batch fires onSaveHistory exactly once with tool=image-compress")
-    func testHistoryFiresOnce() async throws {
-        let dir = try makeTempDir()
-        defer { try? FileManager.default.removeItem(at: dir) }
-
-        let url = dir.appendingPathComponent("history.jpg")
-        try writeTinyJPEG(to: url)
-
-        // Use a thread-safe store for both the count and the captured tool string.
-        final class HistoryStore: @unchecked Sendable {
-            private let lock = NSLock()
-            private var _count: Int = 0
-            private var _tool: String = ""
-            func record(tool: String) { lock.withLock { _count += 1; _tool = tool } }
-            var count: Int { lock.withLock { _count } }
-            var tool: String { lock.withLock { _tool } }
-        }
-        let store = HistoryStore()
-
-        let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { entry in
-                store.record(tool: entry.tool)
-            })
-        }
-
-        await MainActor.run {
-            vm.compress(urls: [url], quality: 0.6)
-        }
-
-        let deadline = Date().addingTimeInterval(10)
-        while await MainActor.run(body: { vm.isCompressing }) && Date() < deadline {
-            try await Task.sleep(nanoseconds: 50_000_000)
-        }
-
-        // Allow a brief settle for the MainActor history write
-        try await Task.sleep(nanoseconds: 100_000_000)
-
-        #expect(store.count == 1, "onSaveHistory must fire exactly once per batch")
-        #expect(store.tool == "image-compress")
-    }
-
     // MARK: - Test 6: compress() records lastSourceURLs + lastRunQuality (05-08, D-04)
 
     @Test("compress() records lastSourceURLs and lastRunQuality on every run")
@@ -309,7 +266,7 @@ struct ImageCompressViewModelTests {
         try writeTinyJPEG(to: url2)
 
         let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { _ in })
+            ImageCompressViewModel()
         }
 
         await MainActor.run {
@@ -342,7 +299,7 @@ struct ImageCompressViewModelTests {
         try writeTinyJPEG(to: url2)
 
         let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { _ in })
+            ImageCompressViewModel()
         }
 
         // Prior batch at 0.6
@@ -378,7 +335,7 @@ struct ImageCompressViewModelTests {
     @Test("recompress() on a VM with no prior batch is a no-op — rows stay empty, no crash")
     func testRecompressNoOpWhenEmpty() async throws {
         let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { _ in })
+            ImageCompressViewModel()
         }
 
         await MainActor.run {
@@ -404,7 +361,7 @@ struct ImageCompressViewModelTests {
         try writeTinyJPEG(to: url)
 
         let vm = await MainActor.run {
-            ImageCompressViewModel(onSaveHistory: { _ in })
+            ImageCompressViewModel()
         }
 
         // Start compression and immediately check that it returns control to the caller.
@@ -431,7 +388,7 @@ struct ImageCompressViewModelTests {
         defer { try? FileManager.default.removeItem(at: dir) }
         let jpeg = try writeTinyJPEG(to: dir.appendingPathComponent("photo.jpg"))
 
-        let vm = await MainActor.run { ImageCompressViewModel(onSaveHistory: { _ in }) }
+        let vm = await MainActor.run { ImageCompressViewModel() }
 
         // First drop.
         await MainActor.run { vm.compress(urls: [jpeg], quality: 0.6, append: true) }
@@ -457,7 +414,7 @@ struct ImageCompressViewModelTests {
         let slow = try writeSlowGradientPNG(to: dir.appendingPathComponent("slow.png"), width: 384, height: 384)
         let fast = try writeTinyJPEG(to: dir.appendingPathComponent("fast.jpg"))
 
-        let vm = await MainActor.run { ImageCompressViewModel(onSaveHistory: { _ in }) }
+        let vm = await MainActor.run { ImageCompressViewModel() }
 
         await MainActor.run { vm.compress(urls: [slow], quality: 0.6, append: true) }
         // Let the slow image reach .compressing, then drop the second one mid-flight.
@@ -484,7 +441,7 @@ struct ImageCompressViewModelTests {
         defer { try? FileManager.default.removeItem(at: dir) }
         let jpeg = try writeTinyJPEG(to: dir.appendingPathComponent("photo.jpg"))
 
-        let vm = await MainActor.run { ImageCompressViewModel(onSaveHistory: { _ in }) }
+        let vm = await MainActor.run { ImageCompressViewModel() }
         await MainActor.run { vm.compress(urls: [jpeg], quality: 0.6) }
         try await drainBatch(vm)
 

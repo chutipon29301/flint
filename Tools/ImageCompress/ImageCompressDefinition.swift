@@ -15,20 +15,8 @@ enum ImageCompressDefinition {
             sfSymbol: "photo",
             detectionPredicate: nil,  // MANDATORY — image tool, no clipboard detection (T-05-09)
             makeView: { @MainActor in
-                AnyView(ImageCompressViewWrapper())
+                AnyView(ImageCompressView())
             }
         )
-    }
-}
-
-// MARK: - Wrapper for environment-injected history store
-
-private struct ImageCompressViewWrapper: View {
-    @Environment(HistoryStore.self) private var historyStore
-
-    var body: some View {
-        ImageCompressView { entry in
-            historyStore.save(entry)
-        }
     }
 }

@@ -14,18 +14,8 @@ enum TextDiffDefinition {
             sfSymbol: "arrow.left.arrow.right",
             detectionPredicate: nil,   // search-only (UI-SPEC § Detection predicate)
             makeView: { @MainActor in
-                AnyView(TextDiffViewWrapper())
+                AnyView(TextDiffView())
             }
         )
-    }
-}
-
-// MARK: - Wrapper for environment-injected history store
-
-private struct TextDiffViewWrapper: View {
-    @Environment(HistoryStore.self) private var historyStore
-
-    var body: some View {
-        TextDiffView()
     }
 }

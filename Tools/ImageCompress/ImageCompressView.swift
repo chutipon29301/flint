@@ -16,8 +16,8 @@ struct ImageCompressView: View {
     /// computed PreferencesStore property — writes drop silently). Default 75 = Email preset.
     @AppStorage("imageCompressQuality") private var quality: Double = 75
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        _viewModel = State(initialValue: ImageCompressViewModel(onSaveHistory: onSaveHistory))
+    init() {
+        _viewModel = State(initialValue: ImageCompressViewModel())
     }
 
     // MARK: - Body

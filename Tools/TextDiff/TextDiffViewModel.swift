@@ -1,7 +1,6 @@
 // Tools/TextDiff/TextDiffViewModel.swift
 // @Observable ViewModel for the Text Diff tool.
-// Owns debounced diff scheduling, jump navigation state, and history write.
-// SECURITY (INFRA-09): Never imports GRDB. History write via injected onSaveHistory closure.
+// Owns debounced diff scheduling and jump navigation state.
 
 import Foundation
 import Observation
@@ -47,7 +46,6 @@ final class TextDiffViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
     // MARK: - Computed
@@ -65,9 +63,7 @@ final class TextDiffViewModel: ToolShortcutActions {
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - Scheduling
 
@@ -102,14 +98,6 @@ final class TextDiffViewModel: ToolShortcutActions {
         currentDiffIndex = 0
         if diffResult.hasDiffs {
             statusMessage = nil
-            // Save history on diff with changes
-            onSaveHistory(HistoryEntry(
-                tool: "text-diff",
-                input: original + "\n---\n" + changed,
-                output: diffResult.unifiedPatch,
-                timestamp: Date(),
-                pinned: false
-            ))
         } else {
             statusMessage = "No differences found"
         }

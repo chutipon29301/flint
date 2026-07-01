@@ -5,7 +5,7 @@
 // D-09: Live per-row updates via await MainActor.run { rows[i].apply(result) }.
 // INFRA-17: Failed images become .failed rows; the batch never crashes on bad input.
 // INFRA-18: Each image is compressed inside autoreleasepool in an off-main Task, bounding peak memory.
-// T-05-06: HistoryEntry stores only filenames + aggregate savings — no secrets.
+// T-05-06: History capture removed — history subsystem deleted in Phase 06.
 
 import Foundation
 import SwiftUI
@@ -130,7 +130,6 @@ final class ImageCompressViewModel: ToolShortcutActions {
     // MARK: - Private
 
     private var task: Task<Void, Never>?
-    private let onSaveHistory: (HistoryEntry) -> Void
 
     /// Pending work items the drain loop hasn't started yet. Each item carries the row's STABLE id
     /// (not a positional index) so appending more drops mid-flight never shifts an in-flight item's
@@ -155,9 +154,7 @@ final class ImageCompressViewModel: ToolShortcutActions {
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - Compress
 
@@ -208,10 +205,9 @@ final class ImageCompressViewModel: ToolShortcutActions {
         isCompressing = true
         batchGeneration += 1
         let myGeneration = batchGeneration
-        let capturedOnSave = onSaveHistory
 
-        // OUTER loop = MainActor-bound `Task { }` (NOT Task.detached) so the non-Sendable onSaveHistory
-        // closure is never sent across an actor boundary (05-02 auto-fix #1).
+        // OUTER loop = MainActor-bound `Task { }` (NOT Task.detached) so state is never accessed
+        // off the MainActor.
         task = Task { [weak self] in
             while true {
                 // Pull the next item on the MainActor. Cancellation (supersede) breaks out.
@@ -261,32 +257,12 @@ final class ImageCompressViewModel: ToolShortcutActions {
 
             // Loop ended. Clear our task handle so a later drop can start a fresh loop, and settle
             // isCompressing — but only if we're still the current generation (a supersede owns it now).
-            let wasCancelled = Task.isCancelled
             await MainActor.run { [weak self] in
                 guard let self else { return }
                 // A supersede bumped the generation and owns task/isCompressing now — don't touch them.
                 guard self.batchGeneration == myGeneration else { return }
                 self.task = nil
                 self.isCompressing = false
-
-                // Fire ONE aggregate history entry for the drained set (skip on cancel — nothing done).
-                guard !wasCancelled else { return }
-                let successCount = self.rows.filter { if case .done = $0.state { return true }; return false }.count
-                guard successCount > 0 else { return }
-                let filenames = self.rows.map { $0.sourceURL.lastPathComponent }.joined(separator: ", ")
-                let totalSaved = self.rows.compactMap { row -> Double? in
-                    if case .done(let img) = row.state { return img.percentSaved }
-                    return nil
-                }.reduce(0, +)
-                let avgSaved = totalSaved / Double(max(successCount, 1))
-                let outputSummary = "\(successCount) image\(successCount == 1 ? "" : "s") compressed, avg \(String(format: "%.0f", avgSaved))% saved"
-                capturedOnSave(HistoryEntry(
-                    tool: "image-compress",
-                    input: filenames,
-                    output: outputSummary,
-                    timestamp: Date(),
-                    pinned: false
-                ))
             }
         }
     }

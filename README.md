@@ -58,7 +58,7 @@ Download the latest `Flint-x.y.z.dmg` from [**Releases**](../../releases), open 
 Requires **Xcode 16.3+** and **macOS 14.0+**.
 
 ```bash
-git clone https://github.com/chutipon29301/flint.git
+git clone https://github.com/chutiponh/flint.git
 cd flint
 open Flint.xcodeproj    # then ⌘R
 ```
@@ -77,7 +77,7 @@ SwiftUI + MVVM · `MenuBarExtra` · GRDB (history) · KeyboardShortcuts (global 
 
 ## Sponsor
 
-Flint is free and offline-first. If it saves you time, consider [**sponsoring**](https://github.com/sponsors/chutipon29301).
+Flint is free and offline-first. If it saves you time, consider [**sponsoring**](https://github.com/sponsors/chutiponh).
 
 **First goal — $99/year:** fund Apple Developer Program enrollment so releases can be **signed + notarized**. That removes the "unverified developer" warning on install and re-enables in-app auto-update.
 

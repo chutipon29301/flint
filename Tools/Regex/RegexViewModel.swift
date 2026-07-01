@@ -3,7 +3,6 @@
 // NEVER-FREEZE CONTRACT (D-02, T-02-RGX-DoS): evaluation runs off the MainActor via Task,
 // with 300ms debounce and a 2s withThrowingTaskGroup timeout. The last-good highlight is
 // kept visible (dimmed at opacity 0.4) when a timeout or error occurs (CF-02).
-// SECURITY (INFRA-09): never imports GRDB; history written via injected onSaveHistory only.
 
 import Foundation
 import Observation
@@ -56,9 +55,6 @@ final class RegexViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    /// Injected history write closure. ViewModel NEVER imports GRDB (INFRA-09).
-    private let onSaveHistory: (HistoryEntry) -> Void
-
     /// Project-wide Debounce actor (defined once in JSONFormatterViewModel.swift — import, NOT redefine).
     private let debounce = Debounce()
 
@@ -67,9 +63,7 @@ final class RegexViewModel: ToolShortcutActions {
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - ToolShortcutActions (INFRA-16)
 
@@ -216,17 +210,6 @@ final class RegexViewModel: ToolShortcutActions {
                 } else {
                     substitutionPreview = ""
                 }
-
-                // Write to history on successful match evaluation.
-                let histInput = pattern + "\n" + text
-                let histOutput = matchCountText
-                onSaveHistory(HistoryEntry(
-                    tool: "regex",
-                    input: histInput,
-                    output: histOutput,
-                    timestamp: Date(),
-                    pinned: false
-                ))
 
             case .failure(let err):
                 // Invalid pattern: dim last-good, show inline error.

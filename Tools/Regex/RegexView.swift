@@ -11,7 +11,6 @@ import AppKit
 // MARK: - RegexView (Convention A wrapper)
 
 struct RegexView: View {
-    @Environment(HistoryStore.self) private var historyStore
     @State private var viewModel: RegexViewModel?
 
     var body: some View {
@@ -25,9 +24,7 @@ struct RegexView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = RegexViewModel(
-                    onSaveHistory: { [historyStore] entry in historyStore.save(entry) }
-                )
+                viewModel = RegexViewModel()
             }
         }
     }
@@ -560,6 +557,5 @@ private struct MatchRow: View {
 
 #Preview {
     RegexView()
-        .environment(HistoryStore())
         .frame(width: 600, height: 700)
 }

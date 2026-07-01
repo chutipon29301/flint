@@ -6,7 +6,6 @@ import SwiftUI
 import AppKit
 
 struct JSONFormatterView: View {
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(ToolSeed.self) private var toolSeed
     @State private var viewModel: JSONFormatterViewModel?
 
@@ -21,11 +20,7 @@ struct JSONFormatterView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = JSONFormatterViewModel(
-                    onSaveHistory: { [historyStore] entry in
-                        historyStore.save(entry)
-                    }
-                )
+                viewModel = JSONFormatterViewModel()
             }
             // DIST-02: launcher detect()-routing pre-fill. consume() is one-shot.
             if let seed = toolSeed.consume(for: "json-formatter") {
@@ -149,6 +144,5 @@ private struct JSONFormatterContentView: View {
 
 #Preview {
     JSONFormatterView()
-        .environment(HistoryStore())
         .frame(width: 700, height: 500)
 }

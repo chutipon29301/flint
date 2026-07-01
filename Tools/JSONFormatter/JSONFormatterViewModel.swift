@@ -1,6 +1,5 @@
 // Tools/JSONFormatter/JSONFormatterViewModel.swift
-// MVVM ViewModel for the JSON Formatter — owns debounce, last-good-output, history write.
-// SECURITY: Never imports GRDB. History write via injected onSaveHistory closure (INFRA-09).
+// MVVM ViewModel for the JSON Formatter — owns debounce, last-good-output.
 // Source: RESEARCH.md Pattern 5 [VERIFIED]
 
 import Foundation
@@ -53,15 +52,11 @@ final class JSONFormatterViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    /// Injected history write closure. ViewModel NEVER imports GRDB directly (INFRA-09).
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - Transform
 
@@ -106,14 +101,6 @@ final class JSONFormatterViewModel: ToolShortcutActions {
             output = formatted
             outputDimmed = false
             errorMessage = nil
-            // Write to history on successful transform (INFRA-07)
-            onSaveHistory(HistoryEntry(
-                tool: "json-formatter",
-                input: input,
-                output: formatted,
-                timestamp: Date(),
-                pinned: false
-            ))
         case .failure(let error):
             // D-11: keep last valid output visible but dimmed — do NOT clear output
             outputDimmed = true

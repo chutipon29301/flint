@@ -2,7 +2,6 @@
 // Single canonical UInt64 pattern source-of-truth ViewModel for the Number Base Converter.
 // Conforms to ToolShortcutActions — ⌘⇧C copies DEC, ⌘⌫ resets to 0.
 // Synchronous pure transforms — no debounce needed (CF-01: cheap integer operations).
-// History write via injected onSaveHistory closure (INFRA-09 — never import GRDB here).
 // Source: PATTERNS.md "Color/NumberBase note" + PATTERNS.md ViewModel analog
 
 import Foundation
@@ -48,19 +47,9 @@ final class NumberBaseViewModel: ToolShortcutActions {
     /// True while input is invalid — dims the field (CF-02).
     var outputDimmed: Bool = false
 
-    // MARK: - Private
-
-    /// Tracks which base field was most recently edited (for history input label).
-    private var lastEditedBase: NumberBase = .dec
-    private var lastEditedText: String = "0"
-
-    /// Injected history write closure. ViewModel NEVER imports GRDB directly (INFRA-09).
-    private let onSaveHistory: (HistoryEntry) -> Void
-
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
+    init() {
         deriveAllFields()
     }
 
@@ -117,14 +106,6 @@ final class NumberBaseViewModel: ToolShortcutActions {
             errorMessage = nil
             outputDimmed = false
             pattern = pr.pattern
-            // Write to history on successful parse
-            onSaveHistory(HistoryEntry(
-                tool: "number-base",
-                input: text,
-                output: decText,
-                timestamp: Date(),
-                pinned: false
-            ))
 
         case .failure(let error):
             // CF-02: keep last good values visible but dimmed; show inline error

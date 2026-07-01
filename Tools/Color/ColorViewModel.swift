@@ -2,7 +2,6 @@
 // Single canonical sRGB RGBA source-of-truth ViewModel for the Color Converter.
 // Conforms to ToolShortcutActions — ⌘⇧C copies HEX, ⌘⌫ resets to black.
 // Synchronous pure transforms — no debounce needed (CF-01: cheap operations).
-// History write via injected onSaveHistory closure (INFRA-09 — never import GRDB here).
 // Source: UI-SPEC.md "Tool 2: Color Converter" + PATTERNS.md "Color/NumberBase note"
 
 import Foundation
@@ -125,14 +124,9 @@ final class ColorViewModel: ToolShortcutActions {
 
     private(set) var wcagResults: WCAGResults = WCAGResults(contrastRatio: 21.0, aaNormal: true, aaLarge: true, aaaNormal: true, aaaLarge: true)
 
-    // MARK: - Private
-
-    private let onSaveHistory: (HistoryEntry) -> Void
-
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
+    init() {
         deriveAllRows()
     }
 
@@ -143,7 +137,6 @@ final class ColorViewModel: ToolShortcutActions {
         guard let rgba = ColorTransformer.parseHex(hexInput) else { return }
         outOfGamutWarning = false
         canonicalRGBA = rgba
-        saveHistory(input: hexInput)
     }
 
     /// Update canonical RGBA from RGB string (format "R, G, B" or individual components 0-255).
@@ -157,7 +150,6 @@ final class ColorViewModel: ToolShortcutActions {
         )
         outOfGamutWarning = false
         canonicalRGBA = newRGBA
-        saveHistory(input: "RGB(\(Int(r)), \(Int(g)), \(Int(b)))")
     }
 
     /// Update canonical RGBA from HSL components (H 0-360, S 0-100%, L 0-100%, A 0-1).
@@ -165,7 +157,6 @@ final class ColorViewModel: ToolShortcutActions {
         let hsla = HSLA(hue: h, saturation: s / 100.0, lightness: l / 100.0, alpha: a)
         outOfGamutWarning = false
         canonicalRGBA = ColorTransformer.hslToRGB(hsla)
-        saveHistory(input: "HSL(\(Int(h)), \(Int(s))%, \(Int(l))%)")
     }
 
     /// Update canonical RGBA from HSV components (H 0-360, S 0-100%, V 0-100%, A 0-1).
@@ -173,7 +164,6 @@ final class ColorViewModel: ToolShortcutActions {
         let hsva = HSVA(hue: h, saturation: s / 100.0, value: v / 100.0, alpha: a)
         outOfGamutWarning = false
         canonicalRGBA = ColorTransformer.hsvToRGB(hsva)
-        saveHistory(input: "HSV(\(Int(h)), \(Int(s))%, \(Int(v))%)")
     }
 
     /// Update canonical RGBA from OKLCH components (L 0-1, C 0-0.5, H 0-360, A 0-1).
@@ -183,7 +173,6 @@ final class ColorViewModel: ToolShortcutActions {
         // D-08: keep clamped color + set warning flag
         outOfGamutWarning = result.isOutOfGamut
         canonicalRGBA = result.rgba
-        saveHistory(input: "OKLCH(\(String(format: "%.3f", l)), \(String(format: "%.3f", c)), \(String(format: "%.1f", h)))")
     }
 
     /// Update canonical RGBA from NSColorSampler or NSColorPanel pick.
@@ -193,7 +182,6 @@ final class ColorViewModel: ToolShortcutActions {
         srgb.getRed(&r, green: &g, blue: &b, alpha: &a)
         outOfGamutWarning = false
         canonicalRGBA = RGBA(red: Double(r), green: Double(g), blue: Double(b), alpha: Double(a))
-        saveHistory(input: "eyedropper")
     }
 
     // MARK: - ToolShortcutActions (INFRA-16)
@@ -270,13 +258,4 @@ final class ColorViewModel: ToolShortcutActions {
         wcagResults = ColorTransformer.wcagResults(ratio: ratio)
     }
 
-    private func saveHistory(input: String) {
-        onSaveHistory(HistoryEntry(
-            tool: "color",
-            input: input,
-            output: hexString,
-            timestamp: Date(),
-            pinned: false
-        ))
-    }
 }

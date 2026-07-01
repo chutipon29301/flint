@@ -75,6 +75,12 @@ Maintainers with an Apple Developer account can produce a signed + notarized DMG
 
 SwiftUI + MVVM · `MenuBarExtra` · GRDB (history) · KeyboardShortcuts (global hotkey) · swift-markdown · CryptoKit. See [`CLAUDE.md`](CLAUDE.md) for the full stack rationale.
 
+## Sponsor
+
+Flint is free and offline-first. If it saves you time, consider [**sponsoring**](https://github.com/sponsors/chutipon29301).
+
+**First goal — $99/year:** fund Apple Developer Program enrollment so releases can be **signed + notarized**. That removes the "unverified developer" warning on install and re-enables in-app auto-update.
+
 ## License
 
 MIT

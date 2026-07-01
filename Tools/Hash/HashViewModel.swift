@@ -1,7 +1,7 @@
 // Tools/Hash/HashViewModel.swift
 // @Observable ViewModel for the Hash Generator tool.
 // SECURITY (INFRA-09, pitfall #3): HMAC key is a View-local @State.
-// It is NEVER a ViewModel property and NEVER passed to onSaveHistory.
+// It is NEVER a ViewModel property.
 // NEVER imports GRDB.
 
 import SwiftUI
@@ -43,12 +43,9 @@ final class HashViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - Text hashing
 
@@ -70,20 +67,6 @@ final class HashViewModel: ToolShortcutActions {
 
         textHashResult = HashTransformer.hashText(textInput)
         errorMessage = nil
-
-        // Write to history: input text + all hash outputs.
-        // SECURITY: HMAC key is NOT included — it never reaches this method (INFRA-09, pitfall #3).
-        if let result = textHashResult {
-            let outputLines = formatHashResult(result)
-            // SECURITY: HMAC key not included in history — INFRA-09 / pitfall #3
-            onSaveHistory(HistoryEntry(
-                tool: "hash",
-                input: textInput,  // input text only — HMAC key excluded by design
-                output: outputLines,
-                timestamp: Date(),
-                pinned: false
-            ))
-        }
     }
 
     // MARK: - HMAC (key passed in from View-local @State — never stored here)
@@ -96,8 +79,6 @@ final class HashViewModel: ToolShortcutActions {
             return
         }
         hmacResult = HashTransformer.hmacText(textInput, key: key, algorithm: hmacAlgorithm)
-        // SECURITY: history is written in runTextHash() without the key.
-        // HMAC result is NOT re-written to history here to avoid leaking patterns.
     }
 
     // MARK: - File hashing (button-triggered per D-10)
@@ -110,7 +91,6 @@ final class HashViewModel: ToolShortcutActions {
         isHashing = true
         errorMessage = nil
 
-        let capturedOnSave = onSaveHistory
         fileHashTask = Task {
             let result = await HashTransformer.hashFile(url: url) { [weak self] progress in
                 Task { @MainActor [weak self] in
@@ -121,16 +101,6 @@ final class HashViewModel: ToolShortcutActions {
                 guard let self else { return }
                 self.fileHashResult = result
                 self.isHashing = false
-                // Write history for file hash: filename + hashes.
-                // SECURITY: no HMAC key involved in file hashing (INFRA-09, pitfall #3).
-                let outputLines = self.formatHashResult(result)
-                capturedOnSave(HistoryEntry(
-                    tool: "hash",
-                    input: url.lastPathComponent,  // filename only — no key
-                    output: outputLines,
-                    timestamp: Date(),
-                    pinned: false
-                ))
             }
         }
     }
@@ -192,11 +162,5 @@ final class HashViewModel: ToolShortcutActions {
             "CRC32:  \(uppercase ? result.crc32.uppercased() : result.crc32)",
         ]
         return lines.joined(separator: "\n")
-    }
-
-    // MARK: - Private helpers
-
-    private func formatHashResult(_ result: HashTransformer.HashResult) -> String {
-        "MD5: \(result.md5)\nSHA-1: \(result.sha1)\nSHA-256: \(result.sha256)\nSHA-384: \(result.sha384)\nSHA-512: \(result.sha512)\nCRC32: \(result.crc32)"
     }
 }

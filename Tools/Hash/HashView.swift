@@ -1,6 +1,6 @@
 // Tools/Hash/HashView.swift
 // Hash Generator UI — HASH-01..04, INFRA-09.
-// SECURITY: HMAC key is a View-local @State — NEVER passed to ViewModel onSaveHistory.
+// SECURITY: HMAC key is a View-local @State — never stored in ViewModel.
 
 import SwiftUI
 import AppKit
@@ -8,10 +8,10 @@ import UniformTypeIdentifiers
 import ApplicationServices
 
 struct HashView: View {
-    @State private var viewModel: HashViewModel
+    @State private var viewModel = HashViewModel()
 
     // SECURITY (INFRA-09, pitfall #3): HMAC key lives here as View-local state.
-    // It is NEVER passed to viewModel.onSaveHistory or any history-writing path.
+    // It is NEVER passed to viewModel or any history-writing path.
     @State private var hmacKey: String = ""
 
     // DIST-02: binary tool drop — accepts ANY file via the existing off-main startFileHash pipeline.
@@ -22,10 +22,6 @@ struct HashView: View {
     @Environment(HotkeyManager.self) private var hotkeyManager
     @Environment(PasteBackService.self) private var pasteBackService
     @Environment(ClipboardDetector.self) private var clipboard
-
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        _viewModel = State(initialValue: HashViewModel(onSaveHistory: onSaveHistory))
-    }
 
     var body: some View {
         ScrollView {
@@ -110,7 +106,7 @@ struct HashView: View {
 
             if viewModel.hmacEnabled {
                 VStack(alignment: .leading, spacing: 8) {
-                    // SECURITY: SecureField — key never reaches ViewModel's history call
+                    // SECURITY: SecureField — key never reaches ViewModel
                     SecureField("Secret key (never saved)", text: $hmacKey)
                         .textFieldStyle(.roundedBorder)
                         .accessibilityLabel("HMAC secret key — never written to history")

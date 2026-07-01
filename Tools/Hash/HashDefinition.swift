@@ -15,20 +15,8 @@ enum HashDefinition {
             sfSymbol: "number.square",
             detectionPredicate: nil,  // Hash is search-only per D-13 — no clipboard detection
             makeView: { @MainActor in
-                AnyView(HashViewWrapper())
+                AnyView(HashView())
             }
         )
-    }
-}
-
-// MARK: - Wrapper for environment-injected history store
-
-private struct HashViewWrapper: View {
-    @Environment(HistoryStore.self) private var historyStore
-
-    var body: some View {
-        HashView { entry in
-            historyStore.save(entry)
-        }
     }
 }

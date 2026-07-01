@@ -1,0 +1,46 @@
+name: Release (free / unsigned DMG)
+
+# Manual trigger only. Builds the unsigned/ad-hoc DMG on a macOS runner and,
+# when run with a tag, attaches it to a GitHub Release. No Apple secrets needed —
+# ad-hoc signing requires no certificate. For the signed+notarized pipeline,
+# add cert/notary secrets and run scripts/release.sh instead.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version for the DMG + release tag (e.g. 0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write   # needed to create the GitHub Release
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build unsigned DMG
+        env:
+          VERSION: ${{ inputs.version }}
+        run: bash scripts/release-free.sh "$VERSION"
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flint-${{ inputs.version }}-dmg
+          path: dist/*.dmg
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: Flint ${{ inputs.version }}
+          files: dist/*.dmg
+          body: |
+            Unsigned build — see the README for install steps
+            (System Settings → Privacy & Security → Open Anyway).

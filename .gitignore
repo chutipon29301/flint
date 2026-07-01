@@ -15,3 +15,6 @@ xcuserdata/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 Packages/
 # Keep Package.resolved committed to lock dependency versions.
+
+# Release output
+dist/

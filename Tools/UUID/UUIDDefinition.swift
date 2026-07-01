@@ -28,21 +28,8 @@ enum UUIDDefinition {
                 )
             },
             makeView: { @MainActor in
-                AnyView(
-                    _UUIDViewWrapper()
-                )
+                AnyView(UUIDView())
             }
         )
-    }
-}
-
-/// Wrapper that injects HistoryStore from the environment.
-private struct _UUIDViewWrapper: View {
-    @Environment(HistoryStore.self) private var historyStore
-
-    var body: some View {
-        UUIDView { entry in
-            historyStore.save(entry)
-        }
     }
 }

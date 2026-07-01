@@ -8,8 +8,8 @@ struct TimestampView: View {
     @State private var isDragTargeted = false
     @Environment(ToolSeed.self) private var toolSeed
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        _viewModel = State(initialValue: TimestampViewModel(onSaveHistory: onSaveHistory))
+    init() {
+        _viewModel = State(initialValue: TimestampViewModel())
     }
 
     var body: some View {

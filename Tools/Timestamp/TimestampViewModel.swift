@@ -1,7 +1,6 @@
 // Tools/Timestamp/TimestampViewModel.swift
 // @Observable ViewModel for the Timestamp Converter tool.
 // Follows Pattern 5 (150ms debounce, last-good-output-dimmed error).
-// NEVER imports GRDB — history injection via closure.
 
 import SwiftUI
 import Foundation
@@ -69,12 +68,9 @@ final class TimestampViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - ToolShortcutActions (INFRA-16)
 
@@ -179,14 +175,5 @@ final class TimestampViewModel: ToolShortcutActions {
         iso8601 = TimestampTransformer.toISO8601(date)
         relativeTimeString = TimestampTransformer.relativeTime(from: date)
 
-        // Write history — input + multi-timezone output (no secrets involved here)
-        let outputLines = buildOutputString()
-        onSaveHistory(HistoryEntry(
-            tool: "timestamp",
-            input: input,
-            output: outputLines,
-            timestamp: Date(),
-            pinned: false
-        ))
     }
 }

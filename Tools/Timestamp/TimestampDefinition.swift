@@ -28,20 +28,8 @@ enum TimestampDefinition {
                 )
             },
             makeView: { @MainActor in
-                AnyView(TimestampViewWrapper())
+                AnyView(TimestampView())
             }
         )
-    }
-}
-
-// MARK: - Wrapper for environment-injected history store
-
-private struct TimestampViewWrapper: View {
-    @Environment(HistoryStore.self) private var historyStore
-
-    var body: some View {
-        TimestampView { entry in
-            historyStore.save(entry)
-        }
     }
 }

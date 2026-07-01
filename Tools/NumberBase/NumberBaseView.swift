@@ -10,11 +10,7 @@ import ApplicationServices
 // MARK: - Entry wrapper (Convention B — HashView pattern)
 
 struct NumberBaseView: View {
-    @State private var viewModel: NumberBaseViewModel
-
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        _viewModel = State(initialValue: NumberBaseViewModel(onSaveHistory: onSaveHistory))
-    }
+    @State private var viewModel = NumberBaseViewModel()
 
     var body: some View {
         NumberBaseContentView(viewModel: viewModel)
@@ -239,6 +235,6 @@ private struct NumberBaseContentView: View {
 }
 
 #Preview {
-    NumberBaseView(onSaveHistory: { _ in })
+    NumberBaseView()
         .frame(width: 480, height: 600)
 }

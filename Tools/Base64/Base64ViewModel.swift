@@ -1,7 +1,6 @@
 // Tools/Base64/Base64ViewModel.swift
-// MVVM ViewModel for the Base64 Encoder/Decoder — owns debounce, auto-detect, history write.
+// MVVM ViewModel for the Base64 Encoder/Decoder — owns debounce, auto-detect.
 // File I/O (B64-04) is button-triggered per D-10; runs off main thread via Task.detached.
-// SECURITY: Never imports GRDB. History write via injected onSaveHistory closure (INFRA-09).
 
 import Foundation
 import Observation
@@ -49,14 +48,11 @@ final class Base64ViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - ToolShortcutActions (INFRA-16)
 
@@ -104,7 +100,6 @@ final class Base64ViewModel: ToolShortcutActions {
                 // B64-05: compute byte/char counts
                 decodedByteCount = Base64Transformer.byteCount(for: Data(text.utf8))
                 decodedCharCount = Base64Transformer.charCount(for: text)
-                saveHistory(input: input, output: text)
             case .failure:
                 // Not valid base64 despite looking like it — encode instead
                 encodeInput()
@@ -126,18 +121,7 @@ final class Base64ViewModel: ToolShortcutActions {
             errorMessage = nil
             decodedByteCount = nil
             decodedCharCount = nil
-            saveHistory(input: input, output: encoded)
         }
-    }
-
-    private func saveHistory(input: String, output: String) {
-        onSaveHistory(HistoryEntry(
-            tool: "base64",
-            input: input,
-            output: output,
-            timestamp: Date(),
-            pinned: false
-        ))
     }
 
     // MARK: - Manual mode (user can override auto-detect)
@@ -150,9 +134,6 @@ final class Base64ViewModel: ToolShortcutActions {
         errorMessage = nil
         decodedByteCount = nil
         decodedCharCount = nil
-        if !encoded.isEmpty {
-            saveHistory(input: input, output: encoded)
-        }
     }
 
     func forceDecode() {
@@ -164,7 +145,6 @@ final class Base64ViewModel: ToolShortcutActions {
             errorMessage = nil
             decodedByteCount = Base64Transformer.byteCount(for: Data(text.utf8))
             decodedCharCount = Base64Transformer.charCount(for: text)
-            saveHistory(input: input, output: text)
         case .failure:
             outputDimmed = true
             errorMessage = "Not valid Base64"

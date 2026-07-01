@@ -3,7 +3,6 @@
 // SECURITY (INFRA-09, T-03-ID, pitfall #3):
 //   The HMAC secret is NEVER a property of this ViewModel.
 //   The secret is View-local @State in JWTView.
-//   onSaveHistory receives ONLY the token string — the secret is EXCLUDED by design.
 // Source: RESEARCH.md § "Native API Recipes" → "JWT Tool", Pattern 5
 
 import Foundation
@@ -52,8 +51,6 @@ final class JWTViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    /// Injected history write closure. NEVER imports GRDB (INFRA-09).
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
     /// Stored decoded header/payload dictionaries for HMAC verify.
@@ -62,9 +59,7 @@ final class JWTViewModel: ToolShortcutActions {
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - Transform (D-10: 150ms debounce)
 
@@ -128,18 +123,6 @@ final class JWTViewModel: ToolShortcutActions {
 
             outputDimmed = false
             errorMessage = nil
-
-            // SECURITY (INFRA-09, T-03-ID, pitfall #3):
-            // onSaveHistory receives ONLY the token string.
-            // The HMAC secret is View-local @State and NEVER flows here.
-            // DO NOT add any secret parameter to this call.
-            onSaveHistory(HistoryEntry(
-                tool: "jwt-decoder",
-                input: token,  // token only — secret excluded by design
-                output: headerJSON + "\n---\n" + payloadJSON,
-                timestamp: Date(),
-                pinned: false
-            ))
         }
     }
 
@@ -164,7 +147,7 @@ final class JWTViewModel: ToolShortcutActions {
 
     /// Verifies the JWT signature with the given HMAC secret.
     /// SECURITY: The secret parameter is consumed here in-memory only.
-    /// It is never stored as a property, never passed to onSaveHistory, never persisted.
+    /// It is never stored as a property, never persisted.
     func verifyHMAC(secret: String) {
         guard !token.isEmpty, !secret.isEmpty else {
             hmacVerified = nil

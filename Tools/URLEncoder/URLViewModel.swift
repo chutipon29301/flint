@@ -1,6 +1,5 @@
 // Tools/URLEncoder/URLViewModel.swift
-// MVVM ViewModel for the URL Encoder/Decoder — owns debounce, parse state, history write.
-// SECURITY: Never imports GRDB. History write via injected onSaveHistory closure (INFRA-09).
+// MVVM ViewModel for the URL Encoder/Decoder — owns debounce, parse state.
 
 import Foundation
 import Observation
@@ -59,14 +58,11 @@ final class URLViewModel: ToolShortcutActions {
 
     // MARK: - Private
 
-    private let onSaveHistory: (HistoryEntry) -> Void
     private let debounce = Debounce()
 
     // MARK: - Init
 
-    init(onSaveHistory: @escaping (HistoryEntry) -> Void) {
-        self.onSaveHistory = onSaveHistory
-    }
+    init() {}
 
     // MARK: - ToolShortcutActions (INFRA-16)
 
@@ -122,7 +118,6 @@ final class URLViewModel: ToolShortcutActions {
             encodedOutput = encoded
             outputDimmed = false
             errorMessage = nil
-            saveHistory(input: input, output: encoded)
         case .failure(let error):
             outputDimmed = true
             errorMessage = error.localizedDescription
@@ -135,7 +130,6 @@ final class URLViewModel: ToolShortcutActions {
             encodedOutput = decoded
             outputDimmed = false
             errorMessage = nil
-            saveHistory(input: input, output: decoded)
         case .failure(let error):
             outputDimmed = true
             errorMessage = error.localizedDescription
@@ -150,22 +144,11 @@ final class URLViewModel: ToolShortcutActions {
             outputDimmed = false
             errorMessage = nil
             rebuildURL()
-            saveHistory(input: input, output: rebuiltURL)
         case .failure(let error):
             // D-11: keep last parsed components visible but dimmed
             outputDimmed = true
             errorMessage = error.localizedDescription
         }
-    }
-
-    private func saveHistory(input: String, output: String) {
-        onSaveHistory(HistoryEntry(
-            tool: "url-encoder",
-            input: input,
-            output: output,
-            timestamp: Date(),
-            pinned: false
-        ))
     }
 
     // MARK: - Query Param Table Operations (URL-03)

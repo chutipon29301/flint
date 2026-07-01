@@ -133,8 +133,7 @@ enum HashTransformer {
     // MARK: - HASH-03: HMAC (key parameter only — NEVER write key to history)
 
     /// Computes HMAC for the given text and key using the specified algorithm.
-    /// The key is ONLY a function parameter — never stored, never passed to onSaveHistory.
-    /// See HashViewModel for the SECURITY comment at the history-write call site.
+    /// The key is ONLY a function parameter — never stored, transient only.
     static func hmacText(_ input: String, key: String, algorithm: HMACAlgorithm) -> String {
         let messageData = Data(input.utf8)
         let keyData = Data(key.utf8)

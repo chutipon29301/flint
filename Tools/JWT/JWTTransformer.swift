@@ -167,7 +167,6 @@ enum JWTTransformer {
     /// Supports HS256, HS384, HS512 via CryptoKit with constant-time comparison.
     /// Returns false for any invalid input, wrong secret, or unsupported algorithm — never crashes.
     /// SECURITY: The secret parameter is only used here in-memory and is NEVER persisted.
-    ///           The caller (JWTViewModel) must ensure the secret never reaches onSaveHistory.
     static func verifyHMAC(token: String, secret: String, algorithm: String) -> Bool {
         let trimmed = token.trimmingCharacters(in: .whitespacesAndNewlines)
         let parts = trimmed.split(separator: ".", omittingEmptySubsequences: false)

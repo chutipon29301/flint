@@ -2,14 +2,12 @@
 // JWT Decoder UI — live decode, expiry countdown, claims table, warnings, HMAC verify.
 // SECURITY (INFRA-09, T-03-ID, pitfall #3):
 //   The HMAC secret is View-local @State ONLY — it NEVER flows into JWTViewModel.
-//   JWTViewModel.onSaveHistory receives the token only; secret is excluded by design.
 // Covers: JWT-01..06, D-10, D-11, D-12, INFRA-09
 
 import SwiftUI
 import AppKit
 
 struct JWTView: View {
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(ToolSeed.self) private var toolSeed
     @State private var viewModel: JWTViewModel?
 
@@ -24,11 +22,7 @@ struct JWTView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = JWTViewModel(
-                    onSaveHistory: { [historyStore] entry in
-                        historyStore.save(entry)
-                    }
-                )
+                viewModel = JWTViewModel()
             }
             // DIST-02: launcher detect()-routing pre-fill. consume() is one-shot.
             if let seed = toolSeed.consume(for: "jwt-decoder") {
@@ -44,7 +38,7 @@ private struct JWTContentView: View {
     @Bindable var viewModel: JWTViewModel
 
     /// SECURITY (INFRA-09, pitfall #3): secret is View-local @State ONLY.
-    /// It is never passed to viewModel and never reaches onSaveHistory.
+    /// It is never passed to viewModel and never persisted.
     @State private var hmacSecret: String = ""
     @State private var showVerifySection: Bool = false
     @State private var isDragTargeted = false
@@ -155,14 +149,14 @@ private struct JWTContentView: View {
 
                     // HMAC Verify (JWT-04)
                     // SECURITY (INFRA-09, pitfall #3): hmacSecret is @State local to this view.
-                    // It never reaches viewModel.onSaveHistory. Verify is a method call only.
+                    // It never reaches viewModel. Verify is a method call only.
                     HMACVerifySection(
                         secret: $hmacSecret,
                         showSection: $showVerifySection,
                         verificationResult: viewModel.hmacVerified,
                         onVerify: {
                             // SECURITY: secret passed only to verifyHMAC() — transient in-memory call.
-                            // Never stored in ViewModel as a property. Never written to history.
+                            // Never stored in ViewModel as a property.
                             viewModel.verifyHMAC(secret: hmacSecret)
                         }
                     )
@@ -430,6 +424,5 @@ private struct HMACVerifySection: View {
 
 #Preview {
     JWTView()
-        .environment(HistoryStore())
         .frame(width: 480, height: 600)
 }

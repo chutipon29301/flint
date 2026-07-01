@@ -7,7 +7,6 @@
 import SwiftUI
 
 struct URLView: View {
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(ToolSeed.self) private var toolSeed
     @State private var viewModel: URLViewModel?
 
@@ -22,11 +21,7 @@ struct URLView: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = URLViewModel(
-                    onSaveHistory: { [historyStore] entry in
-                        historyStore.save(entry)
-                    }
-                )
+                viewModel = URLViewModel()
             }
             // DIST-02: launcher detect()-routing pre-fill. consume() is one-shot.
             if let seed = toolSeed.consume(for: "url-encoder") {
@@ -370,6 +365,5 @@ private struct QueryItemRowView: View {
 
 #Preview {
     URLView()
-        .environment(HistoryStore())
         .frame(width: 800, height: 550)
 }

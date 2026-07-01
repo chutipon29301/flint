@@ -8,7 +8,6 @@ import AppKit
 import UniformTypeIdentifiers
 
 struct Base64View: View {
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(ToolSeed.self) private var toolSeed
     @State private var viewModel: Base64ViewModel?
 
@@ -23,11 +22,7 @@ struct Base64View: View {
         }
         .onAppear {
             if viewModel == nil {
-                viewModel = Base64ViewModel(
-                    onSaveHistory: { [historyStore] entry in
-                        historyStore.save(entry)
-                    }
-                )
+                viewModel = Base64ViewModel()
             }
             // DIST-02: launcher detect()-routing pre-fill. consume() is one-shot.
             if let seed = toolSeed.consume(for: "base64") {
@@ -230,6 +225,5 @@ private struct Base64ContentView: View {
 
 #Preview {
     Base64View()
-        .environment(HistoryStore())
         .frame(width: 700, height: 500)
 }

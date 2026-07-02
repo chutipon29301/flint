@@ -1,5 +1,5 @@
 // UI/PreferencesView.swift
-// Preferences window — General / Appearance / History / Per-Tool tabs.
+// Preferences window — General / Appearance / Per-Tool tabs.
 // Opens via WindowCoordinator activation dance (INFRA-12).
 // pitfall #2: openSettings() is broken on macOS 14 with .accessory — handled in MenuBarPopoverView.
 // Source: RESEARCH.md Pattern 7, § "SMAppService — Launch at Login", REQUIREMENTS.md INFRA-12/13.
@@ -11,7 +11,6 @@ import ApplicationServices
 struct PreferencesView: View {
     @Environment(PreferencesStore.self) private var prefs
     @Environment(HotkeyManager.self) private var hotkeyManager
-    @Environment(HistoryStore.self) private var historyStore
 
     var body: some View {
         TabView {
@@ -25,11 +24,6 @@ struct PreferencesView: View {
                     Label("Appearance", systemImage: "paintpalette")
                 }
 
-            HistoryPreferencesTab()
-                .tabItem {
-                    Label("History", systemImage: "clock")
-                }
-
             PerToolPreferencesTab()
                 .tabItem {
                     Label("Tools", systemImage: "wrench.and.screwdriver")
@@ -37,7 +31,6 @@ struct PreferencesView: View {
         }
         .environment(prefs)
         .environment(hotkeyManager)
-        .environment(historyStore)  // CR-01: propagate to HistoryPreferencesTab
         .frame(minWidth: 460, minHeight: 340)
         .navigationTitle("Preferences")
         .onDisappear {
@@ -231,83 +224,6 @@ private struct AppearancePreferencesTab: View {
                         .accessibilityLabel("Increase code font size")
                         .disabled(prefs.codeFontSize >= 20)
                     }
-                }
-            }
-        }
-        .formStyle(.grouped)
-        .padding()
-        .frame(minWidth: 420)
-    }
-}
-
-// MARK: - History Tab (INFRA-13)
-
-private struct HistoryPreferencesTab: View {
-    @Environment(PreferencesStore.self) private var prefs
-    @Environment(HistoryStore.self) private var historyStore
-    @State private var showClearConfirmation = false
-
-    var body: some View {
-        @Bindable var prefs = prefs
-
-        Form {
-            Section("History Limit") {
-                HStack {
-                    Text("Keep last")
-                    Spacer()
-                    HStack(spacing: 6) {
-                        Button {
-                            if prefs.historyLimit > 10 { prefs.historyLimit -= 10 }
-                        } label: {
-                            Image(systemName: "minus.circle")
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Decrease history limit by 10")
-                        .disabled(prefs.historyLimit <= 10)
-
-                        Text("\(prefs.historyLimit) items")
-                            .font(.system(size: 13))
-                            .frame(width: 70, alignment: .center)
-                            .accessibilityLabel("History limit: \(prefs.historyLimit) items")
-
-                        Button {
-                            if prefs.historyLimit < 100 { prefs.historyLimit += 10 }
-                        } label: {
-                            Image(systemName: "plus.circle")
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Increase history limit by 10")
-                        .disabled(prefs.historyLimit >= 100)
-                    }
-                }
-
-                Text("Pinned items are always kept, regardless of the limit.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .accessibilityLabel("Note: Pinned history items are exempt from the limit")
-            }
-
-            Section {
-                Button(role: .destructive) {
-                    showClearConfirmation = true
-                } label: {
-                    Label("Clear All History", systemImage: "trash")
-                        .foregroundColor(.red)
-                }
-                .accessibilityLabel("Clear all unpinned history items")
-                .help("Remove all unpinned history entries. Pinned items will be kept.")
-                .confirmationDialog(
-                    "Clear History?",
-                    isPresented: $showClearConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button("Clear History", role: .destructive) {
-                        // CR-01: call directly — no notification needed; avoids dangling observer risk
-                        historyStore.clearUnpinned()
-                    }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("All unpinned history entries will be removed. Pinned items will be kept.")
                 }
             }
         }

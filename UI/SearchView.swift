@@ -1,5 +1,5 @@
 // UI/SearchView.swift
-// Global fuzzy search view — tools + history, keyboard navigable ↑↓ Enter (INFRA-10).
+// Global fuzzy search view — tools-only, keyboard navigable ↑↓ Enter (INFRA-10).
 // Uses SearchResultsMerger (UI-free) for merge/rank logic.
 // D-01: search-first launcher; D-02: typing replaces body with results.
 // D-07: arrow-key navigation with TextField-focused fallback via .searchNavigate notification
@@ -9,13 +9,10 @@ import SwiftUI
 import AppKit
 
 struct SearchView: View {
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(ToolRegistry.self) private var toolRegistry
 
     let query: String
     let onSelectTool: (String) -> Void         // toolId
-    let onSelectHistoryEntry: (HistoryEntry) -> Void
-    let onShowHistory: () -> Void
 
     @State private var selectedIndex: Int = 0
 
@@ -24,15 +21,13 @@ struct SearchView: View {
     private var merged: MergedSearchResults {
         SearchResultsMerger.merge(
             tools: toolRegistry.search(query),
-            history: historyStore.search(query),
             query: query
         )
     }
 
-    /// Flat ordered list: tools first, then history entries (for keyboard navigation).
+    /// Flat ordered list of tool results (for keyboard navigation).
     private var flatResults: [SearchResult] {
-        merged.toolResults.map { SearchResult.tool($0) } +
-        merged.historyResults.map { SearchResult.historyEntry($0) }
+        merged.toolResults.map { SearchResult.tool($0) }
     }
 
     var body: some View {
@@ -81,8 +76,8 @@ struct SearchView: View {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 36))
                 .foregroundColor(.secondary)
-            // UI-SPEC Copywriting: "No tools or history matching '[query]'"
-            Text("No tools or history matching \"\(query)\"")
+            // UI-SPEC Copywriting: "No tools matching '[query]'"
+            Text("No tools matching \"\(query)\"")
                 .font(.headline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -110,40 +105,6 @@ struct SearchView: View {
                     }
                 }
             }
-
-            // History results section
-            if !merged.historyResults.isEmpty {
-                Section("History") {
-                    ForEach(Array(merged.historyResults.enumerated()), id: \.element.id) { idx, entry in
-                        let flatIdx = merged.toolResults.count + idx
-                        HistoryRowView(
-                            entry: entry,
-                            onOpen: { onSelectHistoryEntry(entry) },
-                            onPin: { historyStore.togglePin(entry: entry) },
-                            onDelete: { historyStore.delete(entry: entry) }
-                        )
-                        .background(selectedIndex == flatIdx ? Color.accentColor.opacity(0.12) : .clear)
-                        .cornerRadius(4)
-                        .accessibilityAddTraits(selectedIndex == flatIdx ? .isSelected : [])
-                    }
-                }
-            }
-
-            // "Show all history" shortcut when query is partial match for "history"
-            if "history".hasPrefix(query.lowercased()) && query.count >= 2 {
-                Button(action: onShowHistory) {
-                    HStack(spacing: 10) {
-                        Image(systemName: "clock.arrow.circlepath")
-                            .foregroundColor(.accentColor)
-                            .frame(width: 24)
-                        Text("Show full history…")
-                            .font(.system(size: 13, weight: .semibold))
-                        Spacer()
-                    }
-                    .padding(.vertical, 4)
-                }
-                .buttonStyle(.plain)
-            }
         }
         .listStyle(.plain)
     }
@@ -156,8 +117,6 @@ struct SearchView: View {
         switch flatResults[idx] {
         case .tool(let tool):
             onSelectTool(tool.id)
-        case .historyEntry(let entry):
-            onSelectHistoryEntry(entry)
         }
     }
 }

@@ -50,8 +50,6 @@
 		001100000000003 /* ToolCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000003 /* ToolCategory.swift */; };
 		001100000000004 /* ToolDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000004 /* ToolDefinition.swift */; };
 		001100000000005 /* DetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000005 /* DetectionResult.swift */; };
-		001100000000006 /* HistoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000006 /* HistoryEntry.swift */; };
-		001100000000007 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000007 /* HistoryStore.swift */; };
 		001100000000008 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000008 /* PreferencesStore.swift */; };
 		001100000000009 /* ToolRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000009 /* ToolRegistry.swift */; };
 		00110000000000A /* ClipboardDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00120000000000A /* ClipboardDetector.swift */; };
@@ -85,12 +83,10 @@
 		001100000000037 /* URLViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000037 /* URLViewModel.swift */; };
 		001100000000038 /* URLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000038 /* URLView.swift */; };
 		001100000000040 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001200000000040 /* libz.tbd */; };
-		001100000000050 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000001 /* GRDB */; };
 		001100000000051 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000002 /* KeyboardShortcuts */; };
 		001100000000052 /* MenuBarExtraAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000003 /* MenuBarExtraAccess */; };
 		001100000000053 /* HighlightSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000004 /* HighlightSwift */; };
 		001100000000054 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000023 /* Sparkle */; };
-		001100000000060 /* GRDB in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = 001300000000011 /* GRDB */; };
 		001100000000061 /* Data+Base64URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000041 /* Data+Base64URL.swift */; };
 		001100000000062 /* JWTTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000042 /* JWTTransformer.swift */; };
 		001100000000063 /* JWTViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001200000000043 /* JWTViewModel.swift */; };
@@ -112,12 +108,9 @@
 		00110000000009C /* UUIDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000009C /* UUIDView.swift */; };
 		00110000000009D /* UUIDTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000009D /* UUIDTransformerTests.swift */; };
 		00110000000009E /* UUIDv7 in Frameworks */ = {isa = PBXBuildFile; productRef = 001300000000005 /* UUIDv7 */; };
-		0011000000000A1 /* HistoryRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000A1 /* HistoryRowView.swift */; };
-		0011000000000A2 /* HistoryPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000A2 /* HistoryPanelView.swift */; };
 		0011000000000A3 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000A3 /* SearchView.swift */; };
 		0011000000000A4 /* PinnedToolBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000A4 /* PinnedToolBarView.swift */; };
 		0011000000000B2 /* ToolShortcutActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B2 /* ToolShortcutActions.swift */; };
-		0011000000000A5 /* HistorySearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000A5 /* HistorySearchTests.swift */; };
 		0011000000000A6 /* SearchResultsMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000A6 /* SearchResultsMerger.swift */; };
 		0011000000000B0 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B0 /* PreferencesView.swift */; };
 		0011000000000B1 /* PinnedToolReorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012000000000B1 /* PinnedToolReorderTests.swift */; };
@@ -154,8 +147,6 @@
 		001200000000003 /* ToolCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolCategory.swift; sourceTree = "<group>"; };
 		001200000000004 /* ToolDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolDefinition.swift; sourceTree = "<group>"; };
 		001200000000005 /* DetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionResult.swift; sourceTree = "<group>"; };
-		001200000000006 /* HistoryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryEntry.swift; sourceTree = "<group>"; };
-		001200000000007 /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		001200000000008 /* PreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStore.swift; sourceTree = "<group>"; };
 		001200000000009 /* ToolRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolRegistry.swift; sourceTree = "<group>"; };
 		00120000000000A /* ClipboardDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardDetector.swift; sourceTree = "<group>"; };
@@ -214,12 +205,9 @@
 		0012000000009D /* UUIDTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUIDTransformerTests.swift; sourceTree = "<group>"; };
 		001200000000090 /* Flint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flint.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		001200000000091 /* FlintTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlintTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0012000000000A1 /* HistoryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRowView.swift; sourceTree = "<group>"; };
-		0012000000000A2 /* HistoryPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPanelView.swift; sourceTree = "<group>"; };
 		0012000000000A3 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		0012000000000A4 /* PinnedToolBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedToolBarView.swift; sourceTree = "<group>"; };
 		0012000000000B2 /* ToolShortcutActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolShortcutActions.swift; sourceTree = "<group>"; };
-		0012000000000A5 /* HistorySearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchTests.swift; sourceTree = "<group>"; };
 		0012000000000A6 /* SearchResultsMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsMerger.swift; sourceTree = "<group>"; };
 		0012000000000B0 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		0012000000000B1 /* PinnedToolReorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedToolReorderTests.swift; sourceTree = "<group>"; };
@@ -276,7 +264,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				001100000000040 /* libz.tbd in Frameworks */,
-				001100000000050 /* GRDB in Frameworks */,
 				001100000000051 /* KeyboardShortcuts in Frameworks */,
 				001100000000052 /* MenuBarExtraAccess in Frameworks */,
 				001100000000053 /* HighlightSwift in Frameworks */,
@@ -291,7 +278,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001100000000060 /* GRDB in Frameworks (Tests) */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +326,6 @@
 				001200000000003 /* ToolCategory.swift */,
 				001200000000004 /* ToolDefinition.swift */,
 				001200000000005 /* DetectionResult.swift */,
-				001200000000006 /* HistoryEntry.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -348,7 +333,6 @@
 		001500000000005 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				001200000000007 /* HistoryStore.swift */,
 				001200000000008 /* PreferencesStore.swift */,
 				001200000000009 /* ToolRegistry.swift */,
 				00120000000000A /* ClipboardDetector.swift */,
@@ -555,7 +539,6 @@
 			children = (
 				00120000000000D /* MenuBarPopoverView.swift */,
 				00120000000000E /* MainWindowView.swift */,
-				0012000000000A2 /* HistoryPanelView.swift */,
 				0012000000000A3 /* SearchView.swift */,
 				0012000000000B0 /* PreferencesView.swift */,
 				00120000000DD03 /* OnboardingWindowView.swift */,
@@ -576,7 +559,6 @@
 				001200000000013 /* CodeDisplayView.swift */,
 				001200000000045 /* WarningBannerView.swift */,
 				001200000000085 /* ProgressHashView.swift */,
-				0012000000000A1 /* HistoryRowView.swift */,
 				0012000000000A4 /* PinnedToolBarView.swift */,
 				0012000000000B2 /* ToolShortcutActions.swift */,
 				001200000004006 /* WebPreviewView.swift */,
@@ -608,7 +590,6 @@
 				001200000000074 /* TimestampTransformerTests.swift */,
 				001200000000086 /* HashTransformerTests.swift */,
 				0012000000009D /* UUIDTransformerTests.swift */,
-				0012000000000A5 /* HistorySearchTests.swift */,
 				0012000000000B1 /* PinnedToolReorderTests.swift */,
 				0012000000000E1 /* SwiftDiffVendorTests.swift */,
 				001200000002005 /* RegexTransformerTests.swift */,
@@ -656,7 +637,6 @@
 			);
 			name = Flint;
 			packageProductDependencies = (
-				001300000000001 /* GRDB */,
 				001300000000002 /* KeyboardShortcuts */,
 				001300000000003 /* MenuBarExtraAccess */,
 				001300000000004 /* HighlightSwift */,
@@ -683,7 +663,6 @@
 			);
 			name = FlintTests;
 			packageProductDependencies = (
-				001300000000011 /* GRDB */,
 			);
 			productName = FlintTests;
 			productReference = 001200000000091 /* FlintTests.xctest */;
@@ -718,7 +697,6 @@
 			);
 			mainGroup = 001500000000099;
 			packageReferences = (
-				001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				001B00000000002 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				001B00000000003 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
 				001B00000000004 /* XCRemoteSwiftPackageReference "HighlightSwift" */,
@@ -764,8 +742,6 @@
 				001100000000003 /* ToolCategory.swift in Sources */,
 				001100000000004 /* ToolDefinition.swift in Sources */,
 				001100000000005 /* DetectionResult.swift in Sources */,
-				001100000000006 /* HistoryEntry.swift in Sources */,
-				001100000000007 /* HistoryStore.swift in Sources */,
 				001100000000008 /* PreferencesStore.swift in Sources */,
 				001100000000009 /* ToolRegistry.swift in Sources */,
 				00110000000000A /* ClipboardDetector.swift in Sources */,
@@ -810,8 +786,6 @@
 				00110000000009B /* UUIDViewModel.swift in Sources */,
 				00110000000009C /* UUIDView.swift in Sources */,
 				00110000000001D /* UUIDDefinition.swift in Sources */,
-				0011000000000A1 /* HistoryRowView.swift in Sources */,
-				0011000000000A2 /* HistoryPanelView.swift in Sources */,
 				0011000000000A3 /* SearchView.swift in Sources */,
 				0011000000000A4 /* PinnedToolBarView.swift in Sources */,
 				0011000000000B2 /* ToolShortcutActions.swift in Sources */,
@@ -868,7 +842,6 @@
 				001100000000074 /* TimestampTransformerTests.swift in Sources */,
 				001100000000086 /* HashTransformerTests.swift in Sources */,
 				00110000000009D /* UUIDTransformerTests.swift in Sources */,
-				0011000000000A5 /* HistorySearchTests.swift in Sources */,
 				0011000000000B1 /* PinnedToolReorderTests.swift in Sources */,
 				0011000000000E1 /* SwiftDiffVendorTests.swift in Sources */,
 				001100000002005 /* RegexTransformerTests.swift in Sources */,
@@ -1142,14 +1115,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDB.swift.git";
-			requirement = {
-				kind = exactVersion;
-				version = "7.11.1";
-			};
-		};
 		001B00000000002 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
@@ -1209,11 +1174,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		001300000000001 /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
-		};
 		001300000000002 /* KeyboardShortcuts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 001B00000000002 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
@@ -1228,11 +1188,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 001B00000000004 /* XCRemoteSwiftPackageReference "HighlightSwift" */;
 			productName = HighlightSwift;
-		};
-		001300000000011 /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 001B00000000001 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
 		};
 		001300000000005 /* UUIDv7 */ = {
 			isa = XCSwiftPackageProductDependency;

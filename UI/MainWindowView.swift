@@ -8,7 +8,6 @@ import SwiftUI
 
 struct MainWindowView: View {
     @Environment(ToolRegistry.self) private var toolRegistry
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(PreferencesStore.self) private var prefs
     @Environment(ClipboardDetector.self) private var clipboard
     @Environment(ToolSeed.self) private var toolSeed

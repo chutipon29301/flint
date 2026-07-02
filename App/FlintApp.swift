@@ -21,7 +21,6 @@ struct FlintApp: App {
     // DIST-03: open the onboarding WindowGroup by id when WindowCoordinator posts .openOnboarding.
     @Environment(\.openWindow) private var openWindow
 
-    @State private var historyStore = HistoryStore()
     @State private var prefs = PreferencesStore()
     @State private var clipboard = ClipboardDetector()
     @State private var hotkeyManager = HotkeyManager()
@@ -40,7 +39,6 @@ struct FlintApp: App {
         // MenuBarExtraAccess must be applied before .menuBarExtraStyle (extension on MenuBarExtra)
         MenuBarExtra("Flint", systemImage: "wrench.and.screwdriver") {
             MenuBarPopoverView()
-                .environment(historyStore)
                 .environment(prefs)
                 .environment(clipboard)
                 .environment(toolRegistry)
@@ -49,10 +47,6 @@ struct FlintApp: App {
                 .environment(hotkeyManager)  // D-09: tool observers read previousFrontmostApp
                 .environment(pasteBackService)  // D-09: synthesizes ⌘V into previously-focused app
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14 live theme
-                // WR-04: sync historyLimit from PreferencesStore into HistoryStore whenever it changes
-                .onChange(of: prefs.historyLimit, initial: true) { _, newLimit in
-                    historyStore.historyLimit = newLimit
-                }
                 // DIST-03: WindowCoordinator.openOnboarding() posts .openOnboarding after the
                 // activation-policy dance; open the onboarding WindowGroup here (mirrors the
                 // workspace open-by-id path). The MenuBarExtra content is created at launch, so
@@ -67,7 +61,6 @@ struct FlintApp: App {
         // MARK: - Detachable Workspace Window (INFRA-02)
         WindowGroup(id: "workspace") {
             MainWindowView()
-                .environment(historyStore)
                 .environment(prefs)
                 .environment(clipboard)
                 .environment(toolRegistry)
@@ -99,7 +92,6 @@ struct FlintApp: App {
             PreferencesView()
                 .environment(prefs)
                 .environment(hotkeyManager)
-                .environment(historyStore)  // CR-01: needed by HistoryPreferencesTab.clearUnpinned()
                 .environment(sparkle)        // 04-02: PreferencesView's Updates section reads SparkleUpdaterService
                 .preferredColorScheme(prefs.theme.colorScheme)  // INFRA-14
         }

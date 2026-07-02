@@ -172,17 +172,6 @@ final class PreferencesStore {
         set { defaults.set(max(10, min(20, newValue)), forKey: Keys.codeFontSize) }
     }
 
-    // MARK: - History Limit (INFRA-13)
-
-    /// Maximum number of unpinned history entries to retain. Clamped 10–100.
-    var historyLimit: Int {
-        get {
-            let stored = defaults.object(forKey: Keys.historyLimit) as? Int ?? 100
-            return max(10, min(100, stored))
-        }
-        set { defaults.set(max(10, min(100, newValue)), forKey: Keys.historyLimit) }
-    }
-
     // MARK: - Workspace State (INFRA-02)
 
     /// Last tool opened in the workspace window — restored on reopen.
@@ -243,7 +232,6 @@ final class PreferencesStore {
     private enum Keys {
         static let pinnedToolIds = "lathe.pinnedToolIds"
         static let clipboardAutoDetect = "lathe.clipboardAutoDetect"
-        static let historyLimit = "lathe.historyLimit"
         static let showInDock = "lathe.showInDock"
         static let defaultOpenMode = "lathe.defaultOpenMode"
         static let theme = "lathe.theme"

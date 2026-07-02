@@ -1,9 +1,8 @@
 // UI/MenuBarPopoverView.swift
 // The main 480×600 popover — search-first launcher (D-01).
-// Search bar autofocused, detection banner (D-04), 6 pinned tools (D-13), recent history.
+// Search bar autofocused, detection banner (D-04), all-tools grid.
 // Global keyboard shortcuts (INFRA-16):
 //   ⌘K / ⌘F — focus search bar
-//   ⌘H — toggle history panel (D-07)
 //   ⌘N — open workspace window (INFRA-02)
 //   ⌘, — preferences (INFRA-12)
 //   ⌘] — next tool in registry
@@ -45,14 +44,12 @@ extension Notification.Name {
 
 /// Navigation state for the popover.
 enum PopoverNavigationState: Equatable {
-    case root                        // launcher: search + pinned + recent history
+    case root                        // launcher: search + pinned tools
     case tool(toolId: String)        // inside a tool view
     case searchResults(query: String) // showing search results
-    case history                     // D-07: first-class history view
 }
 
 struct MenuBarPopoverView: View {
-    @Environment(HistoryStore.self) private var historyStore
     @Environment(ToolRegistry.self) private var toolRegistry
     @Environment(ClipboardDetector.self) private var clipboard
     @Environment(PreferencesStore.self) private var prefs
@@ -127,7 +124,7 @@ struct MenuBarPopoverView: View {
 
             Divider()
 
-            // Zone 3: Body — tool grid (filtered live while typing), history, or active tool.
+            // Zone 3: Body — tool grid (filtered live while typing) or active tool.
             // The old pinned-tool icon strip (D-13) was removed: it duplicated the grid below it.
             bodyContent
         }
@@ -172,9 +169,6 @@ struct MenuBarPopoverView: View {
                 if case .searchResults = navigationState {
                     navigationState = .root
                 }
-            } else if newValue.trimmingCharacters(in: .whitespaces).lowercased() == "history" {
-                // D-07: "history" query opens the first-class history view
-                navigationState = .history
             } else {
                 navigationState = .searchResults(query: newValue)
             }
@@ -204,7 +198,6 @@ struct MenuBarPopoverView: View {
             clipboard.isPopoverPresented = true
         }
         // INFRA-16: Global keyboard shortcuts — wired via hidden overlay buttons in .background()
-        // ⌘H — toggle history panel (D-07)
         .background(
             Group {
                 // ⌘K — focus search
@@ -216,12 +209,6 @@ struct MenuBarPopoverView: View {
                 // ⌘F — focus search (alternative)
                 Button("Find") { focusSearch() }
                     .keyboardShortcut("f", modifiers: .command)
-                    .accessibilityHidden(true)
-                    .hidden()
-
-                // ⌘H — toggle history panel
-                Button("Toggle History") { toggleHistory() }
-                    .keyboardShortcut("h", modifiers: .command)
                     .accessibilityHidden(true)
                     .hidden()
 
@@ -357,15 +344,6 @@ struct MenuBarPopoverView: View {
         }
     }
 
-    private func toggleHistory() {
-        if navigationState == .history {
-            navigationState = .root
-            searchText = ""
-        } else {
-            navigationState = .history
-        }
-    }
-
     private enum ToolDirection { case next, previous }
 
     private func navigateTool(direction: ToolDirection) {
@@ -395,11 +373,11 @@ struct MenuBarPopoverView: View {
                 .foregroundColor(.secondary)
                 .accessibilityHidden(true)
 
-            TextField("Search tools or history…", text: $searchText)
+            TextField("Search tools…", text: $searchText)
                 .textFieldStyle(.plain)
                 .font(.system(size: 15))
                 .focused($searchFocused)
-                .accessibilityLabel("Search tools or history")
+                .accessibilityLabel("Search tools")
                 .onSubmit {
                     // Enter opens the SELECTED filtered tool (↑/↓ moves the selection; defaults to
                     // the first match), pre-filled with the clipboard value:
@@ -458,40 +436,22 @@ struct MenuBarPopoverView: View {
     private var bodyContent: some View {
         switch navigationState {
         case .root:
-            // D-01: All-tools grid above recent history.
-            VStack(spacing: 0) {
-                AllToolsGridView(onSelect: { toolId in
-                    navigationState = .tool(toolId: toolId)
-                })
-                Divider()
-                recentHistoryView
-            }
+            // D-01: All-tools grid — the sole launcher surface.
+            AllToolsGridView(onSelect: { toolId in
+                navigationState = .tool(toolId: toolId)
+            })
 
         case .searchResults(let query):
-            // Typing filters the SAME grid in-place (no separate results page) and filters
-            // the history list below it. Content hugs the top; remaining space stays empty
-            // (no stretching the grid/history to fill the popover).
-            let historyMatches = historyStore.search(query)
+            // Typing filters the SAME grid in-place (no separate results page). Content hugs
+            // the top; remaining space stays empty (no stretching the grid to fill the popover).
             VStack(spacing: 0) {
                 AllToolsGridView(filter: query, selectedIndex: selectedToolIndex, onSelect: { toolId in
                     // Clicking a filtered tile mirrors the Enter path: open pre-filled with the
                     // clipboard value, ready to use.
                     openToolFromLauncher(toolId)
                 })
-                if !historyMatches.isEmpty {
-                    Divider()
-                    filteredHistoryList(historyMatches)
-                }
                 Spacer(minLength: 0)
             }
-
-        case .history:
-            // D-07: First-class history view
-            HistoryPanelView(onRestoreEntry: { entry in
-                // D-08: restore input into matched tool; output always recomputed live
-                navigationState = .tool(toolId: entry.tool)
-                searchText = ""
-            })
 
         case .tool(let toolId):
             // D-02: ToolHeaderView wraps every tool uniformly — added here at the switch site
@@ -507,66 +467,6 @@ struct MenuBarPopoverView: View {
                 ContentUnavailableView("Tool Not Found", systemImage: "questionmark")
             }
         }
-    }
-
-    // MARK: - Recent History
-
-    private var recentHistoryView: some View {
-        let recent = Array(historyStore.entries.prefix(5))
-        return Group {
-            if recent.isEmpty {
-                // Empty state (D-01)
-                VStack(spacing: 12) {
-                    Spacer()
-                    Image(systemName: "wrench.and.screwdriver")
-                        .font(.system(size: 40))
-                        .foregroundColor(.secondary)
-                    Text("Welcome to Flint")
-                        .font(.headline)
-                    Text("Paste content or press ⌘⇧Space from any app to get started.")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                List(recent, id: \.id) { entry in
-                    HistoryRowView(
-                        entry: entry,
-                        onOpen: {
-                            navigationState = .tool(toolId: entry.tool)
-                        },
-                        onPin: { historyStore.togglePin(entry: entry) },
-                        onDelete: { historyStore.delete(entry: entry) }
-                    )
-                    .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
-                }
-                .listStyle(.plain)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-        }
-    }
-
-    /// History list filtered by the search query (shown below the filtered grid while typing).
-    /// Bounded height so it wraps its content instead of stretching to fill the popover.
-    private func filteredHistoryList(_ matches: [HistoryEntry]) -> some View {
-        List(matches, id: \.id) { entry in
-            HistoryRowView(
-                entry: entry,
-                onOpen: {
-                    navigationState = .tool(toolId: entry.tool)
-                    searchText = ""
-                },
-                onPin: { historyStore.togglePin(entry: entry) },
-                onDelete: { historyStore.delete(entry: entry) }
-            )
-            .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
-        }
-        .listStyle(.plain)
-        .frame(maxWidth: .infinity)
-        .frame(maxHeight: 240) // ponytail: cap; longer history scrolls inside the List
     }
 
     // MARK: - Esc Handler (Two-Stage, D-03)
@@ -652,5 +552,3 @@ struct MenuBarPopoverView: View {
         }
     }
 }
-
-// HistoryRowView is defined in UI/Components/HistoryRowView.swift

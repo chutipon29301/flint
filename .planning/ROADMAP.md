@@ -4,7 +4,7 @@
 **Requirements**: (removal — supersedes INFRA-13 history-limit pref, history portions of INFRA-09/10)
 **Depends on:** Phase 5
 **Rationale:** History is unused in practice; it adds surface area across every tool ViewModel (an `onSaveHistory:` closure), a GRDB-backed store, a dedicated panel, and half of the global-search path. Removing it shrinks the code, drops the GRDB dependency if nothing else needs it, and eliminates the INFRA-09 "don't leak secrets into history" hazard entirely.
-**Plans:** 6/7 plans executed
+**Plans:** 7/7 plans complete
 
 Plans:
 
@@ -21,7 +21,7 @@ Plans:
 - [x] 06-06-PLAN.md — Delete the 5 history files, remove their pbxproj refs (build-file/file-ref/group/sources), and drop the GRDB package entirely (no source consumer remains)
 
 **Wave 4** *(phase goal gate; blocked on all)*
-- [ ] 06-07-PLAN.md — No-dead-symbols grep + clean build + full test suite + human re-verify search works and tools unbroken (checkpoint:human-verify)
+- [x] 06-07-PLAN.md — No-dead-symbols grep + clean build + full test suite + human re-verify search works and tools unbroken (checkpoint:human-verify)
 
 Surface area (from code map):
 - **Delete:** `Core/Services/HistoryStore.swift`, `Core/Models/HistoryEntry.swift`, `UI/HistoryPanelView.swift`, `UI/Components/HistoryRowView.swift`, `FlintTests/HistorySearchTests.swift`

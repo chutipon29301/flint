@@ -73,7 +73,7 @@ private struct Base64ContentView: View {
                     CopyButtonView(getText: { viewModel.output })
                     Text("Copy Output")
                         .font(.system(size: 13))
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.spark)
                         .onTapGesture {
                             let pb = NSPasteboard.general
                             pb.clearContents()
@@ -89,10 +89,10 @@ private struct Base64ContentView: View {
             if let fileError = viewModel.fileErrorMessage {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundColor(.orange)
+                        .foregroundColor(.warningText)
                     Text(fileError)
                         .font(.caption)
-                        .foregroundColor(.orange)
+                        .foregroundColor(.warningText)
                     Spacer()
                     Button("Dismiss") {
                         viewModel.fileErrorMessage = nil

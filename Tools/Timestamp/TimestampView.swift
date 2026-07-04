@@ -86,7 +86,7 @@ struct TimestampView: View {
                 .accessibilityLabel("Timestamp unit selector")
             }
             .padding(10)
-            .background(.yellow.opacity(0.1))
+            .background(Color.warningText.opacity(0.1))
             .cornerRadius(8)
         }
     }

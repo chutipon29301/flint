@@ -64,7 +64,7 @@ private struct JSONFormatterContentView: View {
                     CopyButtonView(getText: { viewModel.output })
                     Text("Copy Output")
                         .font(.system(size: 13))
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.spark)
                         .onTapGesture {
                             let pb = NSPasteboard.general
                             pb.clearContents()

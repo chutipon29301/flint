@@ -190,7 +190,7 @@ struct ImageCompressView: View {
                         Button("Cancel") {
                             viewModel.cancel()
                         }
-                        .foregroundStyle(Color.red)
+                        .foregroundStyle(Color.errorText)
                         .accessibilityLabel("Cancel compression")
                     } else if shouldShowRecompress {
                         // Explicit re-run affordance (05-08). Mutually exclusive with Cancel:
@@ -311,7 +311,7 @@ struct ImageCompressView: View {
                 // "% saved" Caption 11pt semibold — green when saved, secondary when grew
                 Text(percentSavedText(img.percentSaved))
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(img.percentSaved > 0 ? Color.green : Color.secondary)
+                    .foregroundStyle(img.percentSaved > 0 ? Color.success : Color.secondary)
             }
 
         case .failed(let reason):

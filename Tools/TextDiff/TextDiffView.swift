@@ -208,7 +208,7 @@ private struct TextDiffContentView: View {
                 CopyButtonView(getText: { r.unifiedPatch })
                 Text("Copy Patch")
                     .font(.system(size: 13))
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(Color.spark)
                     .onTapGesture {
                         NSPasteboard.general.clearContents()
                         NSPasteboard.general.setString(r.unifiedPatch, forType: .string)
@@ -271,8 +271,8 @@ private struct UnifiedDiffRow: View {
 
     private var rowBackground: Color {
         switch line.kind {
-        case .added:     return Color.green.opacity(0.18)
-        case .removed:   return Color.red.opacity(0.18)
+        case .added:     return Color.success.opacity(0.18)
+        case .removed:   return Color.errorText.opacity(0.18)
         case .unchanged: return Color.clear
         }
     }
@@ -317,8 +317,8 @@ private struct UnifiedDiffRow: View {
 
     private var prefixColor: Color {
         switch line.kind {
-        case .added:     return .green
-        case .removed:   return .red
+        case .added:     return .success
+        case .removed:   return .errorText
         case .unchanged: return .secondary
         }
     }
@@ -430,8 +430,8 @@ private struct SideBySideRow: View {
             return Color(NSColor.controlBackgroundColor).opacity(0.3)
         }
         switch l.kind {
-        case .added:     return Color.green.opacity(0.18)
-        case .removed:   return Color.red.opacity(0.18)
+        case .added:     return Color.success.opacity(0.18)
+        case .removed:   return Color.errorText.opacity(0.18)
         case .unchanged: return Color.clear
         }
     }
@@ -488,8 +488,8 @@ private struct SideBySideRow: View {
     private func prefixColor(for line: DiffLine?) -> Color {
         guard let l = line else { return .secondary }
         switch l.kind {
-        case .added:     return .green
-        case .removed:   return .red
+        case .added:     return .success
+        case .removed:   return .errorText
         case .unchanged: return .secondary
         }
     }
@@ -498,7 +498,7 @@ private struct SideBySideRow: View {
 // MARK: - Word-level segment highlight view
 
 /// Renders word-level diff segments as inline text with background highlights.
-/// Added words: green.opacity(0.40), Removed words: red.opacity(0.40).
+/// Added words: Color.success.opacity(0.40), Removed words: Color.errorText.opacity(0.40).
 private struct WordSegmentsView: View {
     let segments: [WordSegment]
     let kind: DiffLine.LineKind
@@ -518,14 +518,14 @@ private struct WordSegmentsView: View {
             var part = AttributedString(seg.text)
             switch seg.segmentKind {
             case .inserted:
-                // Word-level inserted: green highlight (only show on added lines)
+                // Word-level inserted: jade highlight (only show on added lines)
                 if kind == .added {
-                    part.backgroundColor = Color.green.opacity(0.40)
+                    part.backgroundColor = Color.success.opacity(0.40)
                 }
             case .deleted:
-                // Word-level deleted: red highlight (only show on removed lines)
+                // Word-level deleted: rose highlight (only show on removed lines)
                 if kind == .removed {
-                    part.backgroundColor = Color.red.opacity(0.40)
+                    part.backgroundColor = Color.errorText.opacity(0.40)
                 }
             case .equal:
                 break

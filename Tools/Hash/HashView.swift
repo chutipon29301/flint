@@ -223,7 +223,7 @@ struct HashView: View {
                     Button("Cancel") {
                         viewModel.cancelFileHash()
                     }
-                    .foregroundStyle(.red)
+                    .foregroundStyle(Color.errorText)
                     .accessibilityLabel("Cancel file hashing")
                 }
 

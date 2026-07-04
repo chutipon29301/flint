@@ -56,7 +56,7 @@ private struct URLContentView: View {
                     CopyButtonView(getText: { primaryOutput })
                     Text("Copy Output")
                         .font(.system(size: 13))
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.spark)
                         .onTapGesture {
                             let pb = NSPasteboard.general
                             pb.clearContents()
@@ -355,7 +355,7 @@ private struct QueryItemRowView: View {
             // Delete button
             Button(action: onDelete) {
                 Image(systemName: "minus.circle.fill")
-                    .foregroundColor(.red)
+                    .foregroundColor(.errorText)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Delete query parameter \(item.name)")

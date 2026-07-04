@@ -375,7 +375,7 @@ private struct ColorContentView: View {
                 .frame(minWidth: 140, alignment: .leading)
             Text(pass ? "PASS" : "FAIL")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(pass ? Color.green : Color.red)
+                .foregroundStyle(pass ? Color.success : Color.errorText)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label): \(pass ? "PASS" : "FAIL")")

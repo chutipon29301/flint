@@ -152,20 +152,25 @@ struct ImageCompressView: View {
     @ViewBuilder
     private func presetButton(label: String, value: Double) -> some View {
         let isActive = Int(quality) == Int(value)
-        let button = Button(label) {
+        Button(label) {
             quality = value
         }
-        if isActive {
-            button.buttonStyle(.borderedProminent)
-                .accessibilityLabel("\(label) quality preset")
-                .accessibilityHint("Sets quality to \(Int(value)) percent")
-                .accessibilityAddTraits(.isSelected)
-        } else {
-            button.buttonStyle(.bordered)
-                .accessibilityLabel("\(label) quality preset")
-                .accessibilityHint("Sets quality to \(Int(value)) percent")
-                .accessibilityAddTraits([])
-        }
+        .buttonStyle(.plain)
+        .font(.system(size: 12, weight: isActive ? .semibold : .regular))
+        .foregroundColor(isActive ? .spark : .ash)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 4)
+        .background(
+            RoundedRectangle(cornerRadius: Radius.chip)
+                .fill(isActive ? Color.sparkGlow : Color.clear)
+                .overlay(
+                    RoundedRectangle(cornerRadius: Radius.chip)
+                        .strokeBorder(isActive ? Color.spark : Color.graphite700, lineWidth: 1)
+                )
+        )
+        .accessibilityLabel("\(label) quality preset")
+        .accessibilityHint("Sets quality to \(Int(value)) percent")
+        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 
     // MARK: - Results Section (D-09)

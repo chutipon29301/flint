@@ -33,6 +33,9 @@ struct PreferencesView: View {
         .environment(hotkeyManager)
         .frame(minWidth: 460, minHeight: 340)
         .navigationTitle("Preferences")
+        // Task 5 (260704-mgn follow-up): tint ONCE at the Preferences scene root so its
+        // Toggles/Pickers read ember instead of stock system blue.
+        .tint(Color.spark)
         .onDisappear {
             // WR-02: restore .accessory activation policy when Preferences closes.
             // WindowCoordinator.openPreferences() increments windowCount; without this hook,

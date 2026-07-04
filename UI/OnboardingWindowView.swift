@@ -14,8 +14,11 @@
 //
 // Accessibility (INFRA-15): every Text/Button carries a VoiceOver-readable label; decorative
 // SF Symbols are .accessibilityHidden(true). Logical reading order: headline → step bodies →
-// CTA → Skip. All colors are system semantic (windowBackground, accentColor, primary,
-// secondary) — no hex literals (INFRA-14).
+// CTA → Skip. Background/text stay system semantic (windowBackground, primary, secondary —
+// this window is intentionally light/dark adaptive, unlike the graphite popover). The one
+// primary CTA uses DesignSystem's PrimaryButtonStyle (spark fill) per the redesign brief's
+// "scalpel" rule; step icons stay `.secondary` so spark isn't diluted across 4 bullets
+// (260704-mgn task 5 — accent-inheriting controls fix).
 //
 // Source: UI-SPEC.md § "Copywriting → Onboarding Window" (exact copy), § "Typography",
 // § "Spacing"; 03-PATTERNS.md "OnboardingWindowView.swift".
@@ -40,7 +43,7 @@ struct OnboardingWindowView: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "wrench.and.screwdriver")
                     .font(.system(size: 22))
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.secondary)
                     .frame(width: 28)
                     .accessibilityHidden(true)
 
@@ -59,7 +62,7 @@ struct OnboardingWindowView: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "command")
                     .font(.system(size: 22))
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.secondary)
                     .frame(width: 28)
                     .accessibilityHidden(true)
 
@@ -78,7 +81,7 @@ struct OnboardingWindowView: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "text.cursor")
                     .font(.system(size: 22))
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.secondary)
                     .frame(width: 28)
                     .accessibilityHidden(true)
 
@@ -97,7 +100,7 @@ struct OnboardingWindowView: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "arrow.down.circle")
                     .font(.system(size: 22))
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.secondary)
                     .frame(width: 28)
                     .accessibilityHidden(true)
 
@@ -121,7 +124,7 @@ struct OnboardingWindowView: View {
                     Button("Get Started") {
                         finish()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primary)
                     .frame(maxWidth: .infinity)
                     .accessibilityLabel("Get started using Flint")
                 } else {
@@ -130,7 +133,7 @@ struct OnboardingWindowView: View {
                         prefs.launchAtLogin = true   // existing PreferencesStore SMAppService path (INFRA-13)
                         finish()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.primary)
                     .frame(maxWidth: .infinity)
                     .accessibilityLabel("Enable Flint to launch automatically at login")
 
@@ -153,6 +156,9 @@ struct OnboardingWindowView: View {
         .padding(24)
         .frame(width: 480, height: 480)
         .background(Color(NSColor.windowBackgroundColor))
+        // Task 5 (260704-mgn follow-up): tint ONCE at the onboarding scene root (no Toggle/Picker
+        // present today, but this keeps any future inherited-accent control ember by default).
+        .tint(Color.spark)
         .onDisappear {
             // Restore .accessory activation policy when the window closes (mirrors PreferencesView).
             WindowCoordinator.shared.windowWillClose()

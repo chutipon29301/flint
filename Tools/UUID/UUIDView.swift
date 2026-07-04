@@ -92,7 +92,7 @@ struct UUIDView: View {
                     viewModel.generateCount = 1
                     viewModel.generate()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.primary)
                 .accessibilityLabel("Generate one UUID")
 
                 Button("Generate 1000") {

@@ -70,6 +70,10 @@ struct MainWindowView: View {
         }
         // INFRA-02: cannot shrink below 800×600
         .frame(minWidth: 800, minHeight: 600)
+        // Task 5 (260704-mgn follow-up): tint ONCE at the workspace scene root — this window
+        // hosts the same tool views as the popover (same inherited-accent Toggles/Pickers), so
+        // it needs the same ember tint or it would still show stock system blue when detached.
+        .tint(Color.spark)
         // DIST-02 (D-04): launcher drop on the workspace — read file text, run detect(),
         // select + pre-fill the best tool. Per-tool drops in the detail pane are handled by
         // each tool's own .fileDrop (innermost target wins). Binary/oversized → onError banner.

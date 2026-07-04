@@ -130,6 +130,10 @@ struct MenuBarPopoverView: View {
         }
         .frame(width: 480, height: 600, alignment: .top)
         .background(Color.graphite950)
+        // Task 5 (260704-mgn follow-up): tint ONCE at the popover root so every inherited-accent
+        // control (Toggle, Picker, ProgressView, text selection, .bordered buttons) reads ember
+        // instead of stock system blue. Applied at the scene root, never per-control.
+        .tint(Color.spark)
         // DIST-02 (D-04): launcher drop — read file text, run detect(), route to best tool;
         // no-match stages the text in the search field (mirrors Services D-03). Binary/oversized
         // is rejected post-drop via WarningBannerView (D-06).

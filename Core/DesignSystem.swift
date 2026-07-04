@@ -103,3 +103,52 @@ enum Space {
     static let md: CGFloat = 12
     static let lg: CGFloat = 16
 }
+
+// MARK: - PrimaryButtonStyle
+
+/// The ONE spark-filled button per screen — the primary action (brief: "the ember
+/// accent is a scalpel, not a bucket"). Mirrors DetectionBannerView's "Open" button:
+/// spark fill, graphite950 label, `Radius.control` corners. Hover brightens to
+/// `sparkHot` (no-op under Reduce Motion); pressed state dims slightly.
+///
+/// Apply only to a screen's single primary action (e.g. "Generate", "Get Started").
+/// Everything else stays greyscale — use the system `.bordered` style or `.plain`.
+struct PrimaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isHovered = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundColor(.graphite950)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: Radius.control)
+                    .fill(fillColor(pressed: configuration.isPressed))
+            )
+            .opacity(isEnabled ? 1 : 0.5)
+            .onHover { hovering in
+                if reduceMotion {
+                    isHovered = hovering
+                } else {
+                    withAnimation(.easeOut(duration: 0.1)) {
+                        isHovered = hovering
+                    }
+                }
+            }
+    }
+
+    private func fillColor(pressed: Bool) -> Color {
+        if pressed {
+            return Color.spark.opacity(0.85)
+        }
+        return isHovered ? Color.sparkHot : Color.spark
+    }
+}
+
+extension ButtonStyle where Self == PrimaryButtonStyle {
+    /// The single spark-filled primary action button for a screen.
+    static var primary: PrimaryButtonStyle { PrimaryButtonStyle() }
+}

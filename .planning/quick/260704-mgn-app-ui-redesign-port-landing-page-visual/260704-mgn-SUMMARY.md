@@ -147,3 +147,53 @@ Swept all 10 files listed under "Follow-up Candidates" above, replacing local ha
 - `grep -rnE "\.foregroundColor\(\.(red|green|blue|orange|yellow)\)|Color\.(red|green|blue|orange|yellow)|\.accentColor" Tools/ UI/` — remaining hits are all either (a) the four out-of-scope UI/ files above, or (b) `Color(red:green:blue:...)` constructor argument labels in `ColorView.swift`/`ColorViewModel.swift` rendering actual user color data. No unjustified hits remain in the 10 assigned tool views.
 
 **Commit:** `8d369f4` — `feat(ui): sweep remaining tool views to DesignSystem tokens` (one atomic commit, 8 files changed).
+
+## Task 5 — Accent-inheriting controls fix
+
+Fixed the remaining stock-system-blue problem: controls that *inherit* the system accent color (rather than hardcoding a stock `Color.*` literal, which the prior sweeps already caught) were still rendering system blue — visible in the UUID Generator's "Generate" button and would affect every default `Toggle`/`Picker`/`ProgressView` app-wide, since the app had **no `.tint()` anywhere**.
+
+**Changes:**
+
+- **`Core/DesignSystem.swift`** — added `PrimaryButtonStyle` (`ButtonStyle.primary`): spark fill, graphite950 semibold label, `Radius.control` corners, hover brightens to `sparkHot` (animated, no-ops under Reduce Motion via `@Environment(\.accessibilityReduceMotion)`), pressed state dims to `spark.opacity(0.85)`, disabled state dims to 0.5 opacity. Mirrors `DetectionBannerView`'s existing inline "Open" button treatment as the reference.
+- **Applied `.buttonStyle(.primary)`** (replacing `.buttonStyle(.borderedProminent)`) at the true single-primary-action sites:
+  - `Tools/UUID/UUIDView.swift:95` — "Generate" (the one primary action on that screen; "Generate 1000" stays a plain secondary button).
+  - `UI/OnboardingWindowView.swift:124` and `:133` — "Get Started" / "Enable Launch at Login" CTAs. These two `.borderedProminent` sites are mutually exclusive (only one branch renders at a time, gated on `prefs.launchAtLogin`), so the scalpel rule ("one spark button per screen") still holds.
+- **`Tools/ImageCompress/ImageCompressView.swift`** — the "Web"/"Email"/"Max" quality presets used `.borderedProminent` for whichever preset was active. This is a **selected-state** indicator (three mutually-exclusive chips, exactly one active), not a "primary action" — using `PrimaryButtonStyle` there would put two different kinds of spark-filled buttons on one screen (the true primary action there is actually the drop-to-compress gesture; there's no other button primary). Restyled to match the app's established selected/active visual language (see `AllToolsGridView`'s hover/selected tile: spark border + spark text on a `sparkGlow`-tinted chip, not a solid fill) instead of a bordered-prominent solid fill.
+- **Applied `.tint(Color.spark)` once at each scene root** so every control that inherits the environment accent (`Toggle`, `Picker`, `ColorPicker`, `ProgressView`, `.bordered` buttons, text-selection highlight) reads ember instead of stock system blue, without touching any individual control:
+  - `UI/MenuBarPopoverView.swift` (MenuBarExtra popover root — hosts all 13 tools via `bodyContent`).
+  - `UI/MainWindowView.swift` (the detachable `workspace` WindowGroup root — **not explicitly listed in the task's file list, but added under Rule 2**: this window hosts the exact same tool views with the exact same inherited-accent Toggles/Pickers; leaving it untinted would mean the identical bug reappears the moment a tool is detached into its own window).
+  - `UI/PreferencesView.swift` (Settings scene root — General/Appearance/Per-Tool tabs' Toggles and Pickers).
+  - `UI/OnboardingWindowView.swift` (onboarding WindowGroup root — no Toggle/Picker exists there today, but tinted for consistency/future-proofing per the task's explicit instruction).
+- **`UI/OnboardingWindowView.swift`** — neutralized the 4 step-bullet icons (`wrench.and.screwdriver`, `command`, `text.cursor`, `arrow.down.circle`) from `.accentColor` to `.secondary`. These are decorative, non-interactive bullets; letting all 4 inherit spark via the new scene-root tint would have put five spark elements on one screen (4 icons + 1 CTA button), directly violating "scalpel, not a bucket." Updated the file's stale header comment (previously said "all colors are system semantic... accentColor" — no longer accurate) to explain the window intentionally stays light/dark-adaptive (unlike the graphite popover) and document why the icons stay `.secondary` while only the CTA uses `PrimaryButtonStyle`.
+
+**Re-audit result (task 3 — every `Tools/` and `UI/` view inspected):**
+
+| File | Verdict |
+|---|---|
+| `Core/DesignSystem.swift` | Fixed — added `PrimaryButtonStyle` |
+| `Tools/UUID/UUIDView.swift` | Fixed — `.primary` button style |
+| `Tools/ImageCompress/ImageCompressView.swift` | Fixed — preset chips restyled off `.borderedProminent` |
+| `UI/OnboardingWindowView.swift` | Fixed — primary CTA styled, step icons neutralized, scene-root tint added |
+| `UI/MenuBarPopoverView.swift` | Fixed — scene-root `.tint(.spark)` added |
+| `UI/MainWindowView.swift` | Fixed — scene-root `.tint(.spark)` added (Rule 2 addition, not in original file list) |
+| `UI/PreferencesView.swift` | Fixed — scene-root `.tint(.spark)` added |
+| `UI/Components/PinnedToolBarView.swift` | Justified exception — dead code (D-13 removed the pinned strip per its own header comment; not instantiated anywhere); its `.accentColor` hover state would now resolve to spark automatically via the popover's scene-root tint if ever reactivated |
+| `UI/Components/BitFieldView.swift` | Justified exception — `.accentColor` marks the "set" bit state (a legitimate selected/active carve-out per the brief); now resolves to spark via the popover/workspace scene-root tint, no per-control change needed |
+| `UI/Components/DropOverlayView.swift` | Justified exception — `.accentColor` on the transient drag-over overlay (single active state, never concurrent with a primary button); now resolves to spark via scene-root tint |
+| `UI/Components/DetectionBannerView.swift` | Clean — already explicit `Color.spark`/`Color.graphite950` (built in Task 2/3), not accent-inheriting |
+| `UI/AllToolsGridView.swift` | Clean — already explicit `Color.spark`/`Color.ash`/`Color.chalk` tokens |
+| `UI/SearchView.swift` | Clean — already explicit tokens |
+| `UI/ToolHeaderView.swift` | Clean — already explicit tokens |
+| `UI/Components/CodeDisplayView.swift`, `CopyButtonView.swift`, `InlineErrorView.swift`, `OutputRowBadge.swift`, `WarningBannerView.swift` | Clean — already explicit tokens (Task 3) |
+| `UI/Components/ProgressHashView.swift` | Clean — plain `ProgressView`, inherits spark automatically via scene-root tint, no explicit change needed |
+| `UI/Components/SyntaxEditorView.swift` | Clean — uses `NSColor.labelColor` (AppKit semantic text color for the editable NSTextView), not accent-related |
+| `UI/Components/WebPreviewView.swift` | Clean — no color literals (WKWebView wrapper) |
+| `Tools/Base64/Base64View.swift`, `Tools/Color/ColorView.swift`, `Tools/Hash/HashView.swift`, `Tools/JSONFormatter/JSONFormatterView.swift`, `Tools/JWT/JWTView.swift`, `Tools/Markdown/MarkdownView.swift`, `Tools/NumberBase/NumberBaseView.swift`, `Tools/Regex/RegexView.swift`, `Tools/TextDiff/TextDiffView.swift`, `Tools/Timestamp/TimestampView.swift`, `Tools/URLEncoder/URLView.swift` | Clean — all `Toggle`/`Picker`/`ColorPicker`/`ProgressView` sites are plain default-styled controls with no explicit stock-color override; all now inherit spark automatically via the popover/workspace scene-root tint, no per-file changes needed |
+| `Tools/Color/ColorView.swift` RGB literals, `Tools/Color/ColorViewModel.swift` | Justified exception (reconfirmed) — `Color(red:green:blue:opacity:)` renders the user's actual picked color value, not a stock/system color |
+
+**Verification:**
+- `xcodebuild -project Flint.xcodeproj -scheme Flint build` → **BUILD SUCCEEDED**.
+- `grep -rnE "accentColor|borderedProminent|Color\.(red|green|blue|orange|yellow|purple|pink)|\.foregroundColor\(\.(red|green|blue|orange|yellow|purple|pink)\)" Tools/ UI/ App/` → remaining hits are the 3 justified-exception files (`PinnedToolBarView.swift` dead code, `BitFieldView.swift` selected-bit state, `DropOverlayView.swift` drag-over state) plus `ColorView.swift`/`ColorViewModel.swift` RGB constructor argument labels (user color data) — no unjustified hits.
+- `grep -rn "\.tint(" UI/` → confirms exactly 4 scene-root call sites (MenuBarPopoverView, MainWindowView, PreferencesView, OnboardingWindowView), none per-control.
+
+**Commit:** `384bdab` — `fix(ui): tint accent-inheriting controls with spark, add primary button style` (one atomic commit, 7 files changed).

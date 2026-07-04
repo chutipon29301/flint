@@ -1,5 +1,6 @@
 // UI/Components/InlineErrorView.swift
-// Orange caption error label. Shows/hides based on nil message.
+// Rose-red caption error label (palette-harmonized with WarningBannerView's .error state,
+// distinct from the ember `spark` accent). Shows/hides based on nil message.
 // Source: UI-SPEC.md § "Error State — Inline, Never Blank" (D-11)
 
 import SwiftUI
@@ -12,7 +13,7 @@ struct InlineErrorView: View {
             if let message {
                 Text(message)
                     .font(.caption)
-                    .foregroundColor(.orange)
+                    .foregroundColor(.errorText)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .transition(.opacity)
                     .animation(.easeOut(duration: 0.1), value: message)

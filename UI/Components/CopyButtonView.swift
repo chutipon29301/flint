@@ -8,6 +8,7 @@ import AppKit
 struct CopyButtonView: View {
     let getText: () -> String
     @State private var copied = false
+    @State private var isHovered = false
 
     init(text: String) {
         self.getText = { text }
@@ -20,11 +21,14 @@ struct CopyButtonView: View {
     var body: some View {
         Button(action: performCopy) {
             Image(systemName: copied ? "checkmark" : "doc.on.doc")
-                .foregroundColor(.secondary)
+                .foregroundColor(copied ? .success : (isHovered ? .spark : .ash))
                 .frame(width: 24, height: 24)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(copied ? "Copied" : "Copy")
+        .onHover { hovered in
+            isHovered = hovered
+        }
     }
 
     private func performCopy() {

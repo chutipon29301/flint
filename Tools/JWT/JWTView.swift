@@ -50,8 +50,8 @@ private struct JWTContentView: View {
                 // Input field
                 VStack(alignment: .leading, spacing: 4) {
                     Text("JWT Token")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .font(.monoLabel)
+                        .foregroundColor(.ash)
                         .padding(.horizontal, 8)
                         .padding(.top, 8)
 
@@ -96,7 +96,7 @@ private struct JWTContentView: View {
                 if viewModel.token.isEmpty {
                     Text("Paste or type content above")
                         .font(.system(size: 13))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.ash)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.vertical, 24)
                 }
@@ -191,8 +191,8 @@ private struct SegmentSection: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(label)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.secondary)
+                    .font(.monoLabel)
+                    .foregroundColor(.ash)
                 Spacer()
                 // Per-field copy (D-12, JWT-01, JWT-02)
                 CopyButtonView(text: content)
@@ -227,8 +227,8 @@ private struct ExpirySection: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Expiry")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.secondary)
+                    .font(.monoLabel)
+                    .foregroundColor(.ash)
                 Text(description)
                     .font(.system(size: 13))
                     .foregroundColor(expiryColor)
@@ -251,9 +251,9 @@ private struct ExpirySection: View {
 
     private var expiryColor: Color {
         switch status {
-        case .noExpiry:           return .secondary
-        case .valid:              return .green
-        case .expired:            return .red
+        case .noExpiry:           return .ash
+        case .valid:              return .success
+        case .expired:            return .errorText
         }
     }
 }
@@ -267,16 +267,16 @@ private struct ClaimsSection: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Claims")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.secondary)
+                    .font(.monoLabel)
+                    .foregroundColor(.ash)
                 Spacer()
                 Text("alg: \(partition.algorithm)")
                     .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.ash)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Color(NSColor.controlBackgroundColor))
-                    .cornerRadius(4)
+                    .background(Color.graphite800)
+                    .cornerRadius(Radius.chip)
                     .accessibilityLabel("Algorithm: \(partition.algorithm)")
             }
             .padding(.horizontal, 8)
@@ -287,7 +287,7 @@ private struct ClaimsSection: View {
             if !partition.standard.isEmpty {
                 Text("Standard (RFC 7519)")
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.ashDim)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 2)
 
@@ -300,7 +300,7 @@ private struct ClaimsSection: View {
             if !partition.custom.isEmpty {
                 Text("Custom")
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.ashDim)
                     .padding(.horizontal, 8)
                     .padding(.top, 6)
                     .padding(.bottom, 2)
@@ -335,12 +335,12 @@ private struct ClaimRow: View {
         HStack(spacing: 8) {
             Text(key)
                 .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(.secondary)
+                .foregroundColor(.ash)
                 .frame(minWidth: 60, alignment: .leading)
 
             Text(value)
                 .font(.system(size: 12))
-                .foregroundColor(.primary)
+                .foregroundColor(.chalk)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(2)
 
@@ -370,11 +370,11 @@ private struct HMACVerifySection: View {
             Button(action: { showSection.toggle() }) {
                 HStack {
                     Text("Verify Signature")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .font(.monoLabel)
+                        .foregroundColor(.ash)
                     Image(systemName: showSection ? "chevron.up" : "chevron.down")
                         .font(.system(size: 10))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.ash)
                     Spacer()
                 }
             }
@@ -407,11 +407,11 @@ private struct HMACVerifySection: View {
                 if let verified = verificationResult {
                     HStack(spacing: 6) {
                         Image(systemName: verified ? "checkmark.shield.fill" : "xmark.shield.fill")
-                            .foregroundColor(verified ? .green : .red)
+                            .foregroundColor(verified ? .success : .errorText)
                             .accessibilityHidden(true)
                         Text(verified ? "Signature valid" : "Signature invalid")
                             .font(.system(size: 12))
-                            .foregroundColor(verified ? .green : .red)
+                            .foregroundColor(verified ? .success : .errorText)
                             .accessibilityLabel(verified ? "Signature is valid" : "Signature is invalid")
                     }
                     .padding(.horizontal, 8)

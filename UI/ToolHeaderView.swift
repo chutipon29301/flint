@@ -3,13 +3,13 @@
 // Stateless: caller (MenuBarPopoverView) owns onBack callback which sets navigationState = .root.
 //
 // Layout: HStack (back button | centered tool name | invisible spacer) + Divider()
-// Back button: chevron.left + "All Tools" in .accentColor at 13pt regular
-// Tool name: 15pt semibold .primary, .accessibilityAddTraits(.isHeader) for VoiceOver orientation
+// Back button: chevron.left + "All Tools" in .spark at 13pt regular
+// Tool name: detailHeading (16pt semibold) .chalk, .accessibilityAddTraits(.isHeader) for VoiceOver orientation
 // Minimum height: 44pt (standard hit-target rule)
 //
 // Design: 04-UI-SPEC.md § "Back-to-Picker Affordance — D-02"
 // Pattern: UI/Components/DetectionBannerView.swift (stateless HStack + 12pt/8pt padding)
-// Colors: semantic only (INFRA-14) — no hardcoded hex
+// Colors: Core/DesignSystem.swift tokens (spark back link, chalk title, graphite800 divider)
 
 import SwiftUI
 
@@ -28,15 +28,15 @@ struct ToolHeaderView: View {
                         Text("All Tools")
                             .font(.system(size: 13))
                     }
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.spark)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Back to tool picker")
 
                 // Center: tool name (heading landmark for VoiceOver)
                 Text(toolName)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.primary)
+                    .font(.detailHeading)
+                    .foregroundColor(.chalk)
                     .frame(maxWidth: .infinity)
                     .accessibilityAddTraits(.isHeader)
 
@@ -55,6 +55,7 @@ struct ToolHeaderView: View {
             .padding(.horizontal, 12)
 
             Divider()
+                .overlay(Color.graphite800)
         }
     }
 }

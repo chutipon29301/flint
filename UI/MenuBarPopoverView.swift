@@ -128,7 +128,7 @@ struct MenuBarPopoverView: View {
             // The old pinned-tool icon strip (D-13) was removed: it duplicated the grid below it.
             bodyContent
         }
-        .frame(width: 480, height: 600)
+        .frame(width: 480, height: 600, alignment: .top)
         .background(Color(NSColor.windowBackgroundColor))
         // DIST-02 (D-04): launcher drop — read file text, run detect(), route to best tool;
         // no-match stages the text in the search field (mirrors Services D-03). Binary/oversized

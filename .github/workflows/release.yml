@@ -1,10 +1,15 @@
 name: Release (free / unsigned DMG)
 
-# Manual trigger only. Builds the unsigned/ad-hoc DMG on a macOS runner and,
-# when run with a tag, attaches it to a GitHub Release. No Apple secrets needed —
-# ad-hoc signing requires no certificate. For the signed+notarized pipeline,
-# add cert/notary secrets and run scripts/release.sh instead.
+# Push a tag like v0.1.2 → build the unsigned/ad-hoc DMG, publish a GitHub
+# Release with it attached, then bump the Homebrew cask in the tap. No Apple
+# secrets needed (ad-hoc signing requires no certificate). For the
+# signed+notarized pipeline, add cert/notary secrets and run scripts/release.sh.
+#
+# workflow_dispatch is kept as a manual fallback (supply the version explicitly).
 on:
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
     inputs:
       version:
@@ -21,6 +26,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Version comes from the pushed tag (strip leading "v"), or the manual input.
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            V="${{ inputs.version }}"
+          else
+            V="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "Version: $V"
+
       # KeyboardShortcuts 3.0.1 needs Swift tools 6.2, so pick the newest installed
       # Xcode (not the default, which may be an older Swift 6.1 toolchain).
       - name: Select newest Xcode
@@ -32,22 +49,27 @@ jobs:
           swift --version
 
       - name: Build unsigned DMG
-        env:
-          VERSION: ${{ inputs.version }}
-        run: bash scripts/release-free.sh "$VERSION"
+        run: bash scripts/release-free.sh "${{ steps.ver.outputs.version }}"
 
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Flint-${{ inputs.version }}-dmg
+          name: Flint-${{ steps.ver.outputs.version }}-dmg
           path: dist/*.dmg
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ inputs.version }}
-          name: Flint ${{ inputs.version }}
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Flint ${{ steps.ver.outputs.version }}
           files: dist/*.dmg
           body: |
             Unsigned build — see the README for install steps
             (System Settings → Privacy & Security → Open Anyway).
+
+      # Bump the cask in chutiponh/homebrew-flint. Needs a PAT with write access
+      # to the tap repo (default GITHUB_TOKEN can't push to another repo).
+      - name: Bump Homebrew cask
+        env:
+          GH_TOKEN: ${{ secrets.TAP_TOKEN }}
+        run: bash scripts/update-cask.sh "${{ steps.ver.outputs.version }}"

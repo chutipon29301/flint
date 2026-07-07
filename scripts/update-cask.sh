@@ -24,7 +24,15 @@ SHA="$(shasum -a 256 "${TMP}/Flint.dmg" | awk '{print $1}')"
 echo "  sha256: ${SHA}"
 
 echo "▶ Cloning tap ${TAP}"
-git clone -q "https://github.com/${TAP}.git" "${TMP}/tap"
+# In CI, GH_TOKEN carries write access to the tap repo (default GITHUB_TOKEN
+# can't push cross-repo). Locally, GH_TOKEN is unset and the credential helper
+# handles auth via plain HTTPS.
+if [[ -n "${GH_TOKEN:-}" ]]; then
+  CLONE_URL="https://x-access-token:${GH_TOKEN}@github.com/${TAP}.git"
+else
+  CLONE_URL="https://github.com/${TAP}.git"
+fi
+git clone -q "${CLONE_URL}" "${TMP}/tap"
 CASK="${TMP}/tap/Casks/flint.rb"
 
 # Rewrite version + sha256 (BSD sed on macOS).

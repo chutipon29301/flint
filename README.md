@@ -76,6 +76,23 @@ Download the latest `Flint-x.y.z.dmg` from [**Releases**](../../releases), open 
 >
 > Terminal alternative: `xattr -dr com.apple.quarantine /Applications/Flint.app`
 
+## Update
+
+### Homebrew
+
+```bash
+brew update           # refresh the tap
+brew upgrade --cask flint
+```
+
+`brew update` pulls the latest cask; `brew upgrade --cask flint` replaces the app with the newest release. Run `brew info --cask flint` to see the available vs. installed version.
+
+### Manual (DMG)
+
+Download the latest `Flint-x.y.z.dmg` from [**Releases**](../../releases), open it, and drag **Flint** to Applications, replacing the old copy. Quit Flint first (menubar icon → Quit) if it's running.
+
+> **In-app auto-update is not available yet.** It requires signed + notarized builds via Sparkle (see [Sponsor](#sponsor)). Until then, update through Homebrew or the DMG.
+
 ## Build from source
 
 Requires **Xcode 16.3+** and **macOS 14.0+**.

@@ -21,6 +21,11 @@ final class ClipboardDetector {
             } else {
                 // Clear detection result when popover closes so stale banner doesn't persist
                 detectionResult = nil
+                // D-04: watchdog on the falling edge, gated on NSColorPanel visibility —
+                // re-present if the popover closed while the system color panel is still open.
+                if NSColorPanel.shared.isVisible {
+                    isPopoverPresented = true
+                }
             }
         }
     }

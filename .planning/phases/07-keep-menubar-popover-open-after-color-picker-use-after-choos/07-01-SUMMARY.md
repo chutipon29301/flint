@@ -73,7 +73,14 @@ Worktree merge: `f39374b` (chore: merge executor worktree)
 - None beyond the plan — executed exactly as written. The re-present mechanism (not binding suppression) was mandated by the plan's hard constraints because MenuBarExtraAccess force-closes on resign-key regardless of binding value.
 
 ## Deviations from Plan
-None — plan executed exactly as written. 9-line diff across the two existing files, no new dependencies, no new files, no NotificationCenter observer/Timer added.
+
+### Post-review fix (CR-01/CR-02) — `6879200`
+
+The plan's watchdog gated on the process-global `NSColorPanel.shared.isVisible`. Code review (07-REVIEW.md) found this traps the popover open for the panel's whole lifetime: a *second* `ColorPicker` (WCAG "Compare color", ColorView.swift:336) drives the same shared panel, and while any panel is visible every dismiss path (Esc, click-away, ⌘N, paste-back) re-enters the didSet, sees `isVisible == true`, and re-opens — no in-app exit. The `close()`/`isVisible` ordering in the paste-back path was also an unproven timing assumption (CR-02).
+
+**Fix (operator chose "fix now"):** replaced the `isVisible` gate with a one-shot `suppressNextDismiss` flag on `ClipboardDetector`, consumed on the first falling edge so it can never trap. The eyedropper completion and the main `ColorPicker` (`.onChange`) arm it — the onChange re-arms per adjustment, preserving D-04 live behavior for the main picker's editing session. The paste-back path disarms it before dismissing. Re-verified via UAT (including the new "dismiss while panel open" and "WCAG compare picker" scenarios). Build succeeds.
+
+Otherwise the plan executed as written — small diff across the same two existing files, no new dependencies, no new files, no NotificationCenter observer/Timer added.
 
 ## Issues Encountered
 None. All three automated grep verify gates passed; `xcodebuild ... build` succeeded twice (in-worktree and post-merge on `main`).

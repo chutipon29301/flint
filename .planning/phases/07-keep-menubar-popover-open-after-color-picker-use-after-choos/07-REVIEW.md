@@ -11,7 +11,8 @@ findings:
   warning: 3
   info: 1
   total: 6
-status: issues_found
+status: resolved
+resolution: "CR-01, CR-02, WR-01, WR-03, IN-01 fixed in 6879200 (one-shot suppressNextDismiss flag replaces the NSColorPanel.shared.isVisible gate). Re-verified via UAT. WR-02 addressed by the same one-shot routing."
 ---
 
 # Phase 7: Code Review Report

@@ -111,4 +111,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-26 — Phase 2 (Extended Tools) complete; all 12 tools shipped. Next: Phase 3 Polish & Distribution.*
+*Last updated: 2026-07-08 — Phase 7 (Keep menubar popover open after color picker use) complete; popover now survives both the eyedropper and the system ColorPicker via a one-shot re-present flag. All roadmapped phases complete.*

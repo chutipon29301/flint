@@ -143,6 +143,7 @@ private struct ColorContentView: View {
                     NSColorSampler().show { nsColor in
                         guard let nsColor else { return }
                         viewModel.updateFromNSColor(nsColor)
+                        clipboard.isPopoverPresented = true
                     }
                 } label: {
                     Label("Pick color from screen", systemImage: "eyedropper")

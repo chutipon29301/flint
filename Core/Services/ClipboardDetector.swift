@@ -13,6 +13,14 @@ final class ClipboardDetector {
     var detectionResult: DetectionResult? = nil
     var isEnabled: Bool = true
 
+    /// One-shot: when set, the NEXT falling edge of `isPopoverPresented` re-opens the
+    /// popover once and clears itself. Set by the color-picker flows (eyedropper +
+    /// system ColorPicker) so a picker-triggered force-close by MenuBarExtraAccess is
+    /// undone, while every OTHER dismiss (Esc, click-away, ⌘N, paste-back, WCAG compare)
+    /// passes through untouched. Replaces the old `NSColorPanel.shared.isVisible` gate,
+    /// which trapped the popover open for the panel's whole lifetime (07-REVIEW CR-01).
+    var suppressNextDismiss = false
+
     /// Bound to MenuBarExtraAccess isPresented. Setting true re-triggers detection (D-05).
     var isPopoverPresented: Bool = false {
         didSet {
@@ -21,9 +29,11 @@ final class ClipboardDetector {
             } else {
                 // Clear detection result when popover closes so stale banner doesn't persist
                 detectionResult = nil
-                // D-04: watchdog on the falling edge, gated on NSColorPanel visibility —
-                // re-present if the popover closed while the system color panel is still open.
-                if NSColorPanel.shared.isVisible {
+                // D-04: one-shot watchdog on the falling edge — consume the flag and re-open
+                // once. One-shot means it can never trap the popover: the next dismiss after
+                // the re-open sees the flag already cleared and proceeds normally.
+                if suppressNextDismiss {
+                    suppressNextDismiss = false
                     isPopoverPresented = true
                 }
             }

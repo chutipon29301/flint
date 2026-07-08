@@ -143,6 +143,10 @@ private struct ColorContentView: View {
                     NSColorSampler().show { nsColor in
                         guard let nsColor else { return }
                         viewModel.updateFromNSColor(nsColor)
+                        // Arm the one-shot watchdog, then re-present. The sampler doesn't open
+                        // NSColorPanel, but it can resign the popover's key window; arming lets
+                        // the falling-edge re-open fire if MenuBarExtraAccess force-closed it.
+                        clipboard.suppressNextDismiss = true
                         clipboard.isPopoverPresented = true
                     }
                 } label: {
@@ -158,6 +162,13 @@ private struct ColorContentView: View {
                     .labelsHidden()
                     .help("Open system color picker")
                     .accessibilityLabel("Open system color picker")
+                    // D-04: keep the popover open live while the user adjusts the main
+                    // picker. Each adjustment re-arms the one-shot watchdog, so a panel-
+                    // triggered force-close is undone for the whole editing session — yet
+                    // the flag is always consumed, so it never traps a later dismiss.
+                    .onChange(of: viewModel.swiftUIColor) {
+                        clipboard.suppressNextDismiss = true
+                    }
 
                 Spacer()
             }
@@ -233,8 +244,10 @@ private struct ColorContentView: View {
             NSPasteboard.general.setString(text, forType: .string)
             if prefs.pasteBackEnabled, AXIsProcessTrusted(),
                let app = hotkeyManager.previousFrontmostApp {
-                // D-04 watchdog yields: close the ColorPanel first so isVisible flips to
-                // false before the popover dismiss, otherwise the watchdog re-opens it.
+                // Intentional dismiss: disarm the one-shot watchdog so it can't re-open the
+                // popover (the user may have been adjusting the picker, which arms it), and
+                // close the panel so it doesn't linger. No isVisible-timing race (CR-02).
+                clipboard.suppressNextDismiss = false
                 NSColorPanel.shared.close()
                 clipboard.isPopoverPresented = false
                 pasteBackService.synthesizePaste(into: app)

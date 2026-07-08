@@ -31,3 +31,13 @@ Surface area (from code map):
 - **Preferences:** remove `historyLimit` from `Core/Services/PreferencesStore.swift` (INFRA-13) and its UI in `UI/PreferencesView.swift`
 - **Dependency:** GRDB confirmed used ONLY by the two deleted files (Color/NumberBase VM "imports" are comment-only, no real `import GRDB`) → drop the GRDB package from `Flint.xcodeproj`; also remove the deleted files from the pbxproj
 - **Verify:** clean build + full `xcodebuild test` green; global search returns tools; no `History`/`GRDB` symbols remain outside `build/`
+
+### Phase 7: Keep menubar popover open after color picker use
+
+**Goal:** After choosing a color via the eyedropper (NSColorSampler) or the system ColorPicker (NSColorPanel), the popover currently loses key focus and dismisses. Keep it open — or re-present it — so the picked color lands in the Color tool and the user can copy any format and keep working.
+**Requirements**: PHASE-07-GOAL (popover survives both color pickers), CLR-02
+**Depends on:** Phase 6
+**Plans:** 1 plan
+
+Plans:
+- [ ] 07-01-PLAN.md — Eyedropper re-present + NSColorPanel falling-edge watchdog (both pickers keep the popover usable, D-04) + manual UAT gate

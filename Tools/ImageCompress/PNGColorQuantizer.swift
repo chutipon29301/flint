@@ -21,6 +21,43 @@ enum PNGColorQuantizer {
         let palette: [(UInt8, UInt8, UInt8)]
         let alpha: [UInt8]          // aligned to `palette`
         let indices: [UInt8]        // length width*height, each < palette.count
+        /// True mean-squared error (averaged over R,G,B) between each source pixel and its assigned
+        /// palette color — the real fidelity signal the adaptive-palette search ranks on. 0 = lossless.
+        var mse: Double = 0
+    }
+
+    /// Quantizes with an ADAPTIVE palette sized to a perceptual-quality target (like pngquant's
+    /// `--quality` floor). Instead of always emitting 256 colors, it tries a descending ladder of
+    /// palette sizes and returns the SMALLEST palette whose reconstruction still meets `quality`.
+    /// Fewer colors → a smaller index range → far better DEFLATE (the #1 size lever on photos).
+    ///
+    /// - Parameters:
+    ///   - quality: 0.0–1.0 from the app's quality slider. Maps to a max-allowed mean-squared error:
+    ///              quality 1.0 ⇒ tightest (near-lossless, keeps 256); lower quality ⇒ tolerates more
+    ///              error ⇒ accepts smaller palettes. A flat/low-color image naturally lands on a tiny
+    ///              palette regardless (its error is ~0 at few colors).
+    /// - Returns: A `QuantizedImage`, or nil on degenerate input / decode failure / cancellation.
+    static func quantizeAdaptive(cgImage: CGImage, quality: Double) -> QuantizedImage? {
+        // Per-channel RMS error budget in 0–255 units. quality 1.0 → ~2 (near-lossless),
+        // quality 0.0 → ~24 (aggressive). Squared → MSE budget compared against the candidate below.
+        let q = min(max(quality, 0), 1)
+        let rmsBudget = 2.0 + (1.0 - q) * 22.0
+        let mseBudget = rmsBudget * rmsBudget
+
+        // Palette ladder, smallest first. Return the first (smallest) palette within the error budget;
+        // fall back to the largest (best-quality) candidate if none qualifies. Each rung reuses the
+        // existing median-cut `quantize`, so cancellation + INFRA-17 nil-safety are inherited.
+        let ladder = [16, 32, 64, 128, 256]
+        var best: QuantizedImage?   // largest tried, used if nothing meets the budget
+        for colors in ladder {
+            if Task.isCancelled { return nil }
+            guard let candidate = quantize(cgImage: cgImage, maxColors: colors) else { continue }
+            best = candidate
+            if candidate.mse <= mseBudget {
+                return candidate    // smallest palette that is "good enough" (real per-pixel MSE)
+            }
+        }
+        return best                 // none met the budget → keep the highest-fidelity one
     }
 
     /// Quantizes `cgImage` into at most `maxColors` (capped at 256) palette entries.
@@ -201,12 +238,31 @@ enum PNGColorQuantizer {
             }
         }
 
+        // --- 6. Exact reconstruction MSE (over R,G,B,A), iterating UNIQUE colors only. ---
+        //   Every unique RGBA already has its assigned palette index in `lookupCache` and its pixel
+        //   frequency in `counts`, so this is one pass over the (small) unique-color set — not all pixels.
+        //   ALPHA is included: a palette entry carries one alpha (tRNS), so shrinking the palette also
+        //   coarsens the alpha gradient. Folding alpha error in here stops quantizeAdaptive from picking
+        //   a tiny palette that looks fine in RGB but destroys a soft alpha edge (bug found on radial-
+        //   alpha images). Averaged over 4 channels. Used by quantizeAdaptive for the quality search.
+        var sqErr = 0.0
+        for (key, freq) in counts {
+            guard let pi = lookupCache[key] else { continue }
+            let r = Int((key >> 24) & 0xFF), g = Int((key >> 16) & 0xFF)
+            let b = Int((key >> 8) & 0xFF),  a = Int(key & 0xFF)
+            let p = palette[Int(pi)]
+            let dr = r - Int(p.0), dg = g - Int(p.1), db = b - Int(p.2), da = a - Int(paletteAlpha[Int(pi)])
+            sqErr += Double((dr*dr + dg*dg + db*db + da*da) * freq)
+        }
+        let mse = sqErr / (Double(max(pixelCount, 1)) * 4.0)
+
         return QuantizedImage(
             width: width,
             height: height,
             palette: palette,
             alpha: paletteAlpha,
-            indices: indices
+            indices: indices,
+            mse: mse
         )
     }
 }

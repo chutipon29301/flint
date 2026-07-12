@@ -48,6 +48,12 @@ enum IndexedPNGEncoder {
         let paletteCount = palette.count
         for idx in indices where Int(idx) >= paletteCount { return nil }
 
+        // Adaptive bit depth: an indexed PNG only needs enough bits to address the palette.
+        // <=2 colors -> 1 bit/px, <=4 -> 2, <=16 -> 4, else 8. Packing ≤16-color images this way
+        // shrinks the raw scanline stream 2-8x before DEFLATE (the flat-art / low-color win — a
+        // 4-color image drops from 8-bit to 2-bit, ~74% smaller). 8-bit path is unchanged.
+        let bitDepth = bitDepthFor(paletteCount)
+
         var png = Data()
 
         // 1. PNG signature.
@@ -57,7 +63,7 @@ enum IndexedPNGEncoder {
         var ihdr = Data()
         ihdr.append(beUInt32(UInt32(width)))
         ihdr.append(beUInt32(UInt32(height)))
-        ihdr.append(8)    // bit depth
+        ihdr.append(UInt8(bitDepth))  // adaptive: 1/2/4/8 (see bitDepthFor)
         ihdr.append(3)    // color type 3 = indexed-color
         ihdr.append(0)    // compression method (deflate)
         ihdr.append(0)    // filter method
@@ -76,21 +82,146 @@ enum IndexedPNGEncoder {
             png.append(chunk(type: "tRNS", data: Data(alpha)))
         }
 
-        // 5. IDAT — raw scanlines (filter byte 0x00 + one index byte per pixel), zlib-deflated.
-        var raw = Data(capacity: height * (width + 1))
-        var cursor = 0
-        for _ in 0..<height {
-            raw.append(0x00) // filter type None
-            raw.append(contentsOf: indices[cursor..<(cursor + width)])
-            cursor += width
+        // 5. IDAT — bit-packed scanlines, zlib-deflated. Two filter strategies are DEFLATED and the
+        //    smaller IDAT wins:
+        //      • all-None  (best for smooth/low-entropy index maps under a weak deflate)
+        //      • per-row min-SAD choice of None/Sub/Up/Average/Paeth (best for structured images)
+        //    We must pick by ACTUAL deflated size, not the SAD heuristic alone: Apple's Compression
+        //    framework zlib is a fast/weak matcher, and on noisy data min-SAD filtering can inflate the
+        //    stream (the filtered bytes have higher per-byte entropy than a strong matcher would exploit).
+        //    Trial-deflating both — the honest measure — guarantees filtering never makes a file bigger.
+        //    Sub-8-bit depths pack multiple pixels per byte where filtering rarely helps → None only.
+        let packedNone = packedScanlines(width: width, height: height, bitDepth: bitDepth, indices: indices)
+        guard let deflatedNone = zlibDeflate(packedNone) else { return nil }
+
+        var bestIDAT = deflatedNone
+        if bitDepth == 8, let filtered = filteredScanlines(width: width, height: height, indices: indices),
+           let deflatedFiltered = zlibDeflate(filtered),
+           deflatedFiltered.count < bestIDAT.count {
+            bestIDAT = deflatedFiltered
         }
-        guard let deflated = zlibDeflate(raw) else { return nil }
-        png.append(chunk(type: "IDAT", data: deflated))
+        png.append(chunk(type: "IDAT", data: bestIDAT))
 
         // 6. IEND (empty).
         png.append(chunk(type: "IEND", data: Data()))
 
         return png
+    }
+
+    // MARK: - Adaptive bit depth + scanline filtering
+
+    /// Smallest PNG-legal indexed bit depth that can address `paletteCount` entries.
+    private static func bitDepthFor(_ paletteCount: Int) -> Int {
+        switch paletteCount {
+        case ...2:  return 1
+        case ...4:  return 2
+        case ...16: return 4
+        default:    return 8
+        }
+    }
+
+    /// Raw scanlines with filter byte 0x00 (None) on every row, packing `8/bitDepth` pixels per byte
+    /// for sub-8-bit depths (big-endian within the byte, final partial byte left-aligned per the PNG
+    /// spec). The universal, always-valid stream — used directly for packed depths and as the baseline
+    /// the 8-bit filtered stream must beat.
+    private static func packedScanlines(width: Int, height: Int, bitDepth: Int, indices: [UInt8]) -> Data {
+        let rowByteLen = (width * bitDepth + 7) / 8
+        var out = Data(capacity: height * (rowByteLen + 1))
+        if bitDepth == 8 {
+            var cursor = 0
+            for _ in 0..<height {
+                out.append(0x00)
+                out.append(contentsOf: indices[cursor..<(cursor + width)])
+                cursor += width
+            }
+            return out
+        }
+        let ppb = 8 / bitDepth
+        let mask = UInt8((1 << bitDepth) - 1)
+        for y in 0..<height {
+            out.append(0x00)
+            let base = y * width
+            var byte: UInt8 = 0
+            var filled = 0
+            for x in 0..<width {
+                byte = (byte << bitDepth) | (indices[base + x] & mask)
+                filled += 1
+                if filled == ppb { out.append(byte); byte = 0; filled = 0 }
+            }
+            if filled > 0 { byte <<= (ppb - filled) * bitDepth; out.append(byte) }
+        }
+        return out
+    }
+
+    /// 8-bit-only scanlines where each row picks the min-SAD filter of None/Sub/Up/Average/Paeth
+    /// (libpng's heuristic). bpp = 1 (one index byte per pixel) for the left/up-left taps. The caller
+    /// trial-deflates this against `packedScanlines` and keeps whichever IDAT is actually smaller.
+    private static func filteredScanlines(width: Int, height: Int, indices: [UInt8]) -> Data? {
+        let rowByteLen = width
+        var out = Data(capacity: height * (rowByteLen + 1))
+        var prev = [UInt8](repeating: 0, count: rowByteLen)
+        var cur  = [UInt8](repeating: 0, count: rowByteLen)
+        var candidate = [UInt8](repeating: 0, count: rowByteLen)
+        var best = [UInt8](repeating: 0, count: rowByteLen)
+
+        for y in 0..<height {
+            let base = y * width
+            for x in 0..<rowByteLen { cur[x] = indices[base + x] }
+
+            var bestType: UInt8 = 0
+            var bestScore = Int.max
+            for filter in UInt8(0)...4 {
+                applyFilter(filter, cur: cur, prev: prev, bpp: 1, into: &candidate)
+                let score = sumAbsDiff(candidate)
+                if score < bestScore {
+                    bestScore = score
+                    bestType = filter
+                    swap(&candidate, &best)            // keep the winning bytes without recomputing
+                }
+            }
+            out.append(bestType)
+            out.append(contentsOf: best)
+            swap(&prev, &cur)
+        }
+        return out
+    }
+
+    /// PNG filter types 0-4 (None/Sub/Up/Average/Paeth), byte-wise, wrapping mod 256.
+    private static func applyFilter(_ type: UInt8, cur: [UInt8], prev: [UInt8], bpp: Int, into out: inout [UInt8]) {
+        let n = cur.count
+        for i in 0..<n {
+            let a = i >= bpp ? Int(cur[i - bpp]) : 0        // left
+            let b = Int(prev[i])                            // up
+            let c = i >= bpp ? Int(prev[i - bpp]) : 0       // up-left
+            let x = Int(cur[i])
+            let v: Int
+            switch type {
+            case 1:  v = x - a
+            case 2:  v = x - b
+            case 3:  v = x - (a + b) / 2
+            case 4:  v = x - paeth(a, b, c)
+            default: v = x                                   // 0 = None
+            }
+            out[i] = UInt8(v & 0xFF)
+        }
+    }
+
+    private static func paeth(_ a: Int, _ b: Int, _ c: Int) -> Int {
+        let p = a + b - c
+        let pa = abs(p - a), pb = abs(p - b), pc = abs(p - c)
+        if pa <= pb && pa <= pc { return a }
+        if pb <= pc { return b }
+        return c
+    }
+
+    /// Sum of absolute filtered values treated as signed bytes — libpng's filter-selection heuristic.
+    private static func sumAbsDiff(_ bytes: [UInt8]) -> Int {
+        var sum = 0
+        for byte in bytes {
+            let signed = byte < 128 ? Int(byte) : Int(byte) - 256
+            sum += abs(signed)
+        }
+        return sum
     }
 
     // MARK: - Chunk framing

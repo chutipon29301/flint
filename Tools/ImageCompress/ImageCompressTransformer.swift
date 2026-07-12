@@ -75,7 +75,7 @@ enum ImageCompressTransformer {
         if isPNG {
             // Quantize → indexed-PNG encode → never-larger guard (D-06). Any nil falls back to
             // the truecolor re-encode; the function still returns a typed Result (INFRA-17).
-            guard writePNGCompressed(src: src, source: url, uti: uti, destURL: destURL) else {
+            guard writePNGCompressed(src: src, source: url, uti: uti, destURL: destURL, quality: quality) else {
                 try? FileManager.default.removeItem(at: destURL)
                 return .failure(.writeFailed)
             }
@@ -168,14 +168,17 @@ enum ImageCompressTransformer {
     ///      output is NOT smaller than the original, also produce the plain truecolor re-encode and
     ///      keep whichever of {quantized, truecolor} is smaller (D-06: never hand back a bigger file).
     ///   4. Write the chosen bytes to destURL.
-    private static func writePNGCompressed(src: CGImageSource, source: URL, uti: CFString, destURL: URL) -> Bool {
+    private static func writePNGCompressed(src: CGImageSource, source: URL, uti: CFString, destURL: URL, quality: Double) -> Bool {
         // 1. Decode the source image. On failure, fall back to a plain truecolor re-encode.
         guard let cgImage = CGImageSourceCreateImageAtIndex(src, 0, nil) else {
             return truecolorReencode(src: src, uti: uti, destURL: destURL)
         }
 
-        // 2. Quantize → indexed-PNG encode. Any nil → truecolor re-encode.
-        guard let quantized = PNGColorQuantizer.quantize(cgImage: cgImage),
+        // 2. Quantize (adaptive palette sized to the quality target) → indexed-PNG encode.
+        //    Any nil → truecolor re-encode. The adaptive step is the largest byte lever: a photo that
+        //    the fixed-256 path could not shrink below quality typically needs far fewer colors (e.g.
+        //    ~31-64), and fewer palette entries + a smaller index range compress dramatically better.
+        guard let quantized = PNGColorQuantizer.quantizeAdaptive(cgImage: cgImage, quality: quality),
               let indexedData = IndexedPNGEncoder.encode(
                 width: quantized.width,
                 height: quantized.height,

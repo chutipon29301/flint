@@ -23,146 +23,63 @@ enum JSONTransformer {
 
     // MARK: - Public API
 
-    /// JSON-01: Pretty-print with configurable indent (2 spaces, 4 spaces, or tab).
+    /// JSON-01: Pretty-print with configurable indent, preserving object key order.
     /// `indent`: 2 = two spaces, 4 = four spaces, 0 = tab character.
     static func prettyPrint(_ input: String, indent: Int = 2) -> Result<String, JSONError> {
-        guard let data = input.data(using: .utf8) else {
-            return .failure(JSONError(message: "Invalid UTF-8 encoding", line: nil, column: nil))
-        }
-        // INFRA-17: size guard — reject absurdly large inputs gracefully
-        guard data.count <= 50_000_000 else {   // 50 MB limit
-            return .failure(JSONError(message: "Input too large (>50 MB)", line: nil, column: nil))
-        }
-        do {
-            let obj = try JSONSerialization.jsonObject(with: data, options: [])
-            let options: JSONSerialization.WritingOptions = [.prettyPrinted, .withoutEscapingSlashes]
-            let prettyData = try JSONSerialization.data(withJSONObject: obj, options: options)
-            guard var str = String(data: prettyData, encoding: .utf8) else {
-                return .failure(JSONError(message: "Failed to encode output as UTF-8", line: nil, column: nil))
-            }
-            str = applyIndent(str, indent: indent)
-            return .success(str)
-        } catch {
-            return .failure(jsonError(from: error, in: input))
-        }
+        format(input) { $0.serialize(indentUnit: indentUnit(for: indent), sortKeys: false) }
     }
 
-    /// JSON-02: Minify JSON (remove all whitespace).
+    /// JSON-02: Minify JSON (remove all whitespace), preserving key order.
     static func minify(_ input: String) -> Result<String, JSONError> {
-        guard let data = input.data(using: .utf8) else {
-            return .failure(JSONError(message: "Invalid UTF-8 encoding", line: nil, column: nil))
-        }
-        guard data.count <= 50_000_000 else {
-            return .failure(JSONError(message: "Input too large (>50 MB)", line: nil, column: nil))
-        }
-        do {
-            let obj = try JSONSerialization.jsonObject(with: data, options: [])
-            let minData = try JSONSerialization.data(withJSONObject: obj, options: [.withoutEscapingSlashes])
-            guard let str = String(data: minData, encoding: .utf8) else {
-                return .failure(JSONError(message: "Failed to encode output as UTF-8", line: nil, column: nil))
-            }
-            return .success(str)
-        } catch {
-            return .failure(jsonError(from: error, in: input))
-        }
+        format(input) { $0.minified() }
     }
 
     /// JSON-04: Pretty-print with keys sorted alphabetically.
     static func prettyPrintSorted(_ input: String, indent: Int = 2) -> Result<String, JSONError> {
-        guard let data = input.data(using: .utf8) else {
-            return .failure(JSONError(message: "Invalid UTF-8 encoding", line: nil, column: nil))
-        }
-        guard data.count <= 50_000_000 else {
-            return .failure(JSONError(message: "Input too large (>50 MB)", line: nil, column: nil))
-        }
-        do {
-            let obj = try JSONSerialization.jsonObject(with: data, options: [])
-            let options: JSONSerialization.WritingOptions = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-            let prettyData = try JSONSerialization.data(withJSONObject: obj, options: options)
-            guard var str = String(data: prettyData, encoding: .utf8) else {
-                return .failure(JSONError(message: "Failed to encode output as UTF-8", line: nil, column: nil))
-            }
-            str = applyIndent(str, indent: indent)
-            return .success(str)
-        } catch {
-            return .failure(jsonError(from: error, in: input))
-        }
+        format(input) { $0.serialize(indentUnit: indentUnit(for: indent), sortKeys: true) }
     }
 
     // MARK: - Private Helpers
 
-    /// JSONSerialization always uses 2-space indent.
-    /// This function converts 2-space to 4-space or tab as needed.
-    ///
-    /// CR-03: Operate only on leading whitespace per line — never touch characters
-    /// inside string values. The naive replacingOccurrences(of: "  ", with: "    ")
-    /// approach corrupts values containing consecutive spaces (e.g. "some  value").
-    private static func applyIndent(_ str: String, indent: Int) -> String {
-        guard indent != 2 else { return str }
-        let lines = str.components(separatedBy: "\n")
-        return lines.map { line in
-            let leadingSpaces = line.prefix(while: { $0 == " " }).count
-            // JSONSerialization uses exactly 2 spaces per indent level
-            let level = leadingSpaces / 2
-            let newPrefix: String
-            switch indent {
-            case 4:
-                newPrefix = String(repeating: "    ", count: level)
-            case 0:
-                newPrefix = String(repeating: "\t", count: level)
-            default:
-                return line
+    /// Shared parse → guard → serialize pipeline. INFRA-17: never crashes.
+    private static func format(_ input: String, _ render: (OrderedJSON) -> String) -> Result<String, JSONError> {
+        // INFRA-17: size guard — reject absurdly large inputs gracefully
+        guard input.utf8.count <= 50_000_000 else {   // 50 MB limit
+            return .failure(JSONError(message: "Input too large (>50 MB)", line: nil, column: nil))
+        }
+        do {
+            let value = try OrderedJSON.parse(input)
+            return .success(render(value))
+        } catch let error as JSONParseError {
+            return .failure(parseError(error, in: input))
+        } catch {
+            return .failure(JSONError(message: error.localizedDescription, line: nil, column: nil))
+        }
+    }
+
+    private static func indentUnit(for indent: Int) -> String {
+        switch indent {
+        case 4: return "    "
+        case 0: return "\t"
+        default: return "  "
+        }
+    }
+
+    /// JSON-03: Map a parser char offset to line + column (1-based).
+    private static func parseError(_ error: JSONParseError, in source: String) -> JSONError {
+        let scalars = Array(source.unicodeScalars)
+        let offset = min(error.charOffset, scalars.count)
+        var line = 1
+        var column = 1
+        for i in 0..<offset {
+            if scalars[i] == "\n" {
+                line += 1
+                column = 1
+            } else {
+                column += 1
             }
-            return newPrefix + line.dropFirst(leadingSpaces)
-        }.joined(separator: "\n")
+        }
+        return JSONError(message: "Invalid JSON", line: line, column: column)
     }
 
-    /// JSON-03: Extract line + column from NSError.
-    /// JSONSerialization error userInfo contains:
-    ///   - NSDebugDescription (key: "NSDebugDescription"): "Invalid value around line N, column N."
-    ///   - NSJSONSerializationErrorIndex: character offset (Int)
-    /// Source: Verified via testing — NSDebugDescription format on macOS 14.
-    private static func jsonError(from error: Error, in source: String) -> JSONError {
-        let ns = error as NSError
-
-        // Primary: use NSJSONSerializationErrorIndex for exact character offset
-        if let charIdx = ns.userInfo["NSJSONSerializationErrorIndex"] as? Int {
-            let charOffset = min(charIdx, source.count)
-            let prefixStr = String(source.prefix(charOffset))
-            let lines = prefixStr.components(separatedBy: "\n")
-            let line = lines.count
-            let column = (lines.last?.count ?? 0) + 1
-            let desc = (ns.userInfo["NSDebugDescription"] as? String) ?? error.localizedDescription
-            return JSONError(message: desc, line: line, column: column)
-        }
-
-        // Fallback: parse "line N, column N" from NSDebugDescription string
-        let desc = (ns.userInfo["NSDebugDescription"] as? String) ?? error.localizedDescription
-        if let (line, col) = extractLineColumn(from: desc) {
-            return JSONError(message: desc, line: line, column: col)
-        }
-
-        return JSONError(message: desc, line: nil, column: nil)
-    }
-
-    /// Parses "around line N, column N" from Foundation JSON error descriptions.
-    private static func extractLineColumn(from description: String) -> (Int, Int)? {
-        // Pattern: "line N, column N" or "around line N, column N"
-        let pattern = #"line (\d+), column (\d+)"#
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
-            return nil
-        }
-        let nsDesc = description as NSString
-        let range = NSRange(location: 0, length: nsDesc.length)
-        guard let match = regex.firstMatch(in: description, options: [], range: range) else {
-            return nil
-        }
-        let lineRange = match.range(at: 1)
-        let colRange = match.range(at: 2)
-        guard lineRange.location != NSNotFound, colRange.location != NSNotFound else { return nil }
-        let lineStr = nsDesc.substring(with: lineRange)
-        let colStr = nsDesc.substring(with: colRange)
-        guard let line = Int(lineStr), let col = Int(colStr) else { return nil }
-        return (line, col)
-    }
 }

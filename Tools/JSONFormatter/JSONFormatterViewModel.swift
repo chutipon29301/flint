@@ -50,6 +50,34 @@ final class JSONFormatterViewModel: ToolShortcutActions {
         didSet { scheduleTransform() }
     }
 
+    // MARK: - Find & Replace (operates on the input text)
+
+    /// Whether the compact find/replace bar is visible.
+    var findVisible: Bool = false
+    var findQuery: String = ""
+    var replaceText: String = ""
+    var findCaseSensitive: Bool = false
+
+    /// Number of matches for the current query in the current input.
+    var matchCount: Int {
+        guard !findQuery.isEmpty else { return 0 }
+        let opts: String.CompareOptions = findCaseSensitive ? [] : [.caseInsensitive]
+        var count = 0
+        var range = input.startIndex..<input.endIndex
+        while let found = input.range(of: findQuery, options: opts, range: range) {
+            count += 1
+            range = found.upperBound..<input.endIndex
+        }
+        return count
+    }
+
+    /// Replace all occurrences of findQuery with replaceText in the input.
+    func replaceAll() {
+        guard !findQuery.isEmpty else { return }
+        let opts: String.CompareOptions = findCaseSensitive ? [] : [.caseInsensitive]
+        input = input.replacingOccurrences(of: findQuery, with: replaceText, options: opts)
+    }
+
     // MARK: - Private
 
     private let debounce = Debounce()

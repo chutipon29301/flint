@@ -57,6 +57,10 @@ private struct JSONFormatterContentView: View {
                     .toggleStyle(.checkbox)
                     .accessibilityLabel("Minify output")
 
+                Toggle("Find", isOn: $viewModel.findVisible.animation(.easeOut(duration: 0.12)))
+                    .toggleStyle(.checkbox)
+                    .accessibilityLabel("Find and replace")
+
                 Spacer()
 
                 // JSON-06: Primary copy button
@@ -89,6 +93,12 @@ private struct JSONFormatterContentView: View {
                     }
                     .padding(.horizontal, 8)
                     .padding(.top, 8)
+
+                    if viewModel.findVisible {
+                        FindReplaceBar(viewModel: viewModel)
+                            .padding(.horizontal, 8)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                    }
 
                     SyntaxEditorView(text: $viewModel.input, accessibilityLabel: "JSON input")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -139,6 +149,86 @@ private struct JSONFormatterContentView: View {
                     .transition(.opacity.animation(.easeOut(duration: 0.15)))
             }
         }
+    }
+}
+
+/// Compact find & replace bar scoped to the input editor. Custom (not NSTextView's native
+/// find bar) so it fits the 480pt popover width and matches the graphite/spark theme.
+/// Operates on viewModel.input as a plain string — replaceAll re-runs the live transform.
+private struct FindReplaceBar: View {
+    @Bindable var viewModel: JSONFormatterViewModel
+    @FocusState private var findFocused: Bool
+
+    var body: some View {
+        VStack(spacing: 6) {
+            // Find row
+            HStack(spacing: 6) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                TextField("Find", text: $viewModel.findQuery)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 12, design: .monospaced))
+                    .focused($findFocused)
+                    .accessibilityLabel("Find text")
+
+                if !viewModel.findQuery.isEmpty {
+                    Text("\(viewModel.matchCount)")
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundStyle(viewModel.matchCount == 0 ? .secondary : Color.spark)
+                        .accessibilityLabel("\(viewModel.matchCount) matches")
+                }
+
+                Button {
+                    viewModel.findCaseSensitive.toggle()
+                } label: {
+                    Text("Aa")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(viewModel.findCaseSensitive ? Color.spark : .secondary)
+                }
+                .buttonStyle(.plain)
+                .help("Case sensitive")
+                .accessibilityLabel("Toggle case sensitivity")
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .background(Color.graphite850)
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .strokeBorder(findFocused ? Color.spark : Color.graphite800, lineWidth: 1)
+            )
+
+            // Replace row
+            HStack(spacing: 6) {
+                Image(systemName: "arrow.2.squarepath")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                TextField("Replace with", text: $viewModel.replaceText)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 12, design: .monospaced))
+                    .accessibilityLabel("Replace text")
+
+                Button("All") {
+                    viewModel.replaceAll()
+                }
+                .buttonStyle(.borderless)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(viewModel.matchCount == 0 ? .secondary : Color.spark)
+                .disabled(viewModel.matchCount == 0)
+                .accessibilityLabel("Replace all")
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .background(Color.graphite850)
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .strokeBorder(Color.graphite800, lineWidth: 1)
+            )
+        }
+        .padding(.vertical, 4)
+        .onAppear { findFocused = true }
     }
 }
 

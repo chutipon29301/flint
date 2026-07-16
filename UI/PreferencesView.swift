@@ -28,6 +28,11 @@ struct PreferencesView: View {
                 .tabItem {
                     Label("Tools", systemImage: "wrench.and.screwdriver")
                 }
+
+            AboutPreferencesTab()
+                .tabItem {
+                    Label("About", systemImage: "info.circle")
+                }
         }
         .environment(prefs)
         .environment(hotkeyManager)
@@ -272,6 +277,41 @@ private struct PerToolPreferencesTab: View {
             }
         }
         .formStyle(.grouped)
+        .padding()
+        .frame(minWidth: 420)
+    }
+}
+
+// MARK: - About Tab
+
+/// Shows the marketing version + build, read live from the bundle so it never
+/// drifts from the actual release. Version source is MARKETING_VERSION in the
+/// xcodeproj, surfaced at runtime as CFBundleShortVersionString.
+private struct AboutPreferencesTab: View {
+    private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+    private let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
+
+    var body: some View {
+        VStack(spacing: 8) {
+            if let icon = NSApp.applicationIconImage {
+                Image(nsImage: icon)
+                    .resizable()
+                    .frame(width: 96, height: 96)
+                    .accessibilityHidden(true)
+            }
+            Text("Flint")
+                .font(.system(size: 20, weight: .semibold))
+            Text("Version \(version) (build \(build))")
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .accessibilityLabel("Version \(version), build \(build)")
+                .textSelection(.enabled)
+            Text("A native macOS developer toolkit in your menubar.")
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
         .frame(minWidth: 420)
     }
